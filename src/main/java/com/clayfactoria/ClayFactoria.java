@@ -1,4 +1,4 @@
-package com.example.exampleplugin;
+package com.clayfactoria;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;

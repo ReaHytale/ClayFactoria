@@ -1,0 +1,21 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Kweebec_Clay",
+  "Modify": {
+    "Appearance": "Kweebec_Clay",
+    "DropList": "Drop_Kweebec_Clay",
+    "MaxHealth": 20,
+    "IsMemory": true,
+    "MemoriesCategory": "Kweebec",
+    "MemoriesNameOverride": "Kweebec_Clay",
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    }
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Kweebec_Clay.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}

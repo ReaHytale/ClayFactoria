@@ -1,0 +1,381 @@
+{
+  "Parent": "Player",
+  "Model": "NPC/Intelligent/Kweebec_Clay/Models/Model.blockymodel",
+  "Texture": "NPC/Intelligent/Kweebec_Clay/Models/Texture.png",
+  "EyeHeight": 0.3,
+  "CrouchOffset": -0.05,
+  "HitBox": {
+    "Max": {
+      "X": 0.25,
+      "Y": 0.5,
+      "Z": 0.25
+    },
+    "Min": {
+      "X": -0.25,
+      "Y": 0,
+      "Z": -0.25
+    }
+  },
+  "MinScale": 0.8,
+  "MaxScale": 1,
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Intelligent/Kweebec_Clay/Models/Attachments/Cosmetics/Head/Leaf.blockymodel",
+      "Texture": "NPC/Intelligent/Kweebec_Clay/Models/Texture.png"
+    }
+  ],
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 15,
+        "Min": -15
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 15,
+        "Min": -15
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.5
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.9
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.9
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.8
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Speed": 0.5
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        },
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.4,
+          "Looping": true
+        },
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.4
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "FlyIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "Fly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "FlyBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "FlyFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "Swim": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "SwimBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "SwimFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "SwimJump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        }
+      ]
+    },
+    "SwimFloat": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "SwimSink": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "SwimDive": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "SwimDiveBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "SwimDiveFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.3
+        }
+      ]
+    },
+    "FluidWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "FluidWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "FluidRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 0.6
+        }
+      ]
+    },
+    "ClimbIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "ClimbUp": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "ClimbDown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "ClimbLeft": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "ClimbRight": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
+          "BlendingDuration": 0,
+          "Looping": false
+        }
+      ]
+    }
+  }
+}

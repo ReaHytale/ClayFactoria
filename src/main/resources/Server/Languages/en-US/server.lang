@@ -1,0 +1,4 @@
+npcRoles.Kweebec_Clay.name=Clay Kweebec
+items.Bench_ClayFactoria.name=Clay Factoria
+items.Bench_ClayFactoria.description=Automate with mini clay Kweebecs
+interactionHints.command=Press [{key}] to Command
