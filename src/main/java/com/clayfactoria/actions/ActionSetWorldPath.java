@@ -56,8 +56,8 @@ public class ActionSetWorldPath extends ActionBase {
 //        Vector3d pathEnd = brushComponent.getPathEndPosition();
         Vector3f pathStartRotation = brushComponent.getPathStartRotation();
 
-        IPath<SimplePathWaypoint> path = this.pathDefinition.buildPath(pathStartPosition, pathStartRotation);
-        npcComponent.getWorld().getWorldPathConfig().
+//        IPath<SimplePathWaypoint> path = this.pathDefinition.buildPath(pathStartPosition, pathStartRotation);
+//        npcComponent.getWorld().getWorldPathConfig().
 
         LOGGER.atInfo().log(String.format("Action Set Path: execute -> Successfully set path %s", brushComponent.getPathStart().toString()));
         return true;
