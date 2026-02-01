@@ -5,6 +5,7 @@ import com.clayfactoria.models.WorldWaypoint;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.math.vector.Vector3d;
@@ -20,7 +21,7 @@ public class BrushComponent implements Component<EntityStore> {
     @Nonnull
     public static final BuilderCodec<BrushComponent> CODEC = BuilderCodec.builder(BrushComponent.class, BrushComponent::new)
             .append(
-                    new KeyedCodec<>("PathStart", WorldWaypoint.CODEC),
+                    new KeyedCodec<>("Path", ArrayCodec <>),
                     (component, pos) -> component.pathStart = pos,
                     component -> component.pathStart
             )

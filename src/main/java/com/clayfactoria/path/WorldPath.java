@@ -52,15 +52,14 @@ public class WorldPath implements IPath<SimplePathWaypoint> {
     }
 
     @Nonnull
-    public static IPath<SimplePathWaypoint> buildPath(
-            @Nonnull Vector3d startPosition, @Nonnull Vector3f startRotation, @Nullable Vector3d endPosition, @Nullable Vector3f endRotation
-    ) {
+    public static IPath<SimplePathWaypoint> buildPath(@Nonnull List<Vector3d> positions, @Nonnull List<Vector3f> rotations) {
         WorldPath path = new WorldPath();
-        path.addWaypoint(startPosition, startRotation);
 
-        // If we only want to go to a single position, then leave end position and end rotation as null
-        if (endPosition != null &&  endRotation != null) {
-            path.addWaypoint(endPosition, endRotation);
+        for (int index = 0; index < positions.size(); index++) {
+            Vector3d position = positions.get(index);
+            Vector3f rotation = rotations.get(index);
+
+            path.addWaypoint(position, rotation);
         }
 
         return path;

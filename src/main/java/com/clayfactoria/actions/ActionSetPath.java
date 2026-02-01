@@ -21,6 +21,7 @@ import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ActionSetPath  extends ActionBase {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -69,10 +70,16 @@ public class ActionSetPath  extends ActionBase {
         Vector3d pathStartPosition = brushComponent.getPathStartPosition();
         Vector3f pathStartRotation = brushComponent.getPathStartRotation();
 
+        ArrayList<Vector3d> pathPositions = new ArrayList<>();
+        ArrayList<Vector3f> pathRotations = new ArrayList<>();
+
         if (brushComponent.getPathEnd() == null) {
             LOGGER.atInfo().log("Action Set Path: execute -> Brush Component: Path End was null. Targeting Path Start only");
 
-            IPath<SimplePathWaypoint> path = WorldPath.buildPath(pathStartPosition, pathStartRotation, null, null);
+            pathPositions.add(pathStartPosition);
+            pathRotations.add(pathStartRotation);
+
+            IPath<SimplePathWaypoint> path = WorldPath.buildPath(pathPositions, pathRotations);
             npcComponent.getPathManager().setTransientPath(path);
 
             String message = String.format("Set Single Point Pathing to: (%.0f, %.0f, %.0f)", pathStartPosition.x, pathStartPosition.y, pathStartPosition.z);
@@ -84,7 +91,10 @@ public class ActionSetPath  extends ActionBase {
         Vector3d pathEndPosition = brushComponent.getPathEndPosition();
         Vector3f pathEndRotation = brushComponent.getPathEndRotation();
 
-        IPath<SimplePathWaypoint> path = WorldPath.buildPath(pathStartPosition, pathStartRotation, pathEndPosition, pathEndRotation);
+        pathPositions.add(pathEndPosition);
+        pathRotations.add(pathEndRotation);
+
+        IPath<SimplePathWaypoint> path = WorldPath.buildPath(pathPositions, pathRotations);
         npcComponent.getPathManager().setTransientPath(path);
 
         String message = String.format("Set Line Pathing from (%.0f, %.0f, %.0f) to (%.0f, %.0f, %.0f)", pathStartPosition.x, pathStartPosition.y, pathStartPosition.z, pathEndPosition.x, pathEndPosition.y, pathEndPosition.z);
