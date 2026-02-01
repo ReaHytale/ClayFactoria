@@ -1,7 +1,7 @@
 package com.clayfactoria.systems;
 
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.models.WorldWaypointDefinition;
+import com.clayfactoria.models.WorldWaypoint;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
@@ -88,12 +88,12 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
         Vector3f headRotation = headRotationComponent.getRotation();
 
-        WorldWaypointDefinition worldWaypointDefinition = new WorldWaypointDefinition(targetBlockLoc.x, targetBlockLoc.y, targetBlockLoc.z, headRotation.x, headRotation.y, headRotation.z);
+        WorldWaypoint worldWaypoint = new WorldWaypoint(targetBlockLoc.x, targetBlockLoc.y, targetBlockLoc.z, headRotation.x, headRotation.y, headRotation.z);
 
         if (brushComponent.getPathStart() == null) {
-            brushComponent.setPathStart(worldWaypointDefinition);
+            brushComponent.setPathStart(worldWaypoint);
         } else if (brushComponent.getPathEnd() == null) {
-            brushComponent.setPathEnd(worldWaypointDefinition);
+            brushComponent.setPathEnd(worldWaypoint);
         } else {
             brushComponent.setPathStart(null);
             brushComponent.setPathEnd(null);
@@ -128,38 +128,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         String message = String.format("Set Path Block: (%d, %d, %d)", targetBlockLoc.x, targetBlockLoc.y, targetBlockLoc.z);
         LOGGER.atInfo().log(message);
         player.sendMessage(Message.raw(message).color(Color.GREEN));
-
-
-//
-//        Store<EntityStore> entityStore = entityRef.getStore();
-//        NPCEntity npcEntity = entityStore.getComponent(entityRef, this.npcEntityComponentType);
-//        if (npcEntity == null) {
-//            return;
-//        }
-//
-//        Role role = npcEntity.getRole();
-//        if (role == null){
-//            LOGGER.atSevere().log("Target Block Event System: Target NPC Entity -> Role was null");
-//            return;
-//        }
-//        role.setMarkedTarget("LockedTarget", entityRef);
-//        npcEntity.getPathManager().setTransientPath();
-
-//        TransformComponent entityTransformComp = store.getComponent(entityRef, TransformComponent.getComponentType());
-//        if (entityTransformComp == null){
-//            LOGGER.atSevere().log("Target Block Event System: entityTransformComp was null");
-//            return;
-//        }
-//
-//        HeadRotation headRotationComponent = store.getComponent(entityRef, HeadRotation.getComponentType());
-//        if (headRotationComponent == null){
-//            LOGGER.atSevere().log("Target Block Event System: headRotationComponent was null");
-//            return;
-//        }
-//
-//        IPath<SimplePathWaypoint> path = npcEntity.getPathManager().get
-
-        }
+    }
 
     @Override
     public Query<EntityStore> getQuery() {

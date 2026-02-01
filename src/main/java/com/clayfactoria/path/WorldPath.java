@@ -1,8 +1,6 @@
 package com.clayfactoria.path;
 
 
-import com.clayfactoria.models.WorldWaypointDefinition;
-import com.hypixel.hytale.builtin.path.path.TransientPath;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -14,7 +12,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
 
 public class WorldPath implements IPath<SimplePathWaypoint> {

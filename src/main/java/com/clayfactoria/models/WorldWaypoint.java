@@ -7,9 +7,9 @@ import lombok.Getter;
 
 import javax.annotation.Nonnull;
 
-public class WorldWaypointDefinition {
+public class WorldWaypoint {
     @Nonnull
-    public static final BuilderCodec<WorldWaypointDefinition> CODEC = BuilderCodec.builder(WorldWaypointDefinition.class, WorldWaypointDefinition::new)
+    public static final BuilderCodec<WorldWaypoint> CODEC = BuilderCodec.builder(WorldWaypoint.class, WorldWaypoint::new)
             .append(
                     new KeyedCodec<>("PositionX", Codec.DOUBLE),
                     (component, x) -> component.positionX = x,
@@ -66,7 +66,7 @@ public class WorldWaypointDefinition {
     @Getter
     private float rotationZ;
 
-    public WorldWaypointDefinition() {
+    public WorldWaypoint() {
         positionX = 0f;
         positionY = 0f;
         positionZ = 0f;
@@ -76,7 +76,7 @@ public class WorldWaypointDefinition {
         rotationZ = 0f;
     }
 
-    public WorldWaypointDefinition(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
+    public WorldWaypoint(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.positionZ = positionZ;

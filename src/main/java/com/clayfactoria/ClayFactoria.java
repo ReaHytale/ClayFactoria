@@ -1,16 +1,8 @@
 package com.clayfactoria;
 
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
-import com.clayfactoria.actions.builders.BuilderActionSetTargetEntity;
-import com.clayfactoria.actions.builders.BuilderActionSetWorldPath;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.models.WorldWaypointDefinition;
-import com.clayfactoria.models.builders.BuilderWorldWaypointDefinition;
-import com.clayfactoria.path.WorldPathDefinition;
-import com.clayfactoria.path.builders.BuilderWorldPathDefinition;
 import com.clayfactoria.systems.TargetBlockEventSystem;
-import com.hypixel.hytale.builtin.path.path.TransientPathDefinition;
-import com.hypixel.hytale.builtin.path.waypoint.RelativeWaypointDefinition;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -22,10 +14,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
-import com.hypixel.hytale.server.npc.asset.builder.BuilderFactory;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import com.hypixel.hytale.server.npc.path.builders.BuilderRelativeWaypointDefinition;
-import com.hypixel.hytale.server.npc.path.builders.BuilderTransientPathDefinition;
 
 import javax.annotation.Nonnull;
 
@@ -59,21 +48,8 @@ public class  ClayFactoria extends JavaPlugin {
         LOGGER.atInfo().log("Registering Target Block Event System");
         this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
 
-//        LOGGER.atInfo().log("Registering Set Target Entity Action");
-//        NPCPlugin.get().registerCoreComponentType("SetTargetEntity", BuilderActionSetTargetEntity::new);
-
-        LOGGER.atInfo().log("Registering Set World Path Action");
+        LOGGER.atInfo().log("Registering Set Path Action");
         NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
-
-        BuilderFactory<WorldWaypointDefinition> worldWaypointFactory = new BuilderFactory<>(
-                WorldWaypointDefinition.class, "Type", BuilderWorldWaypointDefinition::new
-        );
-        NPCPlugin.get().getBuilderManager().registerFactory(worldWaypointFactory);
-
-        BuilderFactory<WorldPathDefinition> worldPathFactory = new BuilderFactory<>(
-                WorldPathDefinition.class, "Type", BuilderWorldPathDefinition::new
-        );
-        NPCPlugin.get().getBuilderManager().registerFactory(worldPathFactory);
     }
 
     private void onPlayerReady(@Nonnull PlayerReadyEvent event) {
