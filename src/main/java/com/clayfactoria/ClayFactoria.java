@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import javax.annotation.Nonnull;
 
@@ -37,8 +38,14 @@ public class  ClayFactoria extends JavaPlugin {
 
     @Override
     protected void start() {
+        ComponentType<EntityStore, NPCEntity> npcComponentType = NPCEntity.getComponentType();
+        if (npcComponentType == null) {
+            LOGGER.atSevere().log("Failed to Register Target Block Event System. NPC Entity ComponentType was null");
+            return;
+        }
+
         LOGGER.atInfo().log("Registering Target Block Event System");
-        this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
+        this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
 
         NPCPlugin.get().registerCoreComponentType("SetTargetEntity", BuilderActionSetTargetEntity::new);
     }

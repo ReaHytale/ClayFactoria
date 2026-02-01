@@ -177,30 +177,6 @@
               }
             }
           ]
-        },
-        {
-          "Sensor": {
-            "Type": "Mob",
-            "Range": 20,
-            "ExcludeOwnType": false,
-            "LockOnTarget": true,
-            "Filters": [
-              {
-                "Type": "NPCGroup",
-                "$Comment": "TODO: This may need to be moved to Kweebec_Clay for it's own Group",
-                "IncludeGroups": [ "Kweebec_Civilian" ]
-              },
-              {
-                "Type": "Flock",
-                "FlockStatus": "NotMember"
-              }
-            ]
-          },
-          "Actions": [
-            {
-              "Type": "JoinFlock"
-            }
-          ]
         }
       ]
     },
@@ -417,20 +393,10 @@
           },
           "Instructions": [
             {
-              "Continue": true,
-              "Sensor": {
-                "Type": "Target",
-                "Range": { "Compute": "ViewRange" }
-              },
-              "HeadMotion": {
-                "Type": "Watch"
-              }
-            },
-            {
+              "$Comment": "Return to idle when item in hand is not brush",
               "Sensor": {
                 "Type": "Not",
                 "Sensor": {
-                  "$Comment": "Return to idle when item in hand is not brush",
                   "Type": "Player",
                   "Range": { "Compute": "ViewRange" },
                   "Filters": [
@@ -451,28 +417,46 @@
               ]
             },
             {
-              "$Comment": "TODO: Add custom action to switch to State: BreakBlockCommand",
+              "$Comment": "Switch to State: Path",
+              "Continue": true,
               "Sensor": {
                 "Type": "Any"
               },
               "Actions": [
                 {
-                  "Type": "Timeout",
-                  "Delay": [ 15, 15 ],
-                  "Action": {
-                    "Type": "Sequence",
-                    "Actions": [
-                      {
-                        "Type": "ReleaseTarget"
-                      },
-                      {
-                        "Type": "State",
-                        "State": "Idle"
-                      }
-                    ]
+                  "Type": "MakePath",
+                  "Path": {
+                    "Reference": "Component_Path_Square",
+                    "Modify": {
+                      "Scale": 1
+                    }
                   }
+                },
+                {
+                  "Type": "State",
+                  "State": "Path"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Follow path",
+          "Sensor": {
+            "Type": "State",
+            "State": "Path"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Path",
+                "PathType": "TransientPath"
+              },
+              "BodyMotion": {
+                "Type": "Path",
+                "UseNodeViewDirection": true,
+                "PickRandomAngle": true
+              }
             }
           ]
         }
