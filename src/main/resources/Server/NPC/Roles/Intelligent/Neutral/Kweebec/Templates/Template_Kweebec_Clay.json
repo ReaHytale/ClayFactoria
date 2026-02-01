@@ -421,6 +421,27 @@
                 "Type": "Path",
                 "PathType": "TransientPath"
               },
+              "Actions": [
+                {
+                "Type": "State",
+                "State": "Path"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Pathing state - Path to a single point or line path",
+          "Sensor": {
+            "Type": "State",
+            "State": "Path"
+          },
+          "Instructions": [
+            {
+              "Sensor": {
+                "Type": "Path",
+                "PathType": "TransientPath"
+              },
               "BodyMotion": {
                 "Type": "Path",
                 "UseNodeViewDirection": true,
@@ -441,11 +462,12 @@
               "$Comment": "Exit first if not interactable with Brush in Hand. Checks this first before everything first to avoid extra work",
               "Type": "Not",
               "Sensor": {
-                "Type": "Or",
+                "Type": "And",
                 "Sensors": [
                   {
-                    "Type": "And",
-                    "Sensors": [
+                    "$Comment": "If Player Does NOT have Brush in Hand then Disable Interaction. If in Path State, do NOT disable Interactable",
+                    "Type": "Or",
+                    "Sensors":  [
                       {
                         "Type": "Player",
                         "Range": { "Compute": "ViewRange" },
@@ -458,21 +480,25 @@
                         ]
                       },
                       {
-                        "Type": "Not",
-                        "Sensor": {
-                          "Type": "State",
-                          "State": "Panic"
-                        }
-                      },
-                      {
-                        "Type": "CanInteract",
-                        "ViewSector": 360,
-                        "Attitudes": [
-                          "Neutral",
-                          "Friendly",
-                          "Revered"
-                        ]
+                        "Type": "State",
+                        "State": "Path"
                       }
+                    ]
+                  },
+                  {
+                    "Type": "Not",
+                    "Sensor": {
+                      "Type": "State",
+                      "State": "Panic"
+                    }
+                  },
+                  {
+                    "Type": "CanInteract",
+                    "ViewSector": 360,
+                    "Attitudes": [
+                      "Neutral",
+                      "Friendly",
+                      "Revered"
                     ]
                   }
                 ]
@@ -488,14 +514,25 @@
           {
             "Continue": true,
             "Sensor": {
-              "$Comment": "Set Interactable to true when Item in Hand is Brush",
-              "Type": "Player",
-              "Range": { "Compute": "ViewRange" },
-              "Filters": [
+              "$Comment": "Switch to Alerted if Hostile",
+              "Type": "Or",
+              "Sensors": [
                 {
-                  "Type": "ItemInHand",
-                  "$Comment": "TODO: Replace with Brush Item",
-                  "Items": ["Ingredient_Stick"]
+                  "$Comment": "Set Interactable to true when Item in Hand is Brush",
+                  "Type": "Player",
+                  "Range": { "Compute": "ViewRange" },
+                  "Filters": [
+                    {
+                      "Type": "ItemInHand",
+                      "$Comment": "TODO: Replace with Brush Item",
+                      "Items": ["Ingredient_Stick"]
+                    }
+                  ]
+                },
+                {
+                  "$Comment": "Set Interacble to true when in Path state",
+                  "Type": "State",
+                  "State": "Path"
                 }
               ]
             },
@@ -525,6 +562,13 @@
                 },
                 {
                   "Type": "HasInteracted"
+                },
+                {
+                  "Type": "Not",
+                  "Sensor": {
+                      "Type": "State",
+                      "State": "Path"
+                  }
                 }
               ]
             },
@@ -537,12 +581,41 @@
                 "State": "$Interaction"
               },
               {
-                "$Comment": "Temporarily disable interactable. May need to remove. TODO: Add Action below this Action for setting Command",
+                "$Comment": "Temporarily disable interactable",
                 "Type": "SetInteractable",
                 "Interactable": false
               },
               {
                 "Type": "SetPath"
+              }
+            ]
+          },
+          {
+            "Sensor": {
+              "$Comment": "When interacting in the Path state, switch to Idle",
+              "Type": "And",
+              "Sensors": [
+                {
+                  "Type": "HasInteracted"
+                },
+                {
+                  "Type": "State",
+                  "State": "Path"
+                }
+              ]
+            },
+            "Actions": [
+              {
+                "Type": "ReleaseTarget"
+              },
+              {
+                "Type": "State",
+                "State": "Idle"
+              },
+              {
+                "$Comment": "Temporarily disable interactable",
+                "Type": "SetInteractable",
+                "Interactable": false
               }
             ]
           }
