@@ -2,6 +2,7 @@ package com.clayfactoria.actions;
 
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.components.BrushComponent;
+import com.clayfactoria.components.OwnerComponent;
 import com.clayfactoria.path.WorldPath;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -10,6 +11,7 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.path.IPath;
 import com.hypixel.hytale.server.core.universe.world.path.SimplePathWaypoint;
@@ -62,6 +64,16 @@ public class ActionSetPath  extends ActionBase {
             LOGGER.atSevere().log("Action Set Path: execute -> Player was null");
             return false;
         }
+
+        UUIDComponent playerIdComp = store.getComponent(playerRef, UUIDComponent.getComponentType());
+        if (playerIdComp == null) {
+            LOGGER.atSevere().log("Action Set Path: execute -> playerIdComp was null");
+            return false;
+        }
+
+        OwnerComponent ownerComponent = store.ensureAndGetComponent(ref, OwnerComponent.getComponentType());
+        ownerComponent.setPlayerId(playerIdComp.getUuid());
+        LOGGER.atInfo().log("Action Set Path: execute -> Player Id Set for Owner Component on the Entity you just interacted with");
 
         if (brushComponent.getPaths() == null) {
             LOGGER.atWarning().log("Action Set Path: execute -> Brush Component: Path Start was null");

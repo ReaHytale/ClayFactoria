@@ -439,8 +439,17 @@
           "Instructions": [
             {
               "Sensor": {
-                "Type": "PathComplete",
-                "IsComplete": true
+                "Type": "And",
+                "Sensors": [
+                  {
+                    "Type": "PathComplete",
+                    "IsComplete": true
+                  },
+                  {
+                    "Type": "PathType",
+                    "PathType": "ONCE"
+                  }
+                ]
               },
               "Actions": [
                 {

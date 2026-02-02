@@ -52,8 +52,6 @@ public class SensorPathComplete extends SensorBase {
         IPathWaypoint lastWaypoint = path.get(path.length() - 1);
         Vector3d lastWaypointPos = lastWaypoint.getWaypointPosition(store);
         double distanceToLastWaypointPos = lastWaypointPos.distanceTo(currentPos);
-        LOGGER.atInfo().log(String.format("Sensor Path Complete: Distance To Last Waypoint Pos: %f", distanceToLastWaypointPos));
-
         return super.matches(ref, role, dt, store) && distanceToLastWaypointPos < 1;
     }
 

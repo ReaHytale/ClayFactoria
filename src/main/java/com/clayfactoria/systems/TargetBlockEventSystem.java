@@ -60,9 +60,8 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
             return;
         }
 
-        // TODO: May need to use entityRef instead of entityStoreRef
         HeadRotation headRotationComponent = store.getComponent(entityStoreRef, HeadRotation.getComponentType());
-        if (headRotationComponent == null){
+        if (headRotationComponent == null) {
             LOGGER.atSevere().log("Target Block Event System: headRotationComponent was null");
             return;
         }
@@ -82,9 +81,9 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         targetTransform.setRotation(headRotation);
 
         BlockType blockType = damageBlockEvent.getBlockType();
-        if (blockType == BlockType.getAssetMap().getAsset("Rock_Stone_Cobble")) {
+        if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Red_Block")) {
 
-            player.sendMessage(Message.raw("Resetting path...").color(Color.YELLOW));
+            player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
             ParticleUtil.spawnParticleEffect(
                     "Block_Break_Dust",
                     targetBlockLocOnTopOfBlock,
@@ -96,6 +95,18 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
                     commandBuffer
             );
             brushComponent.setPaths(new ArrayList<>());
+            damageBlockEvent.setDamage(0);
+            return;
+        } else if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Green_Block")) {
+
+            brushComponent.togglePathType();
+            player.sendMessage(Message.raw(String.format("Toggling PathType to: %s", brushComponent.getPathType())).color(Color.GREEN));
+            SoundUtil.playSoundEvent2d(
+                    SoundEvent.getAssetMap().getIndex("SFX_Clay_Pot_Small_Hit"),
+                    SoundCategory.SFX,
+                    commandBuffer
+            );
+            damageBlockEvent.setDamage(0);
             return;
         }
 
