@@ -36,7 +36,7 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "CustomModel": "Blocks/Benches/Workbench.blockymodel",
+    "CustomModel": "Blocks/Benches/ClayFactoria.blockymodel",
     "CustomModelTexture": [
       {
         "Texture": "Blocks/Benches/Workbench_Texture.png",
