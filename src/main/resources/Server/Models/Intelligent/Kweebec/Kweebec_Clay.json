@@ -57,7 +57,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 0.9
+          "Speed": 1.5
         }
       ]
     },
@@ -65,7 +65,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 0.9
+          "Speed": 1.5
         }
       ]
     },
@@ -73,7 +73,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Kweebec_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 0.8
+          "Speed": 2
         }
       ]
     },
