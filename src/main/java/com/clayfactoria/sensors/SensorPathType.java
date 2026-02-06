@@ -64,17 +64,14 @@ public class SensorPathType extends SensorBase {
 
         Ref<EntityStore> playerRef = world.getEntityRef(playerId);
         if (playerRef == null) {
-            LOGGER.atSevere().log("Sensor Path Type: playerRef was null");
             return false;
         }
 
         BrushComponent brushComponent = store.getComponent(playerRef, BrushComponent.getComponentType());
         if (brushComponent == null) {
-            LOGGER.atSevere().log("Sensor Path Type: Brush Component was null");
             return false;
         } else {
             boolean result = brushComponent.getPathType() == pathType;
-//            LOGGER.atInfo().log(String.format("Sensor Path Type: brushComponent.getPathType() == pathType = %s\nBrush Components -> pathType: %s\npathType: %s", result, brushComponent.getPathType(), pathType));
             return super.matches(ref, role, dt, store) && result;
         }
     }
