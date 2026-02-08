@@ -9,10 +9,14 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.StateData;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.EntityChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
+import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
+import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.corecomponents.ActionBase;
@@ -44,7 +48,6 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
       double dt,
       @Nonnull Store<EntityStore> store
   ) {
-    LOGGER.atInfo().log("ActionTakeFromNearbyStorage running");
     super.execute(ref, role, sensorInfo, dt, store);
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
     assert component != null;
@@ -57,7 +60,6 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     // Check surrounding blocks
     Vector3i containerPos = findNearbyContainer(npcEntity);
     if (containerPos == null) {
-      LOGGER.atInfo().log("Found no container for ActionTakeFromNearbyStorage");
       return false;
     }
 
@@ -67,12 +69,17 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     assert worldChunk != null;
     EntityChunk entityChunk = worldChunk.getEntityChunk();
     assert entityChunk != null;
-    Set<Ref<EntityStore>> entityStoreRefs = entityChunk.getEntityReferences();
-    for (Ref<EntityStore> entityStoreRef : entityStoreRefs) {
-      NPCEntity entity = store.getComponent(entityStoreRef, NPCEntity.getComponentType());
-      assert entity != null;
-      Universe.get().sendMessage(Message.raw("npcEntity at " + entity.getOldPosition().toString()));
+    BlockState blockState = world.getState(containerPos.x, containerPos.y, containerPos.z, false);
+    if (blockState == null) {
+      LOGGER.atInfo().log("ActionTakeFromNearbyStorage -> null BlockState at " + containerPos);
+      return false;
     }
+    if (blockState.getClass() != ItemContainerState.class) {
+      return false;
+    }
+    ItemContainerState itemContainerState = (ItemContainerState) blockState;
+    ItemContainer itemContainer = itemContainerState.getItemContainer();
+    itemContainer.moveAllItemStacksTo(npcEntity.getInventory().getCombinedStorageFirst());
 
     return false;
   }
@@ -87,7 +94,7 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     Vector3i[] directions = {
         new Vector3i(0,0,-1),
         new Vector3i(1,0,0),
-        new Vector3i(0, 0, -1),
+        new Vector3i(0, 0, 1),
         new Vector3i(-1, 0, 0)
     };
 
@@ -95,12 +102,12 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     List<Vector3i> shuffled = Arrays.asList(directions);
     Collections.shuffle(shuffled);
     for (Vector3i dir : shuffled) {
-      BlockType type = world.getBlockType(pos.add(dir));
-      LOGGER.atInfo().log("Block type at " + pos.add(dir) + " was " + type);
+      BlockType type = world.getBlockType(pos.clone().add(dir));
       if (type == null) {continue;}
-      String blockID = type.getId();
-      if (blockID == null) {continue;}
-      if (blockID.equals("container")) {
+      StateData blockState = type.getState();
+      if (blockState == null) {continue;}
+      if (blockState.getId() == null) {continue;}
+      if (blockState.getId().equals("container")) {
         return pos.add(dir);
       }
     }
