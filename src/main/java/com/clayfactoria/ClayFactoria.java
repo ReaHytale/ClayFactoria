@@ -4,8 +4,10 @@ import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionTakeFromNearbyStorage;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
+import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.OwnerComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorBlockUnder;
+import com.clayfactoria.sensors.builders.BuilderSensorHasTakenFromContainer;
 import com.clayfactoria.sensors.builders.BuilderSensorPathComplete;
 import com.clayfactoria.sensors.builders.BuilderSensorPathType;
 import com.clayfactoria.systems.TargetBlockEventSystem;
@@ -28,6 +30,8 @@ public class ClayFactoria extends JavaPlugin {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
   public static ComponentType<EntityStore, OwnerComponent> ownerComponentType;
+  public static ComponentType<EntityStore, HasTakenFromContainerComponent>
+      hasTakenFromContainerComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
     super(init);
@@ -43,6 +47,9 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Owner Component");
     ownerComponentType =
         this.getEntityStoreRegistry().registerComponent(OwnerComponent.class, OwnerComponent::new);
+    LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
+    hasTakenFromContainerComponentType =
+        this.getEntityStoreRegistry().registerComponent(HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
   }
@@ -77,6 +84,9 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Take From Nearby Storage Action");
     NPCPlugin.get().registerCoreComponentType("TakeFromNearbyStorage", BuilderActionTakeFromNearbyStorage::new);
+
+    LOGGER.atInfo().log("Registering Has Taken From Container Sensor");
+    NPCPlugin.get().registerCoreComponentType("HasTakenFromContainer", BuilderSensorHasTakenFromContainer::new);
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

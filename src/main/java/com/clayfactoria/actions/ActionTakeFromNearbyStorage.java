@@ -1,6 +1,7 @@
 package com.clayfactoria.actions;
 
 import com.clayfactoria.actions.builders.BuilderActionTakeFromNearbyStorage;
+import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -76,10 +77,16 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     }
 
     // Take an item from the container
-    return moveFirstItemFromItemContainer(
+    boolean result = moveFirstItemFromItemContainer(
         itemContainer,
         npcEntity.getInventory().getCombinedStorageFirst()
     );
+
+    HasTakenFromContainerComponent hasTakenFromContainerComp =
+        store.ensureAndGetComponent(ref, HasTakenFromContainerComponent.getComponentType());
+    hasTakenFromContainerComp.setHasTakenFromContainer(result);
+
+    return result;
   }
 
   private @Nullable Vector3i findNearbyContainer(NPCEntity npcEntity) {

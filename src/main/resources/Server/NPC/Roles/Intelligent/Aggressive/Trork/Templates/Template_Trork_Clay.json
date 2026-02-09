@@ -183,62 +183,6 @@
     {
       "Instructions": [
         {
-          "$Comment": "Pull item from adjacent chest if stood on a marker block",
-          "Continue": true,
-          "Sensor": {
-            "Type": "BlockUnder",
-            "Block": "Wood_Village_Wall_Green_Full"
-          },
-          "Actions": [
-            {
-              "Type": "State",
-              "State": "BlockMatched"
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "State",
-            "State": "BlockMatched"
-          },
-          "Instructions": [
-            {
-              "Sensor": {
-                "Type": "State",
-                "State": ".ItemTaken"
-              },
-              "Actions": [
-                {
-                  "$comment": "TODO: Work out why these actions don't seem to actually be running?",
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Alerted"
-                },
-                {
-                  "Type": "SpawnParticles",
-                  "Offset": [ 0, 1, 0 ],
-                  "ParticleSystem": "Alerted"
-                }
-              ]
-            },
-            {
-              "Sensor": {
-                "Type": "Any"
-              },
-              "Actions": [
-                {
-                  "Type": "TakeFromNearbyStorage"
-                },
-                {
-                  "$comment": "TODO: Make it so that it only transfers to this state if the action was successful",
-                  "Type": "State",
-                  "State": ".ItemTaken"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "Sensor": {
             "Type": "State",
             "State": "Idle"
@@ -289,6 +233,20 @@
               ]
             },
             {
+              "$Comment": "Detect marker block under feet to signal that it should pull from a nearby chest",
+              "Continue": true,
+              "Sensor": {
+                "Type": "BlockUnder",
+                "Block": "Wood_Village_Wall_Green_Full"
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "BlockMatched"
+                }
+              ]
+            },
+            {
               "Sensor": {
                 "Type": "Player",
                 "Range": 10,
@@ -305,6 +263,28 @@
                   "State": "Alerted"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "State",
+                "State": "BlockMatched"
+              },
+              {
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "HasTakenFromContainer"
+                }
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "TakeFromNearbyStorage"
             }
           ]
         },
