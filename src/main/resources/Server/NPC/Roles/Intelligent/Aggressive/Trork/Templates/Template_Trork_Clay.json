@@ -141,6 +141,20 @@
           "Slot": "Status"
         }
       ]
+    },
+    {
+      "$Comment": "Take an item from a nearby container when moving to BlockMatched",
+      "States": [
+        {
+          "To": [ "BlockMatched" ],
+          "From": [ ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TakeFromNearbyStorage"
+        }
+      ]
     }
   ],
   "Instructions": [
@@ -206,9 +220,6 @@
               "Type": "PlayAnimation",
               "Slot": "Status",
               "Animation": "Alerted"
-            },
-            {
-              "Type": "TakeFromNearbyStorage"
             }
           ]
         },
