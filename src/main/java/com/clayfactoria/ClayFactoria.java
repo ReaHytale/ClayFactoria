@@ -25,17 +25,18 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import javax.annotation.Nonnull;
 
-public class  ClayFactoria extends JavaPlugin {
-    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    public static ComponentType<EntityStore, BrushComponent> brushComponentType;
-    public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
-    public static ComponentType<EntityStore, HasTakenFromContainerComponent>
+public class ClayFactoria extends JavaPlugin {
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+  public static ComponentType<EntityStore, BrushComponent> brushComponentType;
+  public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
+  public static ComponentType<EntityStore, HasTakenFromContainerComponent>
       hasTakenFromContainerComponentType;
 
-    public ClayFactoria(JavaPluginInit init) {
-        super(init);
-        LOGGER.atInfo().log("Hello from %s version %s", this.getName(), this.getManifest().getVersion().toString());
-    }
+  public ClayFactoria(JavaPluginInit init) {
+    super(init);
+    LOGGER.atInfo().log(
+        "Hello from %s version %s", this.getName(), this.getManifest().getVersion().toString());
+  }
 
   @Override
   protected void setup() {
@@ -47,28 +48,31 @@ public class  ClayFactoria extends JavaPlugin {
         this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
     LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
     hasTakenFromContainerComponentType =
-        this.getEntityStoreRegistry().registerComponent(HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
+        this.getEntityStoreRegistry()
+            .registerComponent(
+                HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
   }
 
-    @Override
-    protected void start() {
+  @Override
+  protected void start() {
 
-        ComponentType<EntityStore, NPCEntity> npcComponentType = NPCEntity.getComponentType();
-        if (npcComponentType == null) {
-            LOGGER.atSevere().log("Failed to Register Target Block Event System. NPC Entity ComponentType was null");
-            return;
-        }
+    ComponentType<EntityStore, NPCEntity> npcComponentType = NPCEntity.getComponentType();
+    if (npcComponentType == null) {
+      LOGGER.atSevere().log(
+          "Failed to Register Target Block Event System. NPC Entity ComponentType was null");
+      return;
+    }
 
-        LOGGER.atInfo().log("Registering Target Block Event System");
-        this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
+    LOGGER.atInfo().log("Registering Target Block Event System");
+    this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
 
-        LOGGER.atInfo().log("Registering Set Path Action");
-        NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
+    LOGGER.atInfo().log("Registering Set Path Action");
+    NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
 
-        LOGGER.atInfo().log("Registering Sensor Leash Target");
-        NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
+    LOGGER.atInfo().log("Registering Sensor Leash Target");
+    NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
 
     LOGGER.atInfo().log("Registering Sensor Block Under");
     NPCPlugin.get().registerCoreComponentType("BlockUnder", BuilderSensorBlockUnder::new);
@@ -77,31 +81,36 @@ public class  ClayFactoria extends JavaPlugin {
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderPutItemInHand::new);
 
     LOGGER.atInfo().log("Registering Take From Nearby Storage Action");
-    NPCPlugin.get().registerCoreComponentType("TakeFromNearbyStorage", BuilderActionTakeFromNearbyStorage::new);
+    NPCPlugin.get()
+        .registerCoreComponentType(
+            "TakeFromNearbyStorage", BuilderActionTakeFromNearbyStorage::new);
 
     LOGGER.atInfo().log("Registering Has Taken From Container Sensor");
-    NPCPlugin.get().registerCoreComponentType("HasTakenFromContainer", BuilderSensorHasTakenFromContainer::new);
+    NPCPlugin.get()
+        .registerCoreComponentType(
+            "HasTakenFromContainer", BuilderSensorHasTakenFromContainer::new);
   }
 
-    private void onPlayerReady(@Nonnull PlayerReadyEvent event) {
-        Player player = event.getPlayer();
+  private void onPlayerReady(@Nonnull PlayerReadyEvent event) {
+    Player player = event.getPlayer();
 
-        World world = player.getWorld();
-        if (world == null) {
-            LOGGER.atSevere().log("onPlayerReady Failed: world was null");
-            return;
-        }
-
-        Ref<EntityStore> playerEntityRef = player.getReference();
-        if (playerEntityRef == null) {
-            LOGGER.atSevere().log("onPlayerReady Failed: playerEntityRef was null");
-            return;
-        }
-
-        world.execute(() -> {
-            Store<EntityStore> worldStore = world.getEntityStore().getStore();
-            worldStore.ensureAndGetComponent(playerEntityRef, BrushComponent.getComponentType());
-            LOGGER.atInfo().log("Successfully ensured Brush Component on Player");
-        });
+    World world = player.getWorld();
+    if (world == null) {
+      LOGGER.atSevere().log("onPlayerReady Failed: world was null");
+      return;
     }
+
+    Ref<EntityStore> playerEntityRef = player.getReference();
+    if (playerEntityRef == null) {
+      LOGGER.atSevere().log("onPlayerReady Failed: playerEntityRef was null");
+      return;
+    }
+
+    world.execute(
+        () -> {
+          Store<EntityStore> worldStore = world.getEntityStore().getStore();
+          worldStore.ensureAndGetComponent(playerEntityRef, BrushComponent.getComponentType());
+          LOGGER.atInfo().log("Successfully ensured Brush Component on Player");
+        });
+  }
 }
