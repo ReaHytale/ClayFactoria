@@ -1,7 +1,7 @@
 package com.clayfactoria;
 
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
-import com.clayfactoria.actions.builders.BuilderActionTakeFromNearbyStorage;
+import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
@@ -9,6 +9,7 @@ import com.clayfactoria.sensors.builders.BuilderSensorBlockUnder;
 import com.clayfactoria.sensors.builders.BuilderSensorHasTakenFromContainer;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
+import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -74,8 +75,8 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Sensor Leash Target");
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
 
-    LOGGER.atInfo().log("Registering Sensor Block Under");
-    NPCPlugin.get().registerCoreComponentType("BlockUnder", BuilderSensorBlockUnder::new);
+    LOGGER.atInfo().log("Registering Sensor Nearby Container");
+    NPCPlugin.get().registerCoreComponentType("NearbyContainer", BuilderSensorNearbyContainer::new);
 
     LOGGER.atInfo().log("Registering Put Item In Hand Action");
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderPutItemInHand::new);
@@ -83,12 +84,7 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Take From Nearby Storage Action");
     NPCPlugin.get()
         .registerCoreComponentType(
-            "TakeFromNearbyStorage", BuilderActionTakeFromNearbyStorage::new);
-
-    LOGGER.atInfo().log("Registering Has Taken From Container Sensor");
-    NPCPlugin.get()
-        .registerCoreComponentType(
-            "HasTakenFromContainer", BuilderSensorHasTakenFromContainer::new);
+            "Take", BuilderActionTake::new);
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

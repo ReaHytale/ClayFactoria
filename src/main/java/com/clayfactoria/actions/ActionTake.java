@@ -1,15 +1,14 @@
 package com.clayfactoria.actions;
 
-import com.clayfactoria.actions.builders.BuilderActionTakeFromNearbyStorage;
-import com.clayfactoria.components.HasTakenFromContainerComponent;
+import com.clayfactoria.actions.builders.BuilderActionTake;
+import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.helpers.TaskHelper;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.StateData;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -23,18 +22,15 @@ import com.hypixel.hytale.server.npc.corecomponents.ActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionTakeFromNearbyStorage extends ActionBase {
+public class ActionTake extends ActionBase {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final int quantity;
 
-  public ActionTakeFromNearbyStorage(@NotNull BuilderActionTakeFromNearbyStorage builder, @Nonnull
+  public ActionTake(@NotNull BuilderActionTake builder, @Nonnull
   BuilderSupport builderSupport) {
     super(builder);
     this.quantity = builder.getQuantity(builderSupport);
@@ -50,29 +46,31 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     super.execute(ref, role, sensorInfo, dt, store);
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
     if (component == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> NPCEntity Component Type was null");
+      LOGGER.atSevere().log("Action Taks -> NPCEntity Component Type was null");
       return false;
     }
     NPCEntity npcEntity = store.getComponent(ref, component);
     if (npcEntity == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> NPCEntity was null");
+      LOGGER.atSevere().log("Action Taks -> NPCEntity was null");
       return false;
     }
     World world = npcEntity.getWorld();
     if (world == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> World was null");
+      LOGGER.atSevere().log("Action Taks -> World was null");
       return false;
     }
 
     // Get item container orthogonal to the entity.
-    Vector3i containerPos = findNearbyContainer(npcEntity);
+    Vector3i containerPos = TaskHelper.findNearbyContainer(npcEntity);
     if (containerPos == null) {
       // No container found.
+      LOGGER.atSevere().log("Action Taks -> No container found");
       return false;
     }
     ItemContainer itemContainer = getItemContainerAtPos(world, containerPos);
     if (itemContainer == null) {
       // Container not found at given position (should never occur)
+      LOGGER.atSevere().log("Action Taks ->  Item Container not found at given position");
       return false;
     }
 
@@ -82,40 +80,18 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
         npcEntity.getInventory().getCombinedStorageFirst()
     );
 
-    HasTakenFromContainerComponent hasTakenFromContainerComp =
-        store.ensureAndGetComponent(ref, HasTakenFromContainerComponent.getComponentType());
-    hasTakenFromContainerComp.setHasTakenFromContainer(result);
+    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
+    if (taskComponent == null) {
+      LOGGER.atSevere().log("Action Take: Task Component was null");
+      return false;
+    }
+
+    if (result) {
+      LOGGER.atSevere().log("Action Take: Set Complete to true");
+      taskComponent.setComplete(true);
+    }
 
     return result;
-  }
-
-  private @Nullable Vector3i findNearbyContainer(NPCEntity npcEntity) {
-    World world = npcEntity.getWorld();
-    assert world != null;
-    Vector3i pos = npcEntity.getOldPosition().toVector3i();
-
-    // Check surrounding blocks
-    Vector3i[] directions = {
-        new Vector3i(0,0,-1),
-        new Vector3i(1,0,0),
-        new Vector3i(0, 0, 1),
-        new Vector3i(-1, 0, 0)
-    };
-
-    // Shuffle order to prevent order of check being predictable
-    List<Vector3i> shuffled = Arrays.asList(directions);
-    Collections.shuffle(shuffled);
-    for (Vector3i dir : shuffled) {
-      BlockType type = world.getBlockType(pos.clone().add(dir));
-      if (type == null) {continue;}
-      StateData blockState = type.getState();
-      if (blockState == null) {continue;}
-      if (blockState.getId() == null) {continue;}
-      if (blockState.getId().equals("container")) {
-        return pos.add(dir);
-      }
-    }
-    return null;
   }
 
   private @Nullable ItemContainer getItemContainerAtPos(World world, Vector3i pos) {
