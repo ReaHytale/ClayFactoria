@@ -57,6 +57,8 @@ public class SensorNearbyContainer extends SensorBase {
 
     Action currentAction = currentTask.getAction();
 
+    LOGGER.atWarning().log("Current Task: Action ('%s') at position: (%.0f, %.0f, %.0f) for sensor, sensing: %s", currentAction, currentTask.getLocation().x, currentTask.getLocation().y, currentTask.getLocation().z, action);
+
     if (currentAction == null || currentAction != action) {
       LOGGER.atSevere().log(String.format("Sensor Nearby Container: Current action ('%s') != action to sense ('%s')", currentAction, action));
       return false;

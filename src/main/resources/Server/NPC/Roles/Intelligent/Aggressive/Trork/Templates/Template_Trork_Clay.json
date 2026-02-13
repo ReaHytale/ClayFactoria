@@ -438,10 +438,10 @@
           },
           "Instructions": [
             {
+              "Continue": true,
               "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
               "Sensor": {
-                "Type": "LeashTarget",
-                "HasAction": false
+                "Type": "LeashTarget"
               },
               "BodyMotion": {
                 "Type": "Seek",
@@ -451,10 +451,12 @@
               }
             },
             {
-              "$Comment": "Switch to Action state when there is an action for the current target location",
               "Sensor": {
-                "Type": "LeashTarget",
-                "HasAction": true
+                "$Comment": "If not leashing target, then switch to action state",
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "LeashTarget"
+                }
               },
               "Actions": [
                 {
@@ -473,6 +475,7 @@
           },
           "Instructions": [
             {
+              "Continue": true,
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
               "Sensor": {
                 "Type": "NearbyContainer",
@@ -499,8 +502,7 @@
             {
               "$Comment": "Switch to Pathing state when there is NOT an action for the current target location",
               "Sensor": {
-                "Type": "LeashTarget",
-                "HasAction": false
+                "Type": "LeashTarget"
               },
               "Actions": [
                 {

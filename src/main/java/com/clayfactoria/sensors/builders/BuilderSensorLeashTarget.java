@@ -13,11 +13,6 @@ import com.hypixel.hytale.server.npc.instructions.Sensor;
 import javax.annotation.Nonnull;
 
 public class BuilderSensorLeashTarget extends BuilderSensorBase {
-  protected final BooleanHolder hasAction = new BooleanHolder();
-
-  public boolean getHasAction(@Nonnull BuilderSupport support) {
-    return this.hasAction.get(support.getExecutionContext());
-  }
 
   @Nonnull
   public SensorLeashTarget build(@Nonnull BuilderSupport builderSupport) {
@@ -47,14 +42,6 @@ public class BuilderSensorLeashTarget extends BuilderSensorBase {
   @Override
   public Builder<Sensor> readConfig(@Nonnull JsonElement data) {
     this.provideFeature(Feature.Position);
-    this.getBoolean(
-        data,
-        "HasAction",
-        this.hasAction,
-        true,
-        BuilderDescriptorState.Stable,
-        "Flag for when an action should take place in the .json config",
-        null);
     return this;
   }
 }

@@ -24,13 +24,11 @@ import javax.annotation.Nonnull;
 public class SensorLeashTarget extends SensorBase {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final PositionProvider positionProvider = new PositionProvider();
-  protected final boolean hasAction;
 
   public SensorLeashTarget(
       @Nonnull BuilderSensorLeashTarget builderSensorLeash,
       @Nonnull BuilderSupport builderSupport) {
     super(builderSensorLeash);
-    this.hasAction = builderSensorLeash.getHasAction(builderSupport);
   }
 
   @Override
@@ -70,16 +68,34 @@ public class SensorLeashTarget extends SensorBase {
         this.positionProvider.clear();
         return false;
       }
+      LOGGER.atWarning().log(
+          String.format(
+              "\nisComplete: %s\n", taskComponent.isComplete()));
 
       if (transformComponent.getPosition().distanceSquaredTo(currentTarget) > 0.2f) {
-        this.positionProvider.setTarget(currentTarget);
-        return true;
+        Ref<EntityStore> target = this.positionProvider.getTarget();
+        if (target == null) {
+          this.positionProvider.setTarget(currentTarget);
+          return true;
+        }
+
+        Store<EntityStore> targetStore = target.getStore();
+        TransformComponent targetTransform =
+            targetStore.getComponent(target, TransformComponent.getComponentType());
+        assert targetTransform != null;
+
+        if (targetTransform.getPosition() == currentTarget) {
+          return false;
+        } else {
+          this.positionProvider.setTarget(currentTarget);
+          return true;
+        }
       } else {
 
-        if (hasAction && !taskComponent.isComplete()) {
+        if (!taskComponent.isComplete()) {
           LOGGER.atInfo().log(
               "Sensor Leash Target: Has Action is true and there is an incomplete task to fulfill");
-          return true;
+          return false;
         }
 
         Task nextTask = taskComponent.nextTask();
