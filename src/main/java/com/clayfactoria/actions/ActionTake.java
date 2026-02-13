@@ -1,17 +1,16 @@
 package com.clayfactoria.actions;
 
+import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.components.TaskComponent;
-import com.clayfactoria.helpers.TaskHelper;
+import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -35,29 +34,16 @@ public class ActionTake extends ActionBaseLogger {
       InfoProvider sensorInfo,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-    checkNull(component, "NPCEntity Component Type was null");
-
-    NPCEntity npcEntity = store.getComponent(ref, component);
-    checkNull(npcEntity, "NPCEntity was null");
-
-    World world = npcEntity.getWorld();
-    checkNull(world, "World was null");
-
-    // Get item container orthogonal to the entity.
-    Vector3i containerPos = TaskHelper.findNearbyContainer(npcEntity);
-    checkNull(containerPos, "No container found");
-    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(world, containerPos);
-    checkNull(itemContainer, "Item container not found at expected position");
-
-    // Take an item from the container
-    boolean result = TaskHelper.transferItem(
-        itemContainer,
-        npcEntity.getInventory().getCombinedStorageFirst()
-    );
+    NPCEntity npcEntity = getNPCEntity(ref, store);
+    ItemContainer itemContainer = TaskHelper.getOrthogonalContainer(npcEntity);
+    checkNull(itemContainer);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     checkNull(taskComponent, "Task Component was null");
+
+    // Take an item from the container
+    boolean result =
+        TaskHelper.transferItem(itemContainer, npcEntity.getInventory().getCombinedStorageFirst());
 
     if (result) {
       LOGGER.atSevere().log("Action Take: Set Complete to true\n");

@@ -5,7 +5,7 @@ import static com.clayfactoria.utils.Utils.checkNull;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
-import com.clayfactoria.helpers.TaskHelper;
+import com.clayfactoria.utils.TaskHelper;
 import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
