@@ -1,8 +1,7 @@
 package com.clayfactoria.sensors;
 
-import static java.lang.System.in;
+import static com.clayfactoria.utils.Utils.checkNull;
 
-import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
@@ -12,46 +11,32 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
-import com.hypixel.hytale.server.npc.corecomponents.SensorBase;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import com.hypixel.hytale.server.npc.sensorinfo.PositionProvider;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 
-public class SensorLeashTarget extends SensorBase {
+public class SensorLeashTarget extends SensorBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final PositionProvider positionProvider = new PositionProvider();
 
-  public SensorLeashTarget(
-      @Nonnull BuilderSensorLeashTarget builderSensorLeash,
-      @Nonnull BuilderSupport builderSupport) {
+  public SensorLeashTarget(@Nonnull BuilderSensorLeashTarget builderSensorLeash) {
     super(builderSensorLeash);
   }
 
   @Override
-  public boolean matches(
+  public boolean matchesNullChecked(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Role role,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    if (!super.matches(ref, role, dt, store)) {
-      return false;
-    } else {
       TransformComponent transformComponent =
           store.getComponent(ref, TransformComponent.getComponentType());
-      if (transformComponent == null) {
-        LOGGER.atSevere().log("Sensor Leash Target: Transform Component was null");
-        return false;
-      }
+      checkNull(transformComponent, "Transform Component was null");
 
       TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-      if (taskComponent == null) {
-        LOGGER.atSevere().log("Sensor Leash Target: Task Component was null");
-        return false;
-      }
+      checkNull(taskComponent, "Task Component was null");
 
       Task currentTask = taskComponent.getCurrentTask();
       if (currentTask == null) {
@@ -126,7 +111,6 @@ public class SensorLeashTarget extends SensorBase {
                 nextTaskLocation.z));
         return true;
       }
-    }
   }
 
   @Override

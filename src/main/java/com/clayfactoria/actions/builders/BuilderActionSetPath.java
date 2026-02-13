@@ -15,7 +15,7 @@ public class BuilderActionSetPath extends BuilderActionBase {
     @Override
     @Nonnull
     public Action build(@Nonnull BuilderSupport builderSupport) {
-        return new ActionSetPath(this, builderSupport);
+        return new ActionSetPath(this);
     }
 
     @Override

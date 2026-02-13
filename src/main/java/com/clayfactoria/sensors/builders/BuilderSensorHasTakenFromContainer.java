@@ -23,7 +23,7 @@ public class BuilderSensorHasTakenFromContainer extends BuilderSensorBase {
 
   @Override
   public @Nullable Sensor build(BuilderSupport builderSupport) {
-    return new SensorHasTakenFromContainer(this, builderSupport);
+    return new SensorHasTakenFromContainer(this);
   }
 
   @Override

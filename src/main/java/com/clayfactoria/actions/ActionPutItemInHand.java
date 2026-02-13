@@ -1,17 +1,17 @@
 package com.clayfactoria.actions;
 
+import static com.clayfactoria.utils.Utils.checkNull;
+
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.inventory.transaction.MoveTransaction;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.npc.corecomponents.ActionBase;
 import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
@@ -24,48 +24,33 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Lordimass
  */
-public class ActionPutItemInHand extends ActionBase {
+public class ActionPutItemInHand extends ActionBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   public ActionPutItemInHand(@NotNull BuilderActionBase builderActionBase) {
     super(builderActionBase);
   }
 
-  public boolean execute(
+  public boolean executeNullChecked(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Role role,
       InfoProvider sensorInfo,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    super.execute(ref, role, sensorInfo, dt, store);
-
     // Get the player
     Ref<EntityStore> playerRef = role.getStateSupport().getInteractionIterationTarget();
-    if (playerRef == null) {
-      LOGGER.atSevere().log("ActionPutItemInHand: execute -> playerRef was null");
-      return false;
-    }
+    checkNull(playerRef, "playerRef was null");
     Player player = store.getComponent(playerRef, Player.getComponentType());
-    if (player == null) {
-      LOGGER.atSevere().log("ActionPutItemInHand: execute -> Player was null");
-      return false;
-    }
+    checkNull(player, "Player was null");
 
     // Get the NPC
     ComponentType<EntityStore, NPCEntity> componentType = NPCEntity.getComponentType();
-    if (componentType == null) {
-      LOGGER.atSevere().log("ActionPutItemInHand: execute -> componentType was null");
-      return false;
-    }
+    checkNull(componentType, "componentType was null");
     NPCEntity npc = store.getComponent(ref, NPCEntity.getComponentType());
-    if (npc == null) {
-      LOGGER.atSevere().log("ActionPutItemInHand: execute -> npcComponent was null");
-      return false;
-    }
+    checkNull(npc, "npc was null");
 
     // Get the Item Stack in the player's & NPC's active slots
     ItemStack playerActiveItemStack = player.getInventory().getItemInHand();
-    ItemStack npcActiveItemStack = npc.getInventory().getItemInHand();
 
     // Get player itemStack with only 1 item, ready to transfer
     if (playerActiveItemStack == null || playerActiveItemStack.isEmpty()) {
@@ -73,17 +58,7 @@ public class ActionPutItemInHand extends ActionBase {
       return false;
     }
     ItemStack playerAtomicItemStack = playerActiveItemStack.withQuantity(1);
-    if (playerAtomicItemStack == null) {
-      LOGGER.atSevere().log("ActionPutItemInHand: execute -> playerAtomicItemStack was null");
-      return false;
-    }
-
-    //    // If the NPC active item wasn't an empty stack, move it into the player inventory.
-    //    if (npcActiveItem != null && !npcActiveItem.isEmpty()) {
-    //      byte activeHotbarSlot = npc.getInventory().getActiveHotbarSlot();
-    //      ItemContainer playerInventory = player.getInventory().getCombinedStorageFirst();
-    //      npc.getInventory().getHotbar().moveItemStackFromSlot(activeHotbarSlot, playerInventory);
-    //    }
+    checkNull(playerAtomicItemStack, "playerAtomicItemStack was null");
 
     // If the NPC inventory is full, drop item in hand
     if (npc.getInventory().getCombinedStorageFirst().canAddItemStack(playerAtomicItemStack)) {

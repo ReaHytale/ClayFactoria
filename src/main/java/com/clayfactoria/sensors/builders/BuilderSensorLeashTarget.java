@@ -17,7 +17,7 @@ public class BuilderSensorLeashTarget extends BuilderSensorBase {
   @Nonnull
   public SensorLeashTarget build(@Nonnull BuilderSupport builderSupport) {
     builderSupport.setRequireLeashPosition();
-    return new SensorLeashTarget(this, builderSupport);
+    return new SensorLeashTarget(this);
   }
 
   @Nonnull

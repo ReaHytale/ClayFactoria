@@ -1,5 +1,7 @@
 package com.clayfactoria.sensors;
 
+import static com.clayfactoria.utils.Utils.checkNull;
+
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
@@ -9,17 +11,15 @@ import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
-import com.hypixel.hytale.server.npc.corecomponents.SensorBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import javax.annotation.Nonnull;
 
-public class SensorNearbyContainer extends SensorBase {
+public class SensorNearbyContainer extends SensorBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final Action action;
 
@@ -29,38 +29,37 @@ public class SensorNearbyContainer extends SensorBase {
     this.action = builder.getAction(builderSupport);
   }
 
-  public boolean matches(
+  public boolean matchesNullChecked(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Role role,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    if (!super.matches(ref, role, dt, store)) {
-      return false;
-    }
-
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    if (taskComponent == null) {
-      LOGGER.atSevere().log("Sensor Nearby Container: Task Component was null");
-      return false;
-    }
+    checkNull(taskComponent, "Task Component was null");
 
-    if (taskComponent.isComplete()){
+    if (taskComponent.isComplete()) {
       LOGGER.atSevere().log("Sensor Nearby Container: Task is complete");
       return false;
     }
 
     Task currentTask = taskComponent.getCurrentTask();
-    if (currentTask == null) {
-      LOGGER.atSevere().log("Sensor Nearby Container: Current Task was null");
-      return false;
-    }
+    checkNull(currentTask, "Current Task was null");
 
     Action currentAction = currentTask.getAction();
 
-    LOGGER.atWarning().log("Current Task: Action ('%s') at position: (%.0f, %.0f, %.0f) for sensor, sensing: %s", currentAction, currentTask.getLocation().x, currentTask.getLocation().y, currentTask.getLocation().z, action);
+    LOGGER.atInfo().log(
+        "Current Task: Action ('%s') at position: (%.0f, %.0f, %.0f) for sensor, sensing: %s",
+        currentAction,
+        currentTask.getLocation().x,
+        currentTask.getLocation().y,
+        currentTask.getLocation().z,
+        action);
 
     if (currentAction == null || currentAction != action) {
-      LOGGER.atSevere().log(String.format("Sensor Nearby Container: Current action ('%s') != action to sense ('%s')", currentAction, action));
+      LOGGER.atSevere().log(
+          String.format(
+              "Sensor Nearby Container: Current action ('%s') != action to sense ('%s')",
+              currentAction, action));
       return false;
     }
 
@@ -69,25 +68,16 @@ public class SensorNearbyContainer extends SensorBase {
             "Sensor Nearby Container: Current action ('%s') == action ('%s') to sense",
             currentAction, action));
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-    if (component == null) {
-      LOGGER.atSevere().log("Sensor Nearby Container-> NPCEntity Component Type was null");
-      return false;
-    }
+    checkNull(component, "NPC Entity Component Type was null");
 
     NPCEntity npcEntity = store.getComponent(ref, component);
-    if (npcEntity == null) {
-      LOGGER.atSevere().log("Sensor Nearby Container -> NPCEntity was null");
-      return false;
-    }
+    checkNull(npcEntity, "NPCEntity was null");
 
     Vector3i nearbyContainerLocation = TaskHelper.findNearbyContainer(npcEntity);
-    if (nearbyContainerLocation == null) {
-      LOGGER.atInfo().log("Sensor Nearby Container -> Nearby Container Location was null");
-      return false;
-    } else {
-      LOGGER.atInfo().log("Sensor Nearby Container -> Nearby Container Location was found");
-      return true;
-    }
+    checkNull(nearbyContainerLocation, "Nearby Container Location was null");
+
+    LOGGER.atInfo().log("Sensor Nearby Container -> Nearby Container Location was found");
+    return true;
   }
 
   @Override

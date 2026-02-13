@@ -17,7 +17,7 @@ public class BuilderPutItemInHand extends BuilderActionBase {
   @Override
   @Nonnull
   public BuilderDescriptorState getBuilderDescriptorState() {
-    return BuilderDescriptorState.Stable;
+    return BuilderDescriptorState.WorkInProgress;
   }
 
   @Override

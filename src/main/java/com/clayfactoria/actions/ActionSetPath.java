@@ -1,5 +1,7 @@
 package com.clayfactoria.actions;
 
+import static com.clayfactoria.utils.Utils.checkNull;
+
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
@@ -8,13 +10,10 @@ import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
-import com.hypixel.hytale.server.npc.corecomponents.ActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
@@ -24,10 +23,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 /** Action triggered to finalise a created path and set it on the target entity. */
-public class ActionSetPath extends ActionBase {
+public class ActionSetPath extends ActionBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-  public ActionSetPath(@Nonnull BuilderActionSetPath builder, @Nonnull BuilderSupport support) {
+  public ActionSetPath(@Nonnull BuilderActionSetPath builder) {
     super(builder);
   }
 
@@ -41,49 +40,32 @@ public class ActionSetPath extends ActionBase {
     return super.canExecute(ref, role, sensorInfo, dt, store);
   }
 
-  public boolean execute(
+  public boolean executeNullChecked(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Role role,
       InfoProvider sensorInfo,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    super.execute(ref, role, sensorInfo, dt, store);
     Ref<EntityStore> playerRef = role.getStateSupport().getInteractionIterationTarget();
-    if (playerRef == null) {
-      LOGGER.atSevere().log("Action Set Path: execute -> playerRef was null");
-      return false;
-    }
+    checkNull(playerRef, "playerRef was null");
 
-    BrushComponent brushComponent =
-        store.getComponent(playerRef, BrushComponent.getComponentType());
-    if (brushComponent == null) {
-      LOGGER.atSevere().log("Action Set Path: execute -> brushComponent was null");
-      return false;
-    }
+    BrushComponent brushComponent = store.getComponent(
+        playerRef,
+        BrushComponent.getComponentType()
+    );
+    checkNull(brushComponent, "brushComponent was null");
 
     ComponentType<EntityStore, NPCEntity> npcEntityComponentType = NPCEntity.getComponentType();
-    if (npcEntityComponentType == null) {
-      LOGGER.atSevere().log("Action Set Path: Failed to get NPC Entity Component Type of NPC");
-      return false;
-    }
+    checkNull(npcEntityComponentType, "Failed to get NPC Entity Component Type of NPC");
 
     NPCEntity npcComponent = store.getComponent(ref, npcEntityComponentType);
-    if (npcComponent == null) {
-      LOGGER.atSevere().log("Action Set Path: execute -> npcComponent was null");
-      return false;
-    }
+    checkNull(npcComponent, "npcComponent was null");
 
     Player player = store.getComponent(playerRef, Player.getComponentType());
-    if (player == null) {
-      LOGGER.atSevere().log("Action Set Path: execute -> Player was null");
-      return false;
-    }
+    checkNull(player, "Player was null");
 
     UUIDComponent playerIdComp = store.getComponent(playerRef, UUIDComponent.getComponentType());
-    if (playerIdComp == null) {
-      LOGGER.atSevere().log("Action Set Path: execute -> playerIdComp was null");
-      return false;
-    }
+    checkNull(playerIdComp, "playerIdComp was null");
 
     TaskComponent taskComponent =
         store.ensureAndGetComponent(ref, TaskComponent.getComponentType());

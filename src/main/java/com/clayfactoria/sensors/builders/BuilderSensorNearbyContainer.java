@@ -1,9 +1,7 @@
 package com.clayfactoria.sensors.builders;
 
 import com.clayfactoria.codecs.Action;
-import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.sensors.SensorNearbyContainer;
-import com.clayfactoria.sensors.SensorPathType;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
