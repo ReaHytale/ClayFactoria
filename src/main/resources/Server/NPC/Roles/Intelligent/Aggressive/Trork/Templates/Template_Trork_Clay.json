@@ -253,70 +253,6 @@
           ]
         },
         {
-          "$Comment": "Detect marker block under feet to signal that it should pull from a nearby chest",
-          "Continue": true,
-          "Sensor": {
-            "Type": "BlockUnder",
-            "Block": "Wood_Village_Wall_Green_Full"
-          },
-          "Actions": [
-            {
-              "Type": "State",
-              "State": "BlockMatched"
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Continue": true,
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "State",
-                "State": "BlockMatched"
-              },
-              {
-                "Type": "Not",
-                "Sensor": {
-                  "Type": "HasTakenFromContainer"
-                }
-              }
-            ]
-          },
-          "Actions": [
-            {
-              "Type": "TakeFromNearbyStorage"
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "State",
-                "State": "BlockMatched"
-              },
-              {
-                "Type": "HasTakenFromContainer"
-              }
-            ]
-          },
-          "Instructions": [
-            {
-              "Sensor": {
-                "Type": "LeashTarget"
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Path"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "Sensor": {
             "$Comment": "Play Alerted Particle Effect. Look at player. Await Interaction. Timeout after 15, seconds",
             "Type": "State",
@@ -502,6 +438,7 @@
           },
           "Instructions": [
             {
+              "Continue": true,
               "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
               "Sensor": {
                 "Type": "LeashTarget"
@@ -512,6 +449,67 @@
                 "StopDistance": 0.1,
                 "RelativeSpeed": 0.55
               }
+            },
+            {
+              "Sensor": {
+                "$Comment": "If not leashing target, then switch to action state",
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "LeashTarget"
+                }
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Action"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Action state - Complete an action for a given location",
+          "Sensor": {
+            "Type": "State",
+            "State": "Action"
+          },
+          "Instructions": [
+            {
+              "Continue": true,
+              "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
+              "Sensor": {
+                "Type": "NearbyContainer",
+                "Action": "DEPOSIT"
+              },
+              "Actions": [
+                {
+                  "Type": "Deposit"
+                }
+              ]
+            },
+            {
+              "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
+              "Sensor": {
+                "Type": "NearbyContainer",
+                "Action": "TAKE"
+              },
+              "Actions": [
+                {
+                  "Type": "Take"
+                }
+              ]
+            },
+            {
+              "$Comment": "Switch to Pathing state when there is NOT an action for the current target location",
+              "Sensor": {
+                "Type": "LeashTarget"
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Path"
+                }
+              ]
             }
           ]
         }

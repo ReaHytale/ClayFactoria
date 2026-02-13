@@ -1,13 +1,13 @@
 package com.clayfactoria.actions;
 
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
@@ -91,18 +91,18 @@ public class ActionSetPath extends ActionBase {
     LOGGER.atInfo().log(
         "Action Set Path: execute -> Player Id Set for Owner Component on the Entity you just interacted with");
 
-    List<Vector3d> paths = brushComponent.getPath();
-    if (paths == null || paths.isEmpty()) {
-      LOGGER.atWarning().log("Action Set Path: execute -> Brush Component: Path Start was null");
+    List<Task> tasks = brushComponent.getTasks();
+    if (tasks == null || tasks.isEmpty()) {
+      LOGGER.atWarning().log("Action Set Path: execute -> Brush Component: Tasks were null or empty");
       player.sendMessage(
-          Message.raw("You must set at least one target position with the Brush")
+          Message.raw("You must set at least one target task with the Brush")
               .color(Color.YELLOW));
       return false;
     }
 
     // Transfer paths from brush to entity
-    taskComponent.setPath(paths);
-    taskComponent.setCurrentTarget(paths.getFirst());
+    taskComponent.setTasks(tasks);
+    taskComponent.setCurrentTask(tasks.getFirst());
 
     String message = "Set Pathing";
     player.sendMessage(Message.raw(message));

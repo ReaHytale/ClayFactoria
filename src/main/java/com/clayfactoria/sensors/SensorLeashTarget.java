@@ -1,5 +1,9 @@
 package com.clayfactoria.sensors;
 
+import static java.lang.System.in;
+
+import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.hypixel.hytale.component.Ref;
@@ -49,41 +53,77 @@ public class SensorLeashTarget extends SensorBase {
         return false;
       }
 
-      List<Vector3d> path = taskComponent.getPath();
-      if (path == null || path.isEmpty()) {
-        LOGGER.atSevere().log("Sensor Leash Target: Task Component path was null or empty");
+      Task currentTask = taskComponent.getCurrentTask();
+      if (currentTask == null) {
+        LOGGER.atInfo().log(
+            "Sensor Leash Target: Current Task was null. Clearing Position Provider");
+        this.positionProvider.clear();
         return false;
       }
 
-      Vector3d currentTarget = taskComponent.getCurrentTarget();
+      Vector3d currentTarget = currentTask.getLocation();
       if (currentTarget == null) {
         LOGGER.atInfo().log(
             "Sensor Leash Target: Current Target was null. Clearing Position Provider");
         this.positionProvider.clear();
         return false;
       }
+      LOGGER.atWarning().log(
+          String.format(
+              "\nisComplete: %s\n", taskComponent.isComplete()));
 
       if (transformComponent.getPosition().distanceSquaredTo(currentTarget) > 0.2f) {
-        this.positionProvider.setTarget(currentTarget);
-        return true;
+        Ref<EntityStore> target = this.positionProvider.getTarget();
+        if (target == null) {
+          this.positionProvider.setTarget(currentTarget);
+          return true;
+        }
+
+        Store<EntityStore> targetStore = target.getStore();
+        TransformComponent targetTransform =
+            targetStore.getComponent(target, TransformComponent.getComponentType());
+        assert targetTransform != null;
+
+        if (targetTransform.getPosition() == currentTarget) {
+          return false;
+        } else {
+          this.positionProvider.setTarget(currentTarget);
+          return true;
+        }
       } else {
-        Vector3d nextTarget = taskComponent.nextTarget();
-        if (nextTarget == null) {
-          this.positionProvider.clear();
+
+        if (!taskComponent.isComplete()) {
           LOGGER.atInfo().log(
-              "Sensor Leash Target: nextTarget was null. Clearing Position Provider");
+              "Sensor Leash Target: Has Action is true and there is an incomplete task to fulfill");
           return false;
         }
-        this.positionProvider.setTarget(nextTarget);
+
+        Task nextTask = taskComponent.nextTask();
+
+        if (nextTask == null) {
+          this.positionProvider.clear();
+          LOGGER.atInfo().log("Sensor Leash Target: nextTask was null. Clearing Position Provider");
+          return false;
+        }
+
+        Vector3d nextTaskLocation = nextTask.getLocation();
+        if (nextTaskLocation == null) {
+          this.positionProvider.clear();
+          LOGGER.atInfo().log(
+              "Sensor Leash Target: nextTaskLocation was null. Clearing Position Provider");
+          return false;
+        }
+
+        this.positionProvider.setTarget(nextTaskLocation);
         LOGGER.atInfo().log(
             String.format(
                 "Sensor Leash Target: Setting Next Target from (%.0f, %.0f, %.0f) to (%.0f, %.0f, %.0f)",
                 currentTarget.x,
                 currentTarget.y,
                 currentTarget.z,
-                nextTarget.x,
-                nextTarget.y,
-                nextTarget.z));
+                nextTaskLocation.x,
+                nextTaskLocation.y,
+                nextTaskLocation.z));
         return true;
       }
     }

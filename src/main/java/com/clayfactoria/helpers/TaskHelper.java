@@ -1,10 +1,5 @@
-package com.clayfactoria.actions;
+package com.clayfactoria.helpers;
 
-import com.clayfactoria.actions.builders.BuilderActionTakeFromNearbyStorage;
-import com.clayfactoria.components.HasTakenFromContainerComponent;
-import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -17,79 +12,16 @@ import com.hypixel.hytale.server.core.universe.world.chunk.EntityChunk;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
 import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
-import com.hypixel.hytale.server.npc.corecomponents.ActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import com.hypixel.hytale.server.npc.role.Role;
-import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
 
-public class ActionTakeFromNearbyStorage extends ActionBase {
+public class TaskHelper {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-  protected final int quantity;
 
-  public ActionTakeFromNearbyStorage(@NotNull BuilderActionTakeFromNearbyStorage builder, @Nonnull
-  BuilderSupport builderSupport) {
-    super(builder);
-    this.quantity = builder.getQuantity(builderSupport);
-  }
-
-  public boolean execute(
-      @Nonnull Ref<EntityStore> ref,
-      @Nonnull Role role,
-      InfoProvider sensorInfo,
-      double dt,
-      @Nonnull Store<EntityStore> store
-  ) {
-    super.execute(ref, role, sensorInfo, dt, store);
-    ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-    if (component == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> NPCEntity Component Type was null");
-      return false;
-    }
-    NPCEntity npcEntity = store.getComponent(ref, component);
-    if (npcEntity == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> NPCEntity was null");
-      return false;
-    }
-    World world = npcEntity.getWorld();
-    if (world == null) {
-      LOGGER.atSevere().log("ActionTakeFromNearbyStorage -> World was null");
-      return false;
-    }
-
-    // Get item container orthogonal to the entity.
-    Vector3i containerPos = findNearbyContainer(npcEntity);
-    if (containerPos == null) {
-      // No container found.
-      return false;
-    }
-    ItemContainer itemContainer = getItemContainerAtPos(world, containerPos);
-    if (itemContainer == null) {
-      // Container not found at given position (should never occur)
-      return false;
-    }
-
-    // Take an item from the container
-    boolean result = moveFirstItemFromItemContainer(
-        itemContainer,
-        npcEntity.getInventory().getCombinedStorageFirst()
-    );
-
-    HasTakenFromContainerComponent hasTakenFromContainerComp =
-        store.ensureAndGetComponent(ref, HasTakenFromContainerComponent.getComponentType());
-    hasTakenFromContainerComp.setHasTakenFromContainer(result);
-
-    return result;
-  }
-
-  private @Nullable Vector3i findNearbyContainer(NPCEntity npcEntity) {
+  public static @Nullable Vector3i findNearbyContainer(NPCEntity npcEntity) {
     World world = npcEntity.getWorld();
     assert world != null;
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
@@ -118,7 +50,7 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     return null;
   }
 
-  private @Nullable ItemContainer getItemContainerAtPos(World world, Vector3i pos) {
+  public static @Nullable ItemContainer getItemContainerAtPos(World world, Vector3i pos) {
     long chunkIndex = ChunkUtil.indexChunkFromBlock(pos.x, pos.z);
     WorldChunk worldChunk = world.getChunk(chunkIndex);
     assert worldChunk != null;
@@ -140,7 +72,7 @@ public class ActionTakeFromNearbyStorage extends ActionBase {
     return itemContainerState.getItemContainer();
   }
 
-  private boolean moveFirstItemFromItemContainer(ItemContainer source, ItemContainer target) {
+  public static boolean transferItem(ItemContainer source, ItemContainer target) {
     for (short slot = 0; slot<source.getCapacity()-1; slot++) {
       ItemStack itemStack = source.getItemStack(slot);
       if (itemStack == null) {

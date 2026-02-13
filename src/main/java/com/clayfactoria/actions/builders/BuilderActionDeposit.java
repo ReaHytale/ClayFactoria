@@ -1,6 +1,6 @@
 package com.clayfactoria.actions.builders;
 
-import com.clayfactoria.actions.ActionTakeFromNearbyStorage;
+import com.clayfactoria.actions.ActionDeposit;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
@@ -10,7 +10,7 @@ import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
 import com.hypixel.hytale.server.npc.instructions.Action;
 import javax.annotation.Nonnull;
 
-public class BuilderActionTakeFromNearbyStorage extends BuilderActionBase {
+public class BuilderActionDeposit extends BuilderActionBase {
   private final IntHolder quantity = new IntHolder();
 
   public int getQuantity(@Nonnull BuilderSupport builderSupport) {
@@ -20,7 +20,7 @@ public class BuilderActionTakeFromNearbyStorage extends BuilderActionBase {
   @Override
   @Nonnull
   public String getShortDescription() {
-    return "Take items from a chest adjacent to the entity.";
+    return "Deposit items to a chest or station adjacent to the entity.";
   }
 
   @Override
@@ -32,7 +32,7 @@ public class BuilderActionTakeFromNearbyStorage extends BuilderActionBase {
   @Override
   @Nonnull
   public Action build(BuilderSupport builderSupport) {
-    return new ActionTakeFromNearbyStorage(this, builderSupport);
+    return new ActionDeposit(this, builderSupport);
   }
 
   @Override

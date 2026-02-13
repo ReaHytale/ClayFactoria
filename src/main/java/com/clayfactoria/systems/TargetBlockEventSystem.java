@@ -1,5 +1,7 @@
 package com.clayfactoria.systems;
 
+import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -108,7 +110,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
           SoundEvent.getAssetMap().getIndex("SFX_Drag_Items_Clay"),
           SoundCategory.SFX,
           commandBuffer);
-      brushComponent.setPath(new ArrayList<>());
+      brushComponent.setTasks(new ArrayList<>());
       damageBlockEvent.setDamage(0);
       return;
     } else if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Green_Block")) {
@@ -125,13 +127,32 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
       return;
     }
 
-    List<Vector3d> path = brushComponent.getPath();
-    if (path == null || path.isEmpty()) {
-      brushComponent.addPath(targetTransform.getPosition());
+    List<Task> tasks = brushComponent.getTasks();
+    if (tasks == null || tasks.isEmpty()) {
+      brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.TAKE);
+
+      String message =
+          String.format(
+              "Set First Task Location: (%.0f, %.0f, %.0f) -> Action.TAKE",
+              targetBlockLocOnTopOfBlock.x,
+              targetBlockLocOnTopOfBlock.y,
+              targetBlockLocOnTopOfBlock.z);
+      LOGGER.atInfo().log(message);
+      player.sendMessage(Message.raw(message).color(Color.GREEN));
+
     } else {
-      brushComponent.addPath(targetTransform.getPosition());
+      brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.DEPOSIT);
       // Add first point so it'll return to first point before continuing to second or third positions
-      brushComponent.addPath(path.getFirst());
+      brushComponent.addTask(tasks.getFirst().getLocation(), Action.TAKE);
+
+      String message =
+          String.format(
+              "Set Task Location: (%.0f, %.0f, %.0f) -> Action.DEPOSIT",
+              targetBlockLocOnTopOfBlock.x,
+              targetBlockLocOnTopOfBlock.y,
+              targetBlockLocOnTopOfBlock.z);
+      LOGGER.atInfo().log(message);
+      player.sendMessage(Message.raw(message).color(Color.GREEN));
     }
 
     damageBlockEvent.setDamage(0);
@@ -140,15 +161,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
-
-    String message =
-        String.format(
-            "Set Path Block: (%.0f, %.0f, %.0f)",
-            targetBlockLocOnTopOfBlock.x,
-            targetBlockLocOnTopOfBlock.y,
-            targetBlockLocOnTopOfBlock.z);
-    LOGGER.atInfo().log(message);
-    player.sendMessage(Message.raw(message).color(Color.GREEN));
   }
 
   @Override
