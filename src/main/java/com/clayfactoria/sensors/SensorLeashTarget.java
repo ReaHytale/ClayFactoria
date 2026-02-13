@@ -53,9 +53,6 @@ public class SensorLeashTarget extends SensorBaseLogger {
         this.positionProvider.clear();
         return false;
       }
-      LOGGER.atWarning().log(
-          String.format(
-              "\nisComplete: %s\n", taskComponent.isComplete()));
 
       if (transformComponent.getPosition().distanceSquaredTo(currentTarget) > 0.2f) {
         Ref<EntityStore> target = this.positionProvider.getTarget();

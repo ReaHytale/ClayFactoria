@@ -35,10 +35,10 @@ public class SensorNearbyContainer extends SensorBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    checkNull(taskComponent, "TaskComponent was null");
 
     if (taskComponent.isComplete()) {
-      LOGGER.atSevere().log("Sensor Nearby Container: Task is complete");
+      LOGGER.atSevere().log("Task is complete");
       return false;
     }
 
@@ -58,14 +58,14 @@ public class SensorNearbyContainer extends SensorBaseLogger {
     if (currentAction == null || currentAction != action) {
       LOGGER.atSevere().log(
           String.format(
-              "Sensor Nearby Container: Current action ('%s') != action to sense ('%s')",
+              "Current action ('%s') != action to sense ('%s')",
               currentAction, action));
       return false;
     }
 
     LOGGER.atInfo().log(
         String.format(
-            "Sensor Nearby Container: Current action ('%s') == action ('%s') to sense",
+            "Current action ('%s') == action ('%s') to sense",
             currentAction, action));
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
     checkNull(component, "NPC Entity Component Type was null");
@@ -74,10 +74,7 @@ public class SensorNearbyContainer extends SensorBaseLogger {
     checkNull(npcEntity, "NPCEntity was null");
 
     Vector3i nearbyContainerLocation = TaskHelper.findNearbyContainer(npcEntity);
-    checkNull(nearbyContainerLocation, "Nearby Container Location was null");
-
-    LOGGER.atInfo().log("Sensor Nearby Container -> Nearby Container Location was found");
-    return true;
+    return nearbyContainerLocation != null;
   }
 
   @Override
