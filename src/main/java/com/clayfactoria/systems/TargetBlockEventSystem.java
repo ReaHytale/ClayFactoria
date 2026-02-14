@@ -1,5 +1,7 @@
 package com.clayfactoria.systems;
 
+import static com.clayfactoria.utils.Utils.checkNull;
+
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
@@ -61,39 +63,24 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     Player player = store.getComponent(entityStoreRef, Player.getComponentType());
     if (player == null) return;
 
-    Ref<EntityStore> playerRef = player.getReference();
-    if (playerRef == null) {
-      LOGGER.atSevere().log("Target Block Event System: playerRef was null");
-      return;
-    }
+    Ref<EntityStore> playerRef = checkNull(player.getReference(), "playerRef was null");
 
     // Check that the player has the wand equipped
     if (!isWandEquipped(player)) {
       return;
     }
 
-    BrushComponent brushComponent = store.getComponent(playerRef, this.brushComponentType);
-    if (brushComponent == null) {
-      LOGGER.atSevere().log("Target Block Event System: Brush Component on the player was null");
-      return;
-    }
+    BrushComponent brushComponent = checkNull(store.getComponent(playerRef, this.brushComponentType));
 
-    HeadRotation headRotationComponent =
-        store.getComponent(entityStoreRef, HeadRotation.getComponentType());
-    if (headRotationComponent == null) {
-      LOGGER.atSevere().log("Target Block Event System: headRotationComponent was null");
-      return;
-    }
-
+    HeadRotation headRotationComponent = checkNull(store.getComponent(
+        entityStoreRef, HeadRotation.getComponentType()
+    ));
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
     Vector3f headRotation = headRotationComponent.getRotation();
 
-    TransformComponent entityTransformComp =
-        store.getComponent(entityStoreRef, TransformComponent.getComponentType());
-    if (entityTransformComp == null) {
-      LOGGER.atSevere().log("Target Block Event System: entityTransformComp was null");
-      return;
-    }
+    TransformComponent entityTransformComp = checkNull(store.getComponent(
+        entityStoreRef, TransformComponent.getComponentType()
+    ));
 
     Transform targetTransform = entityTransformComp.getTransform().clone();
     Vector3d targetBlockLocOnTopOfBlock =
@@ -103,62 +90,34 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     BlockType blockType = damageBlockEvent.getBlockType();
     if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Red_Block")) {
-
-      player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
-      ParticleUtil.spawnParticleEffect("Block_Break_Dust", targetBlockLocOnTopOfBlock, store);
-      SoundUtil.playSoundEvent2d(
-          SoundEvent.getAssetMap().getIndex("SFX_Drag_Items_Clay"),
-          SoundCategory.SFX,
-          commandBuffer);
-      brushComponent.setTasks(new ArrayList<>());
-      damageBlockEvent.setDamage(0);
+      resetPath(damageBlockEvent, player, commandBuffer);
       return;
     } else if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Green_Block")) {
-
-      brushComponent.togglePathType();
-      player.sendMessage(
-          Message.raw(String.format("Toggling PathType to: %s", brushComponent.getPathType()))
-              .color(Color.GREEN));
-      SoundUtil.playSoundEvent2d(
-          SoundEvent.getAssetMap().getIndex("SFX_Clay_Pot_Small_Hit"),
-          SoundCategory.SFX,
-          commandBuffer);
-      damageBlockEvent.setDamage(0);
+      togglePathType(damageBlockEvent, player, commandBuffer);
       return;
     }
 
     List<Task> tasks = brushComponent.getTasks();
+    // Set the first task as a "TAKE" task
     if (tasks == null || tasks.isEmpty()) {
       brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.TAKE);
-
-      String message =
-          String.format(
-              "Set First Task Location: (%.0f, %.0f, %.0f) -> Action.TAKE",
-              targetBlockLocOnTopOfBlock.x,
-              targetBlockLocOnTopOfBlock.y,
-              targetBlockLocOnTopOfBlock.z);
+      String message = String.format("Set First Task Location: %s -> Action.TAKE", targetBlockLoc);
       LOGGER.atInfo().log(message);
       player.sendMessage(Message.raw(message).color(Color.GREEN));
+    }
 
-    } else {
+    // All following tasks are "DEPOSIT" tasks
+    else {
       brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.DEPOSIT);
       // Add first point so it'll return to first point before continuing to second or third positions
       brushComponent.addTask(tasks.getFirst().getLocation(), Action.TAKE);
-
-      String message =
-          String.format(
-              "Set Task Location: (%.0f, %.0f, %.0f) -> Action.DEPOSIT",
-              targetBlockLocOnTopOfBlock.x,
-              targetBlockLocOnTopOfBlock.y,
-              targetBlockLocOnTopOfBlock.z);
+      String message = String.format("Set Task Location: %s -> Action.DEPOSIT", targetBlockLoc);
       LOGGER.atInfo().log(message);
       player.sendMessage(Message.raw(message).color(Color.GREEN));
     }
 
     damageBlockEvent.setDamage(0);
-
     ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
-
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
   }
@@ -169,6 +128,60 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
   }
 
   /**
+   * Remove all tasks, resetting the path
+   *
+   * @param damageBlockEvent The event that triggered the reset
+   * @param player The player that triggered the reset
+   * @param commandBuffer The command buffer
+   */
+  private void resetPath(
+      DamageBlockEvent damageBlockEvent,
+      Player player,
+      CommandBuffer<EntityStore> commandBuffer
+  ) {
+    Store<EntityStore> store = checkNull(player.getReference()).getStore();
+    BrushComponent brushComponent = checkNull(store.getComponent(player.getReference(), this.brushComponentType));
+    Vector3d targetBlockLoc = damageBlockEvent.getTargetBlock().toVector3d();
+    Vector3d targetBlockLocOnTopOfBlock =
+        new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
+
+    player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
+    ParticleUtil.spawnParticleEffect("Block_Break_Dust", targetBlockLocOnTopOfBlock, store);
+    SoundUtil.playSoundEvent2d(
+        SoundEvent.getAssetMap().getIndex("SFX_Drag_Items_Clay"),
+        SoundCategory.SFX,
+        commandBuffer);
+    brushComponent.setTasks(new ArrayList<>());
+    damageBlockEvent.setDamage(0);
+  }
+
+  /**
+   * Change the path type between ONCE and LOOP
+   *
+   * @param damageBlockEvent The event that triggered the toggle
+   * @param player The player that triggered the toggle
+   * @param commandBuffer The command buffer
+   */
+  private void togglePathType(
+      DamageBlockEvent damageBlockEvent,
+      Player player,
+      CommandBuffer<EntityStore> commandBuffer
+  ) {
+    Store<EntityStore> store = checkNull(player.getReference()).getStore();
+    BrushComponent brushComponent = checkNull(store.getComponent(player.getReference(), this.brushComponentType));
+
+    brushComponent.togglePathType();
+    player.sendMessage(
+        Message.raw(String.format("Toggling PathType to: %s", brushComponent.getPathType()))
+            .color(Color.GREEN));
+    SoundUtil.playSoundEvent2d(
+        SoundEvent.getAssetMap().getIndex("SFX_Clay_Pot_Small_Hit"),
+        SoundCategory.SFX,
+        commandBuffer);
+    damageBlockEvent.setDamage(0);
+  }
+
+  /**
    * Checks if the specified player is holding the wand item.
    *
    * @param player The player to check the condition in relation to.
@@ -176,19 +189,17 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
    */
   private boolean isWandEquipped(Player player) {
     // Get player inventory.
-    Inventory inventory = player.getInventory();
-    if (inventory == null) {
+    try {
+      Inventory inventory = player.getInventory();
+
+      // Get item in active hotbar slot.
+      byte slot = inventory.getActiveHotbarSlot();
+      ItemStack itemStack = checkNull(inventory.getHotbar().getItemStack(slot));
+
+      // Check if held item is the wand.
+      return itemStack.getItemId().equals(WAND_ITEM_ID);
+    } catch (NullPointerException e ) {
       return false;
     }
-
-    // Get item in active hotbar slot.
-    byte slot = inventory.getActiveHotbarSlot();
-    ItemStack itemStack = inventory.getHotbar().getItemStack(slot);
-    if (itemStack == null) {
-      return false;
-    }
-
-    // Check if held item is the wand.
-    return itemStack.getItemId().equals(WAND_ITEM_ID);
   }
 }
