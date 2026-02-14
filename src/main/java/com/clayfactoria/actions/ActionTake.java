@@ -2,12 +2,10 @@ package com.clayfactoria.actions;
 
 import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
-import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;

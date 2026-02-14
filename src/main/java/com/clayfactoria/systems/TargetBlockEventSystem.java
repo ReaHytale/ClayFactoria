@@ -108,9 +108,11 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     // All following tasks are "DEPOSIT" tasks
     else {
+      if (brushComponent.getTasks().size() != 1) {
+        // Add first point so it'll return to first point before continuing to second or third positions
+        brushComponent.addTask(tasks.getFirst().getLocation(), Action.TAKE);
+      }
       brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.DEPOSIT);
-      // Add first point so it'll return to first point before continuing to second or third positions
-      brushComponent.addTask(tasks.getFirst().getLocation(), Action.TAKE);
       String message = String.format("Set Task Location: %s -> Action.DEPOSIT", targetBlockLoc);
       LOGGER.atInfo().log(message);
       player.sendMessage(Message.raw(message).color(Color.GREEN));

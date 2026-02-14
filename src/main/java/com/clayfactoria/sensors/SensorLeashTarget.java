@@ -17,6 +17,9 @@ import com.hypixel.hytale.server.npc.sensorinfo.PositionProvider;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Sense whether the NPC should continue to path or should move to action state.
+ */
 public class SensorLeashTarget extends SensorBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final PositionProvider positionProvider = new PositionProvider();
@@ -41,7 +44,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
       Task currentTask = taskComponent.getCurrentTask();
       if (currentTask == null) {
         LOGGER.atInfo().log(
-            "Sensor Leash Target: Current Task was null. Clearing Position Provider");
+            "Current Task was null. Clearing Position Provider");
         this.positionProvider.clear();
         return false;
       }
@@ -49,7 +52,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
       Vector3d currentTarget = currentTask.getLocation();
       if (currentTarget == null) {
         LOGGER.atInfo().log(
-            "Sensor Leash Target: Current Target was null. Clearing Position Provider");
+            "Current Target was null. Clearing Position Provider");
         this.positionProvider.clear();
         return false;
       }
@@ -73,10 +76,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
           return true;
         }
       } else {
-
         if (!taskComponent.isComplete()) {
-          LOGGER.atInfo().log(
-              "Sensor Leash Target: Has Action is true and there is an incomplete task to fulfill");
           return false;
         }
 
@@ -84,7 +84,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
         if (nextTask == null) {
           this.positionProvider.clear();
-          LOGGER.atInfo().log("Sensor Leash Target: nextTask was null. Clearing Position Provider");
+          LOGGER.atInfo().log("nextTask was null. Clearing Position Provider");
           return false;
         }
 
@@ -92,20 +92,16 @@ public class SensorLeashTarget extends SensorBaseLogger {
         if (nextTaskLocation == null) {
           this.positionProvider.clear();
           LOGGER.atInfo().log(
-              "Sensor Leash Target: nextTaskLocation was null. Clearing Position Provider");
+              "nextTaskLocation was null. Clearing Position Provider");
           return false;
         }
 
         this.positionProvider.setTarget(nextTaskLocation);
-        LOGGER.atInfo().log(
-            String.format(
-                "Sensor Leash Target: Setting Next Target from (%.0f, %.0f, %.0f) to (%.0f, %.0f, %.0f)",
-                currentTarget.x,
-                currentTarget.y,
-                currentTarget.z,
-                nextTaskLocation.x,
-                nextTaskLocation.y,
-                nextTaskLocation.z));
+        LOGGER.atInfo().log(String.format(
+            "Sensor Leash Target: Setting Next Target from %s to %s",
+            currentTarget,
+            nextTaskLocation
+        ));
         return true;
       }
   }

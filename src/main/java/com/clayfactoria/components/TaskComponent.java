@@ -1,5 +1,7 @@
 package com.clayfactoria.components;
 
+import static com.clayfactoria.utils.Utils.checkNull;
+
 import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Task;
 import com.hypixel.hytale.codec.Codec;
@@ -21,6 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Keeps track of a circular queue of {@link Task Tasks} for an entity.
+ */
 public class TaskComponent implements Component<EntityStore> {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
@@ -65,22 +70,17 @@ public class TaskComponent implements Component<EntityStore> {
   @Getter @Setter private int currentTargetIndex;
   @Getter @Setter private boolean isComplete = false;
 
+  /**
+   * Move on to the next task in the queue
+   * @return The next task in the queue
+   */
   @Nullable
   public Task nextTask() {
     isComplete = false;
-    LOGGER.atInfo().log("Task Component: Next Task -> IsComplete: false");
-    int nextTargetIndex = currentTargetIndex + 1;
-    if (nextTargetIndex < tasks.size()) {
-      currentTargetIndex++;
-      currentTask = tasks.get(nextTargetIndex);
-      LOGGER.atInfo().log("Next Task: Current Task: %s -> (%.0f, %.0f, %.0f)", currentTask.getAction(), currentTask.getLocation().x, currentTask.getLocation().y, currentTask.getLocation().z);
-      return currentTask;
-    } else {
-      currentTask = tasks.getFirst();
-      LOGGER.atInfo().log("Next Task: Back to First Task: %s -> (%.0f, %.0f, %.0f)", currentTask.getAction(), currentTask.getLocation().x, currentTask.getLocation().y, currentTask.getLocation().z);
-      currentTargetIndex = 0;
-      return null;
-    }
+    currentTargetIndex = (currentTargetIndex + 1) % tasks.size(); // Loop
+    currentTask = tasks.get(currentTargetIndex);
+    LOGGER.atInfo().log("Next task is: %s", currentTask);
+    return currentTask;
   }
 
   @Override
