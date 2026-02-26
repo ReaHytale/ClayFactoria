@@ -4,6 +4,7 @@ import com.clayfactoria.ClayFactoria;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.simple.BooleanCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -13,14 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DropInventoryOnDeathComponent implements Component<EntityStore> {
   @Nonnull
-  public static final BuilderCodec<DropInventoryOnDeathComponent>
-      CODEC = BuilderCodec.builder(DropInventoryOnDeathComponent.class, DropInventoryOnDeathComponent::new)
-      .append(
-          new KeyedCodec<>("DropInventoryOnDeath", Codec.BOOLEAN),
-          (comp, hasTakenFromStorage) -> comp.dropInventoryOnDeath = hasTakenFromStorage,
-          comp -> comp.dropInventoryOnDeath
-      )
-      .documentation("Whether this NPC should drop their inventory when they die").add().build();
+  public static final BooleanCodec CODEC = Codec.BOOLEAN;
 
   @Getter boolean dropInventoryOnDeath = false;
 

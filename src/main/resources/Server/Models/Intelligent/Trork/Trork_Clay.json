@@ -61,6 +61,14 @@
         }
       ]
     },
+    "Take": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Take.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
     "WalkBackward": {
       "Animations": [
         {

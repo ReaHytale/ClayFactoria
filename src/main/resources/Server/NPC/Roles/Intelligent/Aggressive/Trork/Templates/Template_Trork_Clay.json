@@ -496,6 +496,11 @@
               },
               "Actions": [
                 {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Take"
+                },
+                {
                   "Type": "Take"
                 }
               ]
