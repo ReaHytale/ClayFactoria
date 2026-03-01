@@ -1,16 +1,15 @@
 package com.clayfactoria;
 
 import com.clayfactoria.actions.builders.BuilderActionDeposit;
+import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.DropInventoryOnDeathComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
-import com.clayfactoria.systems.NPCDeathSystem;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -24,7 +23,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-
 import javax.annotation.Nonnull;
 
 public class ClayFactoria extends JavaPlugin {
@@ -33,8 +31,6 @@ public class ClayFactoria extends JavaPlugin {
   public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
   public static ComponentType<EntityStore, HasTakenFromContainerComponent>
       hasTakenFromContainerComponentType;
-  public static ComponentType<EntityStore, DropInventoryOnDeathComponent>
-      dropInventoryOnDeathComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
     super(init);
@@ -54,10 +50,6 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
     hasTakenFromContainerComponentType = this.getEntityStoreRegistry().registerComponent(
         HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new
-    );
-    LOGGER.atInfo().log("Registering DropInventoryOnDeath Component");
-    dropInventoryOnDeathComponentType = this.getEntityStoreRegistry().registerComponent(
-        DropInventoryOnDeathComponent.class, DropInventoryOnDeathComponent::new
     );
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
@@ -79,6 +71,9 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Deposit From Nearby Storage or Station Action");
     NPCPlugin.get().registerCoreComponentType("Deposit", BuilderActionDeposit::new);
+
+    LOGGER.atInfo().log("Registering Drop Inventory Action");
+    NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
   }
 
   @Override
@@ -92,9 +87,6 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Target Block Event System");
     this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
-
-    LOGGER.atInfo().log("Registering NPCDeathSystem");
-    this.getEntityStoreRegistry().registerSystem(new NPCDeathSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

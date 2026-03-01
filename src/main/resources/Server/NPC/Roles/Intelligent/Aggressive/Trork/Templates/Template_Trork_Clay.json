@@ -2,7 +2,6 @@
   "Type": "Abstract",
   "Debug": "DisplayState",
   "StartState": "Idle",
-  "DropInventoryOnDeath": true,
   "Parameters": {
     "Appearance": {
       "Value": "Trork_Clay",
@@ -31,10 +30,6 @@
     "MaxSpeed": {
       "Value": 5,
       "Description": "Maximum walking speed"
-    },
-    "IdleMotionComponent": {
-      "Value": "Component_Instruction_Intelligent_Idle_Motion_Wander",
-      "Description": "The component that controls how the NPC moves during idle state"
     },
     "AttitudeGroup": {
       "Value": "Kweebec",
@@ -146,8 +141,8 @@
   ],
   "Instructions": [
     {
-      "Continue": true,
       "$Comment": "This is separate so I can run it all the time regardless of the rest of the script",
+      "Continue": true,
       "Instructions": [
         {
           "Continue": true,
@@ -240,7 +235,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": ["Tool_Brush"]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -297,9 +292,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -403,9 +396,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -536,14 +527,14 @@
                   {
                     "$Comment": "If Player Does NOT have Brush in Hand then Disable Interaction. If in Path State, do NOT disable Interactable",
                     "Type": "Or",
-                    "Sensors":  [
+                    "Sensors": [
                       {
                         "Type": "Player",
                         "Range": { "Compute": "ViewRange" },
                         "Filters": [
                           {
                             "Type": "ItemInHand",
-                            "Items": ["Tool_Brush"]
+                            "Items": [ "Tool_Brush" ]
                           }
                         ]
                       },
@@ -563,11 +554,7 @@
                   {
                     "Type": "CanInteract",
                     "ViewSector": 360,
-                    "Attitudes": [
-                      "Neutral",
-                      "Friendly",
-                      "Revered"
-                    ]
+                    "Attitudes": [ "Neutral", "Friendly", "Revered" ]
                   }
                 ]
               }
@@ -592,7 +579,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": ["Tool_Brush"]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 },
@@ -622,7 +609,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": ["Tool_Brush"]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 },
@@ -689,5 +676,17 @@
       }
     ]
   },
-  "NameTranslationKey": { "Compute": "NameTranslationKey" }
+  "NameTranslationKey": { "Compute": "NameTranslationKey" },
+  "DeathInstruction": {
+    "$Comment": "Drop inventory on death",
+    "Sensor": {
+      "Type": "Any"
+    },
+    "Actions": [
+      {
+        "Type": "DropInventory",
+        "Once": true
+      }
+    ]
+  }
 }
