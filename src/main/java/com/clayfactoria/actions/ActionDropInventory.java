@@ -5,6 +5,8 @@ import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.server.core.entity.ItemUtils;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -30,9 +32,13 @@ public class ActionDropInventory extends ActionBaseLogger {
   @Override
   public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo, double dt, @Nonnull Store<EntityStore> store) {
     NPCEntity npc = TaskHelper.getNPCEntity(ref, store);
-    // TODO: Figure out why this doesn't actually drop the items on the floor. It returns the items successfully, it just doesn't drop them like I'd expect it to.
     List<ItemStack> items = npc.getInventory().getCombinedStorageFirst().dropAllItemStacks();
-    items.forEach(item -> LOGGER.atInfo().log("Dropping item: " + item.getItemId()));
+    items.forEach(item -> {
+      ItemUtils.throwItem(ref, store, item, Vector3d.ZERO, 1.0F );
+    });
+
+
+
     return true;
   }
 }
