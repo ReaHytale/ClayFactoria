@@ -6,9 +6,19 @@
   "Icon": "Icons/ItemsGenerated/Tool_Brush.png",
   "Model": "Items/Tools/Brush/Model.blockymodel",
   "Texture": "Items/Tools/Brush/Texture.png",
+  "Quality": "Common",
   "Recipe": {
     "Input": [],
     "BenchRequirement": []
+  },
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "OpenWandMenu"
+        }
+      ]
+    }
   },
   "Tool": {
     "Specs": [
@@ -78,11 +88,10 @@
           "Ores",
           "Soil"
         ],
-        "DurabilityLossOnHit": 0.25
+        "DurabilityLossOnHit": 0
       }
     ]
   },
-  "Quality": "Common",
   "IconProperties": {
     "Scale": 0.9,
     "Rotation": [

@@ -8,6 +8,7 @@ import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.clayfactoria.systems.TargetBlockEventSystem;
@@ -17,6 +18,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -40,17 +42,19 @@ public class ClayFactoria extends JavaPlugin {
 
   @Override
   protected void setup() {
+    LOGGER.atInfo().log("Registering OpenWandMenu interaction");
+    Interaction.CODEC.register("OpenWandMenu", OpenWandMenu.class, OpenWandMenu.CODEC);
     LOGGER.atInfo().log("Registering Brush Component");
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
     LOGGER.atInfo().log("Registering Task Component");
-    ownerComponentType = this.getEntityStoreRegistry().registerComponent(
-        TaskComponent.class, TaskComponent::new
-    );
+    ownerComponentType =
+        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
     LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
-    hasTakenFromContainerComponentType = this.getEntityStoreRegistry().registerComponent(
-        HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new
-    );
+    hasTakenFromContainerComponentType =
+        this.getEntityStoreRegistry()
+            .registerComponent(
+                HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
