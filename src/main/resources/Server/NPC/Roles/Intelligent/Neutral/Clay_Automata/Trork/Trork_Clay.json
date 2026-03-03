@@ -5,12 +5,10 @@
     "Appearance": "Trork_Clay",
     "DropList": "Drop_Kweebec_Clay",
     "MaxHealth": 20,
-    "IsMemory": true,
+    "IsMemory": false,
     "MemoriesCategory": "Trork",
     "MemoriesNameOverride": "Trork_Clay",
-    "NameTranslationKey": {
-      "Compute": "NameTranslationKey"
-    }
+    "NameTranslationKey": { "Compute": "NameTranslationKey" }
   },
   "Parameters": {
     "NameTranslationKey": {
