@@ -1,10 +1,10 @@
 package com.clayfactoria;
 
-import com.clayfactoria.actions.builders.BuilderActionDeposit;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
-import com.clayfactoria.actions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
-import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
