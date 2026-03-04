@@ -1,8 +1,9 @@
-package com.clayfactoria.actions;
+package com.clayfactoria.actions.automataactions;
 
 import static com.clayfactoria.utils.Utils.checkNull;
 
-import com.clayfactoria.actions.builders.BuilderActionPosition;
+import com.clayfactoria.actions.ActionBaseLogger;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
 import com.clayfactoria.components.TaskComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

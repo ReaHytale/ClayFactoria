@@ -1,8 +1,10 @@
-package com.clayfactoria.actions;
+package com.clayfactoria.actions.automataactions;
 
 import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 import static com.clayfactoria.utils.Utils.checkNull;
-import com.clayfactoria.actions.builders.BuilderActionDeposit;
+
+import com.clayfactoria.actions.ActionBaseLogger;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;

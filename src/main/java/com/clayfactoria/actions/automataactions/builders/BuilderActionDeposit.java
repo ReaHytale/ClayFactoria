@@ -1,6 +1,6 @@
-package com.clayfactoria.actions.builders;
+package com.clayfactoria.actions.automataactions.builders;
 
-import com.clayfactoria.actions.ActionDeposit;
+import com.clayfactoria.actions.automataactions.ActionDeposit;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;

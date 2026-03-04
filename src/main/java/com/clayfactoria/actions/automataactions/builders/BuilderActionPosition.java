@@ -1,6 +1,6 @@
-package com.clayfactoria.actions.builders;
+package com.clayfactoria.actions.automataactions.builders;
 
-import com.clayfactoria.actions.ActionPosition;
+import com.clayfactoria.actions.automataactions.ActionPosition;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
