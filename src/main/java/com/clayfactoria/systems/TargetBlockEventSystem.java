@@ -3,7 +3,6 @@ package com.clayfactoria.systems;
 import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.codecs.Action;
-import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
@@ -27,13 +26,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import java.util.List;
-import org.jspecify.annotations.NonNull;
-
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.ArrayList;
+import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
   /** ID of the item to use as a wand for setting Automaton paths. */
@@ -42,12 +37,9 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   private final ComponentType<EntityStore, BrushComponent> brushComponentType =
       BrushComponent.getComponentType();
-  @Nonnull private final ComponentType<EntityStore, NPCEntity> npcEntityComponentType;
 
-  public TargetBlockEventSystem(
-      @Nonnull ComponentType<EntityStore, NPCEntity> npcEntityComponentType) {
+  public TargetBlockEventSystem() {
     super(DamageBlockEvent.class);
-    this.npcEntityComponentType = npcEntityComponentType;
   }
 
   @Override
@@ -97,26 +89,12 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
       return;
     }
 
-    List<Task> tasks = brushComponent.getTasks();
-    // Set the first task as a "TAKE" task
-    if (tasks == null || tasks.isEmpty()) {
-      brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.TAKE);
-      String message = String.format("Set First Task Location: %s -> Action.TAKE", targetBlockLoc);
-      LOGGER.atInfo().log(message);
-      player.sendMessage(Message.raw(message).color(Color.GREEN));
-    }
-
-    // All following tasks are "DEPOSIT" tasks
-    else {
-      if (brushComponent.getTasks().size() != 1) {
-        // Add first point so it'll return to first point before continuing to second or third positions
-        brushComponent.addTask(tasks.getFirst().getLocation(), Action.TAKE);
-      }
-      brushComponent.addTask(targetBlockLocOnTopOfBlock, Action.DEPOSIT);
-      String message = String.format("Set Task Location: %s -> Action.DEPOSIT", targetBlockLoc);
-      LOGGER.atInfo().log(message);
-      player.sendMessage(Message.raw(message).color(Color.GREEN));
-    }
+    // Add the task to the task list, with the action being set to the one currently selected by the player.
+    Action action = brushComponent.getAction();
+    brushComponent.addTask(targetBlockLocOnTopOfBlock, action);
+    String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
+    LOGGER.atInfo().log(message);
+    player.sendMessage(Message.raw(message).color(Color.GREEN));
 
     damageBlockEvent.setDamage(0);
     ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);

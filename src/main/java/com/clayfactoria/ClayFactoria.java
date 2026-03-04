@@ -2,14 +2,16 @@ package com.clayfactoria;
 
 import com.clayfactoria.actions.builders.BuilderActionDeposit;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
+import com.clayfactoria.actions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.events.OpenWandMenu;
+import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
-import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -17,6 +19,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -40,17 +43,19 @@ public class ClayFactoria extends JavaPlugin {
 
   @Override
   protected void setup() {
+    LOGGER.atInfo().log("Registering OpenWandMenu interaction");
+    Interaction.CODEC.register("OpenWandMenu", OpenWandMenu.class, OpenWandMenu.CODEC);
     LOGGER.atInfo().log("Registering Brush Component");
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
     LOGGER.atInfo().log("Registering Task Component");
-    ownerComponentType = this.getEntityStoreRegistry().registerComponent(
-        TaskComponent.class, TaskComponent::new
-    );
+    ownerComponentType =
+        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
     LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
-    hasTakenFromContainerComponentType = this.getEntityStoreRegistry().registerComponent(
-        HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new
-    );
+    hasTakenFromContainerComponentType =
+        this.getEntityStoreRegistry()
+            .registerComponent(
+                HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
@@ -60,8 +65,8 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Sensor Leash Target");
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
 
-    LOGGER.atInfo().log("Registering Sensor Nearby Container");
-    NPCPlugin.get().registerCoreComponentType("NearbyContainer", BuilderSensorNearbyContainer::new);
+    LOGGER.atInfo().log("Registering Sensor Can Do Action");
+    NPCPlugin.get().registerCoreComponentType("CanDoAction", BuilderSensorCanDoAction::new);
 
     LOGGER.atInfo().log("Registering Put Item In Hand Action");
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderPutItemInHand::new);
@@ -71,6 +76,9 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Deposit From Nearby Storage or Station Action");
     NPCPlugin.get().registerCoreComponentType("Deposit", BuilderActionDeposit::new);
+
+    LOGGER.atInfo().log("Registering Position Action");
+    NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
 
     LOGGER.atInfo().log("Registering Drop Inventory Action");
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
@@ -86,7 +94,7 @@ public class ClayFactoria extends JavaPlugin {
     }
 
     LOGGER.atInfo().log("Registering Target Block Event System");
-    this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
+    this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

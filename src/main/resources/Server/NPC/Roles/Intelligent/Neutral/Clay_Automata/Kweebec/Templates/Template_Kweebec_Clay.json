@@ -1,7 +1,7 @@
 {
   "Type": "Abstract",
-  "StartState": "Idle",
   "Debug": "DisplayState",
+  "StartState": "Idle",
   "Parameters": {
     "Appearance": {
       "Value": "Kweebec_Clay",
@@ -30,10 +30,6 @@
     "MaxSpeed": {
       "Value": 5,
       "Description": "Maximum walking speed"
-    },
-    "IdleMotionComponent": {
-      "Value": "Component_Instruction_Intelligent_Idle_Motion_Wander",
-      "Description": "The component that controls how the NPC moves during idle state"
     },
     "AttitudeGroup": {
       "Value": "Kweebec",
@@ -145,8 +141,8 @@
   ],
   "Instructions": [
     {
-      "Continue": true,
       "$Comment": "This is separate so I can run it all the time regardless of the rest of the script",
+      "Continue": true,
       "Instructions": [
         {
           "Continue": true,
@@ -239,7 +235,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": ["Tool_Brush"]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -254,8 +250,8 @@
         },
         {
           "Sensor": {
-            "Type": "State",
             "$Comment": "Play Alerted Particle Effect. Look at player. Await Interaction. Timeout after 15, seconds",
+            "Type": "State",
             "State": "Alerted"
           },
           "Instructions": [
@@ -296,9 +292,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -402,9 +396,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -423,8 +415,8 @@
               },
               "Actions": [
                 {
-                "Type": "State",
-                "State": "Path"
+                  "Type": "State",
+                  "State": "Path"
                 }
               ]
             }
@@ -438,6 +430,7 @@
           },
           "Instructions": [
             {
+              "Continue": true,
               "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
               "Sensor": {
                 "Type": "LeashTarget"
@@ -448,6 +441,54 @@
                 "StopDistance": 0.1,
                 "RelativeSpeed": 0.55
               }
+            },
+            {
+              "Sensor": {
+                "$Comment": "If not leashing target, then switch to action state",
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "LeashTarget"
+                }
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Action"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Action state - Complete an action for a given location",
+          "Sensor": {
+            "Type": "State",
+            "State": "Action"
+          },
+          "Instructions": [
+            {
+              "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
+              "Sensor": {
+                "Type": "CanDoAction",
+                "Action": "Position"
+              },
+              "Actions": [
+                {
+                  "Type": "Position"
+                }
+              ]
+            },
+            {
+              "$Comment": "Switch to Pathing state when there is NOT an action for the current target location",
+              "Sensor": {
+                "Type": "LeashTarget"
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Path"
+                }
+              ]
             }
           ]
         }
@@ -468,14 +509,14 @@
                   {
                     "$Comment": "If Player Does NOT have Brush in Hand then Disable Interaction. If in Path State, do NOT disable Interactable",
                     "Type": "Or",
-                    "Sensors":  [
+                    "Sensors": [
                       {
                         "Type": "Player",
                         "Range": { "Compute": "ViewRange" },
                         "Filters": [
                           {
                             "Type": "ItemInHand",
-                            "Items": ["Tool_Brush"]
+                            "Items": [ "Tool_Brush" ]
                           }
                         ]
                       },
@@ -495,11 +536,7 @@
                   {
                     "Type": "CanInteract",
                     "ViewSector": 360,
-                    "Attitudes": [
-                      "Neutral",
-                      "Friendly",
-                      "Revered"
-                    ]
+                    "Attitudes": [ "Neutral", "Friendly", "Revered" ]
                   }
                 ]
               }
@@ -514,7 +551,7 @@
           {
             "Continue": true,
             "Sensor": {
-              "$Comment": "Switch to Alerted if Hostile",
+              "$Comment": "Switch to Alerted if player has Brush",
               "Type": "Or",
               "Sensors": [
                 {
@@ -524,12 +561,12 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": ["Tool_Brush"]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 },
                 {
-                  "$Comment": "Set Interacble to true when in Path state",
+                  "$Comment": "Set Interactable to true when in Path state",
                   "Type": "State",
                   "State": "Path"
                 }
@@ -554,7 +591,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": ["Tool_Brush"]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 },
@@ -564,8 +601,8 @@
                 {
                   "Type": "Not",
                   "Sensor": {
-                      "Type": "State",
-                      "State": "Path"
+                    "Type": "State",
+                    "State": "Path"
                   }
                 }
               ]
@@ -621,5 +658,17 @@
       }
     ]
   },
-  "NameTranslationKey": { "Compute": "NameTranslationKey" }
+  "NameTranslationKey": { "Compute": "NameTranslationKey" },
+  "DeathInstruction": {
+    "$Comment": "Drop inventory on death",
+    "Sensor": {
+      "Type": "Any"
+    },
+    "Actions": [
+      {
+        "Type": "DropInventory",
+        "Once": true
+      }
+    ]
+  }
 }

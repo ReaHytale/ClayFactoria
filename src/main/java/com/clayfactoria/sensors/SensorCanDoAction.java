@@ -5,8 +5,8 @@ import static com.clayfactoria.utils.Utils.checkNull;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.utils.TaskHelper;
-import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -19,12 +19,12 @@ import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import javax.annotation.Nonnull;
 
-public class SensorNearbyContainer extends SensorBaseLogger {
+public class SensorCanDoAction extends SensorBaseLogger {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final Action action;
 
-  public SensorNearbyContainer(
-      @Nonnull BuilderSensorNearbyContainer builder, @Nonnull BuilderSupport builderSupport) {
+  public SensorCanDoAction(
+      @Nonnull BuilderSensorCanDoAction builder, @Nonnull BuilderSupport builderSupport) {
     super(builder);
     this.action = builder.getAction(builderSupport);
   }
@@ -44,7 +44,6 @@ public class SensorNearbyContainer extends SensorBaseLogger {
 
     Task currentTask = taskComponent.getCurrentTask();
     checkNull(currentTask, "Current Task was null");
-
     Action currentAction = currentTask.getAction();
 
     // Current queued action isn't the action we're sensing for in this case
@@ -58,8 +57,12 @@ public class SensorNearbyContainer extends SensorBaseLogger {
     NPCEntity npcEntity = store.getComponent(ref, component);
     checkNull(npcEntity, "NPCEntity was null");
 
-    Vector3i nearbyContainerLocation = TaskHelper.findNearbyContainer(npcEntity);
-    return nearbyContainerLocation != null;
+    // If the task is a TAKE or DEPOSIT task, check that there's a container nearby first.
+    if (action == Action.TAKE || action == Action.DEPOSIT) {
+      Vector3i nearbyContainerLocation = TaskHelper.findNearbyContainer(npcEntity);
+      return nearbyContainerLocation != null;
+    }
+    return true;
   }
 
   @Override

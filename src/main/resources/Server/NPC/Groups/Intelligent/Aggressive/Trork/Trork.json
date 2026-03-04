@@ -1,0 +1,8 @@
+{
+  "IncludeRoles": [
+    "*Trork*"
+  ],
+  "ExcludeRoles": [
+    "Trork_Clay"
+  ]
+}

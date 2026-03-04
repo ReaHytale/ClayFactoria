@@ -5,12 +5,10 @@
     "Appearance": "Kweebec_Clay",
     "DropList": "Drop_Kweebec_Clay",
     "MaxHealth": 20,
-    "IsMemory": true,
+    "IsMemory": false,
     "MemoriesCategory": "Kweebec",
     "MemoriesNameOverride": "Kweebec_Clay",
-    "NameTranslationKey": {
-      "Compute": "NameTranslationKey"
-    }
+    "NameTranslationKey": { "Compute": "NameTranslationKey" }
   },
   "Parameters": {
     "NameTranslationKey": {

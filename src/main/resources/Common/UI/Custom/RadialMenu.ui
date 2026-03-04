@@ -1,0 +1,139 @@
+// Originally written by Alechilles. Modified for Clay Factoria as per GPL-3.0s terms
+
+$C = "Common.ui";
+
+@SliceLabelStyle = LabelStyle(
+  FontSize: 15,
+  RenderBold: true,
+  TextColor: #d6e0ec,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center,
+  OutlineColor: #000000(0.7),
+  Wrap: true,
+  ShrinkTextToFit: true,
+  MinShrinkTextToFitFontSize: 11
+);
+
+@SliceButtonLabelStyle = LabelStyle(
+  FontSize: 14,
+  RenderBold: true,
+  RenderUppercase: true,
+  TextColor: #00000000,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@SliceButtonDisabledLabelStyle = LabelStyle(
+  ...@SliceButtonLabelStyle
+);
+
+@Slice0ButtonStyle = TextButtonStyle(
+  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Sounds: $C.@ButtonSounds
+);
+
+@Slice1ButtonStyle = TextButtonStyle(
+  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Sounds: $C.@ButtonSounds
+);
+
+@Slice2ButtonStyle = TextButtonStyle(
+  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Sounds: $C.@ButtonSounds
+);
+
+@Slice3ButtonStyle = TextButtonStyle(
+  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Sounds: $C.@ButtonSounds
+);
+
+$C.@PageOverlay {
+  LayoutMode: Middle;
+
+  Group #CommandMenuWheel {
+    Anchor: (Width: 920, Height: 760);
+    Visible: false;
+
+    Label #CommandMenuTitle {
+      Anchor: (Top: 18, Width: 620, Height: 42, Left: 150);
+      Text: "";
+      Style: (
+        FontSize: 38,
+        RenderBold: true,
+        TextColor: #ffffff,
+        HorizontalAlignment: Center,
+        VerticalAlignment: Center
+      );
+    }
+
+    Label #CommandMenuSubtitle {
+      Anchor: (Top: 62, Width: 620, Height: 26, Left: 150);
+      Text: "";
+      Style: (
+        FontSize: 16,
+        TextColor: #dbe4e7,
+        HorizontalAlignment: Center,
+        VerticalAlignment: Center
+      );
+    }
+
+    Group #CommandWheelCenterPanel {
+      Anchor: (Top: 270, Left: 310, Width: 227, Height: 227);
+      Background: (TexturePath: "ImageAssets/CommandWheelCenterPanel.png");
+    }
+
+    Label #CommandMenuCurrent {
+      Anchor: (Top: 318, Width: 227, Height: 130, Left: 308);
+      Text: "";
+      Style: (
+        FontSize: 22,
+        RenderBold: true,
+        TextColor: #ffffff,
+        HorizontalAlignment: Center,
+        VerticalAlignment: Center,
+        Wrap: true,
+        OutlineColor: #000000(0.7)
+      );
+    }
+
+    TextButton #CommandButton0 {
+      Anchor: (Top: 131, Left: 423, Width: 252, Height: 252);
+      Style: @Slice0ButtonStyle;
+      Text: "";
+      Visible: false;
+    }
+
+    TextButton #CommandButton1 {
+      Anchor: (Top: 383, Left: 423, Width: 252, Height: 252);
+      Style: @Slice1ButtonStyle;
+      Text: "";
+      Visible: false;
+    }
+
+    TextButton #CommandButton2 {
+      Anchor: (Top: 383, Left: 172, Width: 252, Height: 252);
+      Style: @Slice2ButtonStyle;
+      Text: "";
+      Visible: false;
+    }
+
+    TextButton #CommandButton3 {
+      Anchor: (Top: 131, Left: 172, Width: 252, Height: 252);
+      Style: @Slice3ButtonStyle;
+      Text: "";
+      Visible: false;
+    }
+  }
+}
