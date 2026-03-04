@@ -51,46 +51,6 @@ $C = "Common.ui";
   Sounds: $C.@ButtonSounds
 );
 
-@Slice3ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
-  Sounds: $C.@ButtonSounds
-);
-
-@Slice4ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice4_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice4_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice4_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice4_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
-  Sounds: $C.@ButtonSounds
-);
-
-@Slice5ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice5_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice5_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice5_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice5_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
-  Sounds: $C.@ButtonSounds
-);
-
-@Slice6ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice6_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice6_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice6_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice6_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
-  Sounds: $C.@ButtonSounds
-);
-
-@Slice7ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice7_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice7_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice7_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice7_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
-  Sounds: $C.@ButtonSounds
-);
-
 $C.@PageOverlay {
   LayoutMode: Middle;
 
@@ -153,57 +113,22 @@ $C.@PageOverlay {
     }
 
     TextButton #CommandButton0 {
-      Anchor: (Top: 121, Left: 352, Width: 217, Height: 142);
+      Anchor: (Top: -30, Left: 210, Width: 498, Height: 290);
       Style: @Slice0ButtonStyle;
       Text: "";
       Visible: false;
     }
 
     TextButton #CommandButton1 {
-      Anchor: (Top: 147, Left: 526, Width: 207, Height: 207);
+      Anchor: (Top: 400, Left: 560, Width: 290, Height: 432);
       Style: @Slice1ButtonStyle;
       Text: "";
       Visible: false;
     }
 
     TextButton #CommandButton2 {
-      Anchor: (Top: 312, Left: 617, Width: 142, Height: 217);
+      Anchor: (Top: 400, Left: 60, Width: 290, Height: 432);
       Style: @Slice2ButtonStyle;
-      Text: "";
-      Visible: false;
-    }
-
-    TextButton #CommandButton3 {
-      Anchor: (Top: 486, Left: 526, Width: 207, Height: 207);
-      Style: @Slice3ButtonStyle;
-      Text: "";
-      Visible: false;
-    }
-
-    TextButton #CommandButton4 {
-      Anchor: (Top: 577, Left: 352, Width: 217, Height: 142);
-      Style: @Slice4ButtonStyle;
-      Text: "";
-      Visible: false;
-    }
-
-    TextButton #CommandButton5 {
-      Anchor: (Top: 486, Left: 187, Width: 207, Height: 207);
-      Style: @Slice5ButtonStyle;
-      Text: "";
-      Visible: false;
-    }
-
-    TextButton #CommandButton6 {
-      Anchor: (Top: 312, Left: 161, Width: 142, Height: 217);
-      Style: @Slice6ButtonStyle;
-      Text: "";
-      Visible: false;
-    }
-
-    TextButton #CommandButton7 {
-      Anchor: (Top: 147, Left: 187, Width: 207, Height: 207);
-      Style: @Slice7ButtonStyle;
       Text: "";
       Visible: false;
     }
@@ -224,41 +149,6 @@ $C.@PageOverlay {
 
     Label #CommandLabel2 {
       Anchor: (Top: 398, Left: 610, Width: 170, Height: 44);
-      Text: "";
-      Style: @SliceLabelStyle;
-      Visible: false;
-    }
-
-    Label #CommandLabel3 {
-      Anchor: (Top: 563, Left: 541, Width: 170, Height: 44);
-      Text: "";
-      Style: @SliceLabelStyle;
-      Visible: false;
-    }
-
-    Label #CommandLabel4 {
-      Anchor: (Top: 632, Left: 376, Width: 168, Height: 44);
-      Text: "";
-      Style: @SliceLabelStyle;
-      Visible: false;
-    }
-
-    Label #CommandLabel5 {
-      Anchor: (Top: 563, Left: 211, Width: 170, Height: 44);
-      Text: "";
-      Style: @SliceLabelStyle;
-      Visible: false;
-    }
-
-    Label #CommandLabel6 {
-      Anchor: (Top: 398, Left: 142, Width: 170, Height: 44);
-      Text: "";
-      Style: @SliceLabelStyle;
-      Visible: false;
-    }
-
-    Label #CommandLabel7 {
-      Anchor: (Top: 233, Left: 211, Width: 170, Height: 44);
       Text: "";
       Style: @SliceLabelStyle;
       Visible: false;

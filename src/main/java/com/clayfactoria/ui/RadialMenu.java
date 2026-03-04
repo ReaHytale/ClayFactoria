@@ -29,7 +29,7 @@ public final class RadialMenu
     extends InteractiveCustomUIPage<RadialMenu.CommandSelectionEventData> {
   public static final String UI_PATH = "RadialMenu.ui";
   private static final String EVENT_COMMAND_ID = "CommandId";
-  private static final int MAX_COMMAND_BUTTONS = 8;
+  private static final int MAX_COMMAND_BUTTONS = 3;
   private static final long LINKED_PANEL_REFRESH_INTERVAL_MS = 1000L;
 
   private final CommandOption[] options;
@@ -41,9 +41,9 @@ public final class RadialMenu
   public RadialMenu(@Nonnull PlayerRef playerRef) {
     super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, CommandSelectionEventData.CODEC);
     this.options = new CommandOption[] {
-        new CommandOption("take", "Take"),
-        new CommandOption("deposit", "Deposit"),
-        new CommandOption("work", "Work"),
+        new CommandOption("take", ""),
+        new CommandOption("deposit", ""),
+        new CommandOption("work", ""),
     };
     this.selectedCommandId = "take";
     this.refreshLoopStarted = false;
