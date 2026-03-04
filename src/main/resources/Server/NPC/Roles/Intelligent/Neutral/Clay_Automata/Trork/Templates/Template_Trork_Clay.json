@@ -470,8 +470,8 @@
               "Continue": true,
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
               "Sensor": {
-                "Type": "NearbyContainer",
-                "Action": "DEPOSIT"
+                "Type": "CanDoAction",
+                "Action": "Deposit"
               },
               "Actions": [
                 {
@@ -482,17 +482,29 @@
             {
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
               "Sensor": {
-                "Type": "NearbyContainer",
-                "Action": "TAKE"
+                "Type": "CanDoAction",
+                "Action": "Take"
               },
               "Actions": [
                 {
                   "Type": "PlayAnimation",
-                  "Slot": "Status",
+                  "Slot": "Action",
                   "Animation": "Take"
                 },
                 {
                   "Type": "Take"
+                }
+              ]
+            },
+            {
+              "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
+              "Sensor": {
+                "Type": "CanDoAction",
+                "Action": "Position"
+              },
+              "Actions": [
+                {
+                  "Type": "Position"
                 }
               ]
             },

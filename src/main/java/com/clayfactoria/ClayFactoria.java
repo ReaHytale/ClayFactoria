@@ -2,6 +2,7 @@ package com.clayfactoria;
 
 import com.clayfactoria.actions.builders.BuilderActionDeposit;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
+import com.clayfactoria.actions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionTake;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
@@ -9,8 +10,8 @@ import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.events.OpenWandMenu;
+import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
-import com.clayfactoria.sensors.builders.BuilderSensorNearbyContainer;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -64,8 +65,8 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Sensor Leash Target");
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
 
-    LOGGER.atInfo().log("Registering Sensor Nearby Container");
-    NPCPlugin.get().registerCoreComponentType("NearbyContainer", BuilderSensorNearbyContainer::new);
+    LOGGER.atInfo().log("Registering Sensor Can Do Action");
+    NPCPlugin.get().registerCoreComponentType("CanDoAction", BuilderSensorCanDoAction::new);
 
     LOGGER.atInfo().log("Registering Put Item In Hand Action");
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderPutItemInHand::new);
@@ -75,6 +76,9 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Deposit From Nearby Storage or Station Action");
     NPCPlugin.get().registerCoreComponentType("Deposit", BuilderActionDeposit::new);
+
+    LOGGER.atInfo().log("Registering Position Action");
+    NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
 
     LOGGER.atInfo().log("Registering Drop Inventory Action");
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);

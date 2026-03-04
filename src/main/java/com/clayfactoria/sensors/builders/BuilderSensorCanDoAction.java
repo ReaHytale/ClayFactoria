@@ -1,7 +1,7 @@
 package com.clayfactoria.sensors.builders;
 
 import com.clayfactoria.codecs.Action;
-import com.clayfactoria.sensors.SensorNearbyContainer;
+import com.clayfactoria.sensors.SensorCanDoAction;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.npc.instructions.Sensor;
 import javax.annotation.Nonnull;
 import org.jspecify.annotations.Nullable;
 
-public class BuilderSensorNearbyContainer extends BuilderSensorBase {
+public class BuilderSensorCanDoAction extends BuilderSensorBase {
   protected final EnumHolder<Action> action = new EnumHolder<>();
 
   public Action getAction(@Nonnull BuilderSupport builderSupport) {
@@ -31,7 +31,7 @@ public class BuilderSensorNearbyContainer extends BuilderSensorBase {
 
   @Override
   public @Nullable Sensor build(BuilderSupport builderSupport) {
-    return new SensorNearbyContainer(this, builderSupport);
+    return new SensorCanDoAction(this, builderSupport);
   }
 
   @Override
