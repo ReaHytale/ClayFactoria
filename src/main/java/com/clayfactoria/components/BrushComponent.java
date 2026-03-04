@@ -11,13 +11,12 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nonnull;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BrushComponent implements Component<EntityStore> {
   @Nonnull
@@ -29,16 +28,30 @@ public class BrushComponent implements Component<EntityStore> {
               (comp) -> comp.tasks.toArray(new Task[0]))
           .documentation("The tasks for pathing and actions for each location")
           .add()
+
           .append(
               new KeyedCodec<>("PathType", PathType.CODEC),
               (comp, value) -> comp.pathType = value,
               (comp) -> comp.pathType)
           .documentation("Path type (LOOP or ONCE)")
           .add()
+
+          .append(
+              new KeyedCodec<>("TaskType", Action.CODEC),
+              (comp, value) -> comp.action = value,
+              (comp) -> comp.action)
+          .documentation("Type of task to be added to the tasks list on next brush paint.")
+          .add()
+
           .build();
 
   @Getter @Setter private List<Task> tasks = new ArrayList<>();
   @Getter @Setter private PathType pathType = PathType.LOOP;
+  @Getter @Setter @Nonnull private Action action = Action.TAKE;
+
+  public static ComponentType<EntityStore, BrushComponent> getComponentType() {
+    return ClayFactoria.brushComponentType;
+  }
 
   public void addTask(Vector3d location, Action action) {
     this.tasks.add(new Task(location, action));
@@ -59,10 +72,7 @@ public class BrushComponent implements Component<EntityStore> {
     BrushComponent brushComponent = new BrushComponent();
     brushComponent.tasks = this.tasks;
     brushComponent.pathType = this.pathType;
+    brushComponent.action = this.action;
     return brushComponent;
-  }
-
-  public static ComponentType<EntityStore, BrushComponent> getComponentType() {
-    return ClayFactoria.brushComponentType;
   }
 }

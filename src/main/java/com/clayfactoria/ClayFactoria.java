@@ -90,7 +90,7 @@ public class ClayFactoria extends JavaPlugin {
     }
 
     LOGGER.atInfo().log("Registering Target Block Event System");
-    this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem(npcComponentType));
+    this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

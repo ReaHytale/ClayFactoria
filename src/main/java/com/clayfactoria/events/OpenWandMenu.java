@@ -1,5 +1,6 @@
 package com.clayfactoria.events;
 
+import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.ui.RadialMenu;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
@@ -28,15 +29,17 @@ public class OpenWandMenu extends SimpleInstantInteraction {
     Ref<EntityStore> ref = interactionContext.getEntity();
     Store<EntityStore> store = ref.getStore();
     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    BrushComponent brushComponent = store.getComponent(ref, BrushComponent.getComponentType());
     Player player = store.getComponent(ref, Player.getComponentType());
 
     assert playerRef != null;
     assert player != null;
+    assert brushComponent != null;
 
     CompletableFuture.runAsync(() -> {
       CustomUIPage page = player.getPageManager().getCustomPage();
       if (page == null) {
-        page = new RadialMenu(playerRef);
+        page = new RadialMenu(playerRef, brushComponent);
         player.getPageManager().openCustomPage(ref, store, page);
       }
     });

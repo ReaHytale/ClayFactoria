@@ -1,10 +1,12 @@
 package com.clayfactoria.ui;
 
-import com.hypixel.hytale.codec.Codec;
+import com.clayfactoria.codecs.Action;
+import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
@@ -19,56 +21,60 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
 /**
- * Interactive command-selection page for command items.
- * Presents a radial-style set of clickable command buttons and returns the selected command id.
+ * Interactive command-selection page for command items. Presents a radial-style set of clickable
+ * command buttons and returns the selected command id.
  *
  * @author Alechilles
  * @author Lordimass
  */
 public final class RadialMenu
     extends InteractiveCustomUIPage<RadialMenu.CommandSelectionEventData> {
+
   public static final String UI_PATH = "RadialMenu.ui";
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   private static final String EVENT_COMMAND_ID = "CommandId";
-  private static final int MAX_COMMAND_BUTTONS = 3;
+  private static final int MAX_COMMAND_BUTTONS = 4;
   private static final long LINKED_PANEL_REFRESH_INTERVAL_MS = 1000L;
 
-  private final CommandOption[] options;
-  @Nonnull
-  private final String selectedCommandId;
+  private final Action[] options;
+  private final BrushComponent brushComponent;
   private volatile boolean refreshLoopStarted;
   private volatile boolean dismissed;
 
-  public RadialMenu(@Nonnull PlayerRef playerRef) {
-    super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, CommandSelectionEventData.CODEC);
-    this.options = new CommandOption[] {
-        new CommandOption("take", ""),
-        new CommandOption("deposit", ""),
-        new CommandOption("work", ""),
-    };
-    this.selectedCommandId = "take";
+  public RadialMenu(@Nonnull PlayerRef playerRef, @Nonnull BrushComponent brushComponent) {
+    super(
+        playerRef,
+        CustomPageLifetime.CanDismissOrCloseThroughInteraction,
+        CommandSelectionEventData.CODEC);
+    this.options = new Action[]{Action.TAKE, Action.DEPOSIT, Action.WORK, Action.POSITION};
     this.refreshLoopStarted = false;
     this.dismissed = false;
+    this.brushComponent = brushComponent;
   }
 
   @Override
-  public void build(@Nonnull Ref<EntityStore> ref,
-                    @Nonnull UICommandBuilder commandBuilder,
-                    @Nonnull UIEventBuilder eventBuilder,
-                    @Nonnull Store<EntityStore> store) {
+  public void build(
+      @Nonnull Ref<EntityStore> ref,
+      @Nonnull UICommandBuilder commandBuilder,
+      @Nonnull UIEventBuilder eventBuilder,
+      @Nonnull Store<EntityStore> store) {
     commandBuilder.append(UI_PATH);
     commandBuilder.set("#CommandMenuWheel.Visible", true);
     commandBuilder.set("#CommandMenuTitle.Text", "Select Command");
     commandBuilder.set("#CommandMenuSubtitle.Text", "Click a command to set it.");
-    commandBuilder.set("#CommandMenuCurrent.Text", resolveCurrentLabel());
+    commandBuilder.set("#CommandMenuCurrent.Text", "Current: " + brushComponent.getAction());
 
     buildCommandButtons(commandBuilder, eventBuilder);
     startRefreshLoop();
   }
 
   @Override
-  public void handleDataEvent(@Nonnull Ref<EntityStore> ref,
-                              @Nonnull Store<EntityStore> store,
-                              @Nonnull CommandSelectionEventData data) {
+  public void handleDataEvent(
+      @Nonnull Ref<EntityStore> ref,
+      @Nonnull Store<EntityStore> store,
+      @Nonnull CommandSelectionEventData data) {
+    LOGGER.atInfo().log("Set Brush command to: " + data.task);
+    brushComponent.setAction(data.task);
     close();
   }
 
@@ -77,27 +83,22 @@ public final class RadialMenu
     dismissed = true;
   }
 
-  private void buildCommandButtons(@Nonnull UICommandBuilder commandBuilder,
-                                   @Nonnull UIEventBuilder eventBuilder) {
+  private void buildCommandButtons(
+      @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
     for (int i = 0; i < MAX_COMMAND_BUTTONS; i++) {
       String selector = "#CommandButton" + i;
-      String labelSelector = "#CommandLabel" + i;
       if (i >= options.length) {
         commandBuilder.set(selector + ".Visible", false);
-        commandBuilder.set(labelSelector + ".Visible", false);
         continue;
       }
-      CommandOption option = options[i];
+      Action option = options[i];
       commandBuilder.set(selector + ".Visible", true);
       commandBuilder.set(selector + ".Text", "");
-      commandBuilder.set(labelSelector + ".Visible", true);
-      commandBuilder.set(labelSelector + ".Text", option.label);
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           selector,
-          EventData.of(EVENT_COMMAND_ID, option.id),
-          false
-      );
+          EventData.of(EVENT_COMMAND_ID, String.valueOf(option)),
+          false);
     }
   }
 
@@ -112,8 +113,7 @@ public final class RadialMenu
   private void scheduleRefreshTick() {
     CompletableFuture.runAsync(
         this::dispatchRefreshTick,
-        CompletableFuture.delayedExecutor(LINKED_PANEL_REFRESH_INTERVAL_MS, TimeUnit.MILLISECONDS)
-    );
+        CompletableFuture.delayedExecutor(LINKED_PANEL_REFRESH_INTERVAL_MS, TimeUnit.MILLISECONDS));
   }
 
   private void dispatchRefreshTick() {
@@ -135,32 +135,17 @@ public final class RadialMenu
     }
   }
 
-  private String resolveCurrentLabel() {
-    for (CommandOption option : options) {
-      if (option != null && option.id.equals(selectedCommandId)) {
-        return "Current: " + option.label;
-      }
-    }
-    return "Current: " + selectedCommandId;
-  }
-
-  /** A possible option for a command to chose from */
-  private record CommandOption(@Nonnull String id, @Nonnull String label) { }
-
   /** Event payload emitted by command-button clicks in the command selection page. */
   public static final class CommandSelectionEventData {
-    public static final BuilderCodec<CommandSelectionEventData> CODEC = BuilderCodec.builder(
-            CommandSelectionEventData.class,
-            CommandSelectionEventData::new
-        )
-        .append(
-            new KeyedCodec<>(EVENT_COMMAND_ID, Codec.STRING),
-            (event, value) -> event.commandId = value,
-            event -> event.commandId
-        )
-        .add()
-        .build();
+    public static final BuilderCodec<CommandSelectionEventData> CODEC =
+        BuilderCodec.builder(CommandSelectionEventData.class, CommandSelectionEventData::new)
+            .append(
+                new KeyedCodec<>(EVENT_COMMAND_ID, Action.CODEC),
+                (event, value) -> event.task = value,
+                event -> event.task)
+            .add()
+            .build();
 
-    private String commandId;
+    private Action task;
   }
 }
