@@ -36,7 +36,7 @@ public class ActionTake extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
-    ItemContainer itemContainer = TaskHelper.getOrthogonalContainer(npcEntity, ContainerSlot.Output);
+    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, ContainerSlot.Output);
     checkNull(itemContainer);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());

@@ -2,6 +2,7 @@ package com.clayfactoria.utils;
 
 import static com.clayfactoria.utils.Utils.checkNull;
 
+import com.clayfactoria.codecs.Action;
 import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -30,7 +31,6 @@ import javax.annotation.Nullable;
 
 public class TaskHelper {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-  private static final String[] CONTAINER_STATE_IDS = {"container", "processingBench"};
 
   @Nonnull
   public static NPCEntity getNPCEntity(
@@ -42,39 +42,12 @@ public class TaskHelper {
     return npcEntity;
   }
 
-  @Nullable
-  public static ItemContainer getOrthogonalContainer(NPCEntity npcEntity, @Nullable ContainerSlot containerSlot) {
-    World world = npcEntity.getWorld();
-    checkNull(world);
-    Vector3i pos = findNearbyContainer(npcEntity, world);
-    checkNull(pos);
-    return getItemContainerAtPos(world, pos, containerSlot);
-  }
 
   @Nullable
-  public static ItemContainer getOrthogonalContainer(NPCEntity npcEntity) {
-    return getOrthogonalContainer(npcEntity, null);
-  }
-
-  @Nullable
-  public static Vector3i findNearbyContainer(NPCEntity npcEntity) {
-    World world = npcEntity.getWorld();
-    checkNull(world);
-    return findNearbyContainer(npcEntity, world);
-  }
-
-  @Nullable
-  public static Vector3i findNearbyContainer(NPCEntity npcEntity, World world) {
+  public static Vector3i findNearbyPOI(NPCEntity npcEntity, Action action) {
+    World world = checkNull(npcEntity.getWorld());
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
-
-    // Check surrounding blocks
-    Vector3i[] directions = {
-      new Vector3i(0, 0, -1), new Vector3i(1, 0, 0), new Vector3i(0, 0, 1), new Vector3i(-1, 0, 0)
-    };
-
-    // Shuffle order to prevent order of check being predictable
-    List<Vector3i> shuffled = Arrays.asList(directions);
-    Collections.shuffle(shuffled);
+    List<Vector3i> shuffled = getAdjacentDirections();
     for (Vector3i dir : shuffled) {
       BlockType type = world.getBlockType(pos.clone().add(dir));
       if (type == null) {
@@ -83,7 +56,7 @@ public class TaskHelper {
       StateData stateData = type.getState();
       if (stateData == null
           || stateData.getId() == null
-          || Arrays.stream(CONTAINER_STATE_IDS).noneMatch(stateData.getId()::equals)) {
+          || Arrays.stream(action.blockStates).noneMatch(stateData.getId()::equals)) {
         continue;
       }
       return pos.add(dir);
@@ -91,7 +64,15 @@ public class TaskHelper {
     return null;
   }
 
-  public static ItemContainer getItemContainerAtPos(
+  @Nullable
+  public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity, @Nullable ContainerSlot containerSlot) {
+    World world = checkNull(npcEntity.getWorld());
+    // Action.TAKE looks for item containers, so we use that here as a dummy action
+    Vector3i pos = checkNull(findNearbyPOI(npcEntity, Action.TAKE));
+    return getItemContainerAtPos(world, pos, containerSlot);
+  }
+
+  private static ItemContainer getItemContainerAtPos(
       World world,
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
@@ -130,6 +111,18 @@ public class TaskHelper {
           blockState.getClass(), pos));
       return null;
     }
+  }
+
+  private static List<Vector3i> getAdjacentDirections() {
+    // Check surrounding blocks
+    Vector3i[] directions = {
+        new Vector3i(0, 0, -1), new Vector3i(1, 0, 0), new Vector3i(0, 0, 1), new Vector3i(-1, 0, 0)
+    };
+
+    // Shuffle order to prevent order of check being predictable
+    List<Vector3i> shuffled = Arrays.asList(directions);
+    Collections.shuffle(shuffled);
+    return shuffled;
   }
 
   @Nullable

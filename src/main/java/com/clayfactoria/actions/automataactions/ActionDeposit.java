@@ -50,7 +50,7 @@ public class ActionDeposit extends ActionBaseLogger {
   }
 
   private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, TaskComponent taskComponent) {
-    ItemContainer itemContainer = TaskHelper.getOrthogonalContainer(npcEntity, containerSlot);
+    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, containerSlot);
     checkNull(itemContainer);
     boolean result = TaskHelper.transferItem(
         npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
