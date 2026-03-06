@@ -38,7 +38,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
     checkNull(taskComponent, "TaskComponent was null");
 
     if (taskComponent.isComplete()) {
-      LOGGER.atSevere().log("Task is complete");
       return false;
     }
 
