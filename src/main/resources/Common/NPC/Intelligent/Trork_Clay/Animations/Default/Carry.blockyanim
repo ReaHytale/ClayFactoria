@@ -7,7 +7,17 @@
       "position": [
         {
           "time": 0,
-          "delta": {"x": 0, "y": -1.69047, "z": 0.37477},
+          "delta": {"x": 0, "y": -1.69047, "z": -3.62523},
+          "interpolationType": "linear"
+        },
+        {
+          "time": 4,
+          "delta": {"x": 0, "y": -1.69, "z": -3.63},
+          "interpolationType": "linear"
+        },
+        {
+          "time": 46,
+          "delta": {"x": 0, "y": -1.69, "z": -1.63},
           "interpolationType": "linear"
         }
       ],

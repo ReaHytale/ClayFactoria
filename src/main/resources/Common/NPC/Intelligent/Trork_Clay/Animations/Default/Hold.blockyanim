@@ -4,18 +4,7 @@
   "holdLastKeyframe": false,
   "nodeAnimations": {
     "Chest": {
-      "position": [
-        {
-          "time": 0,
-          "delta": {"x": 0, "y": 0, "z": 0},
-          "interpolationType": "linear"
-        },
-        {
-          "time": 54,
-          "delta": {"x": 0, "y": -2, "z": 0},
-          "interpolationType": "linear"
-        }
-      ],
+      "position": [],
       "orientation": [
         {
           "time": 0,
@@ -364,19 +353,6 @@
           "interpolationType": "smooth"
         }
       ],
-      "shapeStretch": [],
-      "shapeVisible": [],
-      "shapeUvOffset": []
-    },
-    "R-Attachment": {
-      "position": [
-        {
-          "time": 0,
-          "delta": {"x": 5, "y": 0, "z": 0},
-          "interpolationType": "linear"
-        }
-      ],
-      "orientation": [],
       "shapeStretch": [],
       "shapeVisible": [],
       "shapeUvOffset": []

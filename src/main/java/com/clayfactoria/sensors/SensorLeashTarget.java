@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import com.hypixel.hytale.server.npc.sensorinfo.PositionProvider;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -57,7 +56,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
         return false;
       }
 
-      if (transformComponent.getPosition().distanceSquaredTo(currentTarget) > 0.2f) {
+      if (transformComponent.getPosition().distanceSquaredTo(currentTarget) > 0.1f) {
         Ref<EntityStore> target = this.positionProvider.getTarget();
         if (target == null) {
           this.positionProvider.setTarget(currentTarget);

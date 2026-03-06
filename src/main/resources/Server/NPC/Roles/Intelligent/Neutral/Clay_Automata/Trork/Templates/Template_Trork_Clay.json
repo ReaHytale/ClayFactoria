@@ -28,7 +28,7 @@
       "Description": "Drop Items"
     },
     "MaxSpeed": {
-      "Value": 5,
+      "Value": 4,
       "Description": "Maximum walking speed"
     },
     "AttitudeGroup": {
@@ -93,12 +93,8 @@
       "Actions": [
         {
           "Type": "PlayAnimation",
-          "Slot": "Status"
-        },
-        {
-          "Type": "SetFlag",
-          "Name": "AnimationBlock",
-          "SetTo": false
+          "Slot": "Status",
+          "Animation": "Idle"
         }
       ]
     },
@@ -119,12 +115,16 @@
         },
         {
           "Type": "PlayAnimation",
-          "Slot": "Status"
+          "Slot": "Status",
+          "Animation": "Idle"
+        },
+        {
+          "Type": "DropInventory"
         }
       ]
     },
     {
-      "$Comment": "Clear idle anims",
+      "$Comment": "Clear idle anim",
       "States": [
         {
           "To": [ ],
@@ -141,15 +141,14 @@
     {
       "States": [
         {
-          "From": [ "Action" ],
-          "To": [ "Path" ]
+          "From": [ ],
+          "To": [ "Action" ]
         }
       ],
       "Actions": [
         {
           "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Walk"
+          "Slot": "Status"
         }
       ]
     }
@@ -199,9 +198,6 @@
             "State": "Idle"
           },
           "Instructions": [
-            {
-              "Reference": "Component_Instruction_Clear_Status_Animation"
-            },
             {
               "Reference": "Component_Instruction_Damage_Check",
               "Modify": {
@@ -509,10 +505,19 @@
                 },
                 {
                   "Type": "Timeout",
-                  "Delay": [ 0.9, 0.9 ]
+                  "Delay": [ 0.4, 0.4 ]
                 },
                 {
                   "Type": "Take"
+                },
+                {
+                  "Type": "Timeout",
+                  "Delay": [ 0.4, 0.4 ]
+                },
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Hold"
                 }
               ]
             },
@@ -534,6 +539,10 @@
                 "Type": "LeashTarget"
               },
               "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status"
+                },
                 {
                   "Type": "State",
                   "State": "Path"
@@ -691,14 +700,10 @@
             },
             "Actions": [
               {
-                "Type": "ReleaseTarget"
-              },
-              {
                 "Type": "State",
                 "State": "Idle"
               },
               {
-                "$Comment": "Temporarily disable interactable",
                 "Type": "SetInteractable",
                 "Interactable": false
               }

@@ -72,7 +72,7 @@ public class TaskHelper {
     return getItemContainerAtPos(world, pos, containerSlot);
   }
 
-  private static ItemContainer getItemContainerAtPos(
+  public static ItemContainer getItemContainerAtPos(
       World world,
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
