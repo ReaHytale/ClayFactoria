@@ -8,7 +8,6 @@ import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.HasTakenFromContainerComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
@@ -33,8 +32,6 @@ public class ClayFactoria extends JavaPlugin {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
   public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
-  public static ComponentType<EntityStore, HasTakenFromContainerComponent>
-      hasTakenFromContainerComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
     super(init);
@@ -52,11 +49,6 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Task Component");
     ownerComponentType =
         this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
-    LOGGER.atInfo().log("Registering HasTakenFromStorage Component");
-    hasTakenFromContainerComponentType =
-        this.getEntityStoreRegistry()
-            .registerComponent(
-                HasTakenFromContainerComponent.class, HasTakenFromContainerComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
