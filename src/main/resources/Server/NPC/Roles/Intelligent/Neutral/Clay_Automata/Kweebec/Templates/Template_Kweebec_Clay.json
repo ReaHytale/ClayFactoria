@@ -479,6 +479,17 @@
               ]
             },
             {
+              "Sensor": {
+                "Type": "CanDoAction",
+                "Action": "Work"
+              },
+              "Actions": [
+                {
+                  "Type": "Work"
+                }
+              ]
+            },
+            {
               "$Comment": "Switch to Pathing state when there is NOT an action for the current target location",
               "Sensor": {
                 "Type": "LeashTarget"

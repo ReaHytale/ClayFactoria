@@ -3,6 +3,7 @@ package com.clayfactoria;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
+import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
@@ -79,6 +80,9 @@ public class ClayFactoria extends JavaPlugin {
 
     LOGGER.atInfo().log("Registering Position Action");
     NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
+
+    LOGGER.atInfo().log("Registering Work Action");
+    NPCPlugin.get().registerCoreComponentType("Work", BuilderActionWork::new);
 
     LOGGER.atInfo().log("Registering Drop Inventory Action");
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);

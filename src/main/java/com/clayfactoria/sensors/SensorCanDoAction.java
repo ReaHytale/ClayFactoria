@@ -38,7 +38,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
     checkNull(taskComponent, "TaskComponent was null");
 
     if (taskComponent.isComplete()) {
-      LOGGER.atSevere().log("Task is complete");
       return false;
     }
 
@@ -57,9 +56,9 @@ public class SensorCanDoAction extends SensorBaseLogger {
     NPCEntity npcEntity = store.getComponent(ref, component);
     checkNull(npcEntity, "NPCEntity was null");
 
-    // If the task is a TAKE or DEPOSIT task, check that there's a container nearby first.
-    if (action == Action.TAKE || action == Action.DEPOSIT) {
-      Vector3i nearbyContainerLocation = TaskHelper.findNearbyContainer(npcEntity);
+    // If the task is anything but a position task, check that a POI is nearby first.
+    if (action != Action.POSITION) {
+      Vector3i nearbyContainerLocation = TaskHelper.findNearbyPOI(npcEntity, action);
       return nearbyContainerLocation != null;
     }
     return true;
