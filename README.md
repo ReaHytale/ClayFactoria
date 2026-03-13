@@ -1,6 +1,6 @@
 # Clay Factoria
 
-Rea and Willow present Clay Automation through Clay Factoria to Hytale.
+Rea, Willow, and Lordimass present Clay Automation through Clay Factoria to Hytale.
 
 ## Hytale Plugin Template Credits
 
