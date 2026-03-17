@@ -90,12 +90,12 @@ $C.@PageOverlay {
     }
 
     Group #CommandWheelCenterPanel {
-      Anchor: (Top: 270, Left: 310, Width: 227, Height: 227);
+      Anchor: (Width: 227, Height: 227);
       Background: (TexturePath: "ImageAssets/CommandWheelCenterPanel.png");
     }
 
     Label #CommandMenuCurrent {
-      Anchor: (Top: 318, Width: 227, Height: 130, Left: 308);
+      Anchor: (Width: 227, Height: 130);
       Text: "";
       Style: (
         FontSize: 22,
@@ -109,28 +109,28 @@ $C.@PageOverlay {
     }
 
     TextButton #CommandButton0 {
-      Anchor: (Top: 131, Left: 423, Width: 252, Height: 252);
+      Anchor: (Top: 128, Left: 461, Width: 252, Height: 252);
       Style: @Slice0ButtonStyle;
       Text: "";
       Visible: false;
     }
 
     TextButton #CommandButton1 {
-      Anchor: (Top: 383, Left: 423, Width: 252, Height: 252);
+      Anchor: (Top: 380, Left: 461, Width: 252, Height: 252);
       Style: @Slice1ButtonStyle;
       Text: "";
       Visible: false;
     }
 
     TextButton #CommandButton2 {
-      Anchor: (Top: 383, Left: 172, Width: 252, Height: 252);
+      Anchor: (Top: 380, Left: 208, Width: 252, Height: 252);
       Style: @Slice2ButtonStyle;
       Text: "";
       Visible: false;
     }
 
     TextButton #CommandButton3 {
-      Anchor: (Top: 131, Left: 172, Width: 252, Height: 252);
+      Anchor: (Top: 128, Left: 208, Width: 252, Height: 252);
       Style: @Slice3ButtonStyle;
       Text: "";
       Visible: false;
