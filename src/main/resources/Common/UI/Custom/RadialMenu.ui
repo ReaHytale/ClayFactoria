@@ -28,34 +28,34 @@ $C = "Common.ui";
 );
 
 @Slice0ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice0_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Default: (Background: (TexturePath: "ImageAssets/4Radial0_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/4Radial0_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial0_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/4Radial0_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
 
 @Slice1ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice1_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Default: (Background: (TexturePath: "ImageAssets/4Radial1_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/4Radial1_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial1_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/4Radial1_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
 
 @Slice2ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice2_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Default: (Background: (TexturePath: "ImageAssets/4Radial2_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/4Radial2_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial2_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/4Radial2_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
 
 @Slice3ButtonStyle = TextButtonStyle(
-  Default: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png"), LabelStyle: @SliceButtonLabelStyle),
-  Hovered: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
-  Disabled: (Background: (TexturePath: "ImageAssets/CommandWheelSlice3_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
+  Default: (Background: (TexturePath: "ImageAssets/4Radial3_Default.png"), LabelStyle: @SliceButtonLabelStyle),
+  Hovered: (Background: (TexturePath: "ImageAssets/4Radial3_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial3_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Disabled: (Background: (TexturePath: "ImageAssets/4Radial3_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
 
@@ -91,7 +91,7 @@ $C.@PageOverlay {
 
     Group #CommandWheelCenterPanel {
       Anchor: (Width: 227, Height: 227);
-      Background: (TexturePath: "ImageAssets/CommandWheelCenterPanel.png");
+      Background: (TexturePath: "ImageAssets/RadialCentre.png");
     }
 
     Label #CommandMenuCurrent {
