@@ -30,7 +30,7 @@ $C = "Common.ui";
 @Slice0ButtonStyle = TextButtonStyle(
   Default: (Background: (TexturePath: "ImageAssets/4Radial0_Default.png"), LabelStyle: @SliceButtonLabelStyle),
   Hovered: (Background: (TexturePath: "ImageAssets/4Radial0_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/4Radial0_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial0_Click.png"), LabelStyle: @SliceButtonLabelStyle),
   Disabled: (Background: (TexturePath: "ImageAssets/4Radial0_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
@@ -38,7 +38,7 @@ $C = "Common.ui";
 @Slice1ButtonStyle = TextButtonStyle(
   Default: (Background: (TexturePath: "ImageAssets/4Radial1_Default.png"), LabelStyle: @SliceButtonLabelStyle),
   Hovered: (Background: (TexturePath: "ImageAssets/4Radial1_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/4Radial1_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial1_Click.png"), LabelStyle: @SliceButtonLabelStyle),
   Disabled: (Background: (TexturePath: "ImageAssets/4Radial1_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
@@ -46,7 +46,7 @@ $C = "Common.ui";
 @Slice2ButtonStyle = TextButtonStyle(
   Default: (Background: (TexturePath: "ImageAssets/4Radial2_Default.png"), LabelStyle: @SliceButtonLabelStyle),
   Hovered: (Background: (TexturePath: "ImageAssets/4Radial2_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/4Radial2_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial2_Click.png"), LabelStyle: @SliceButtonLabelStyle),
   Disabled: (Background: (TexturePath: "ImageAssets/4Radial2_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
@@ -54,7 +54,7 @@ $C = "Common.ui";
 @Slice3ButtonStyle = TextButtonStyle(
   Default: (Background: (TexturePath: "ImageAssets/4Radial3_Default.png"), LabelStyle: @SliceButtonLabelStyle),
   Hovered: (Background: (TexturePath: "ImageAssets/4Radial3_Hover.png"), LabelStyle: @SliceButtonLabelStyle),
-  Pressed: (Background: (TexturePath: "ImageAssets/4Radial3_Pressed.png"), LabelStyle: @SliceButtonLabelStyle),
+  Pressed: (Background: (TexturePath: "ImageAssets/4Radial3_Click.png"), LabelStyle: @SliceButtonLabelStyle),
   Disabled: (Background: (TexturePath: "ImageAssets/4Radial3_Default.png", Color: #ffffff(0.5)), LabelStyle: @SliceButtonDisabledLabelStyle),
   Sounds: $C.@ButtonSounds
 );
@@ -108,32 +108,60 @@ $C.@PageOverlay {
       );
     }
 
-    TextButton #CommandButton0 {
-      Anchor: (Top: 128, Left: 461, Width: 252, Height: 252);
-      Style: @Slice0ButtonStyle;
-      Text: "";
-      Visible: false;
+    Group #CommandButton0Group {
+      Anchor: (Top: 128, Left: 460, Width: 252, Height: 252);
+      TextButton #CommandButton0 {
+        Anchor: (Top: 0, Left: 0, Width: 252, Height: 252);
+        Text: "";
+        Style: @Slice0ButtonStyle;
+        Visible: false;
+      }
+      Panel #CommandButton0Icon {
+        Anchor: (Top: 80, Left: 80, Width: 80, Height: 80);
+        Background: (TexturePath: "ImageAssets/Take.png");
+      }
     }
 
-    TextButton #CommandButton1 {
-      Anchor: (Top: 380, Left: 461, Width: 252, Height: 252);
-      Style: @Slice1ButtonStyle;
-      Text: "";
-      Visible: false;
+    Group #CommandButton1Group {
+      Anchor: (Top: 380, Left: 460, Width: 252, Height: 252);
+      TextButton #CommandButton1 {
+        Anchor: (Top: 0, Left: 0, Width: 252, Height: 252);
+        Text: "";
+        Style: @Slice1ButtonStyle;
+        Visible: false;
+      }
+      Panel #CommandButton1Icon {
+        Anchor: (Top: 80, Left: 80, Width: 80, Height: 80);
+        Background: (TexturePath: "ImageAssets/Deposit.png");
+      }
     }
 
-    TextButton #CommandButton2 {
+    Group #CommandButton2Group {
       Anchor: (Top: 380, Left: 208, Width: 252, Height: 252);
-      Style: @Slice2ButtonStyle;
-      Text: "";
-      Visible: false;
+      TextButton #CommandButton2 {
+        Anchor: (Top: 0, Left: 0, Width: 252, Height: 252);
+        Text: "";
+        Style: @Slice2ButtonStyle;
+        Visible: false;
+      }
+      Panel #CommandButton2Icon {
+        Anchor: (Top: 80, Left: 80, Width: 80, Height: 80);
+        Background: (TexturePath: "ImageAssets/Work.png");
+      }
     }
 
-    TextButton #CommandButton3 {
+    Group #CommandButton3Group {
       Anchor: (Top: 128, Left: 208, Width: 252, Height: 252);
-      Style: @Slice3ButtonStyle;
-      Text: "";
-      Visible: false;
+      TextButton #CommandButton3 {
+        Anchor: (Top: 0, Left: 0, Width: 252, Height: 252);
+        Text: "";
+        Style: @Slice3ButtonStyle;
+        Visible: false;
+      }
+      Panel #CommandButton3Icon {
+        Anchor: (Top: 80, Left: 80, Width: 80, Height: 80);
+        Background: (TexturePath: "ImageAssets/Position.png");
+      }
     }
   }
 }
