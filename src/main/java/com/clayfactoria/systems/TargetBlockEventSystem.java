@@ -91,7 +91,12 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     // Add the task to the task list, with the action being set to the one currently selected by the player.
     Action action = brushComponent.getAction();
-    brushComponent.addTask(targetBlockLocOnTopOfBlock, action);
+    try {
+      brushComponent.addTask(targetBlockLocOnTopOfBlock, action, player.getWorld());
+    } catch (IllegalStateException e) {
+      player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
+      return;
+    }
     String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
     LOGGER.atInfo().log(message);
     player.sendMessage(Message.raw(message).color(Color.GREEN));
