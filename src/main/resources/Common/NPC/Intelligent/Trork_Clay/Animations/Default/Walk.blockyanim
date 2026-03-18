@@ -4,13 +4,7 @@
   "holdLastKeyframe": false,
   "nodeAnimations": {
     "Chest": {
-      "position": [
-        {
-          "time": 0,
-          "delta": {"x": 0, "y": -1.69047, "z": 0.37477},
-          "interpolationType": "linear"
-        }
-      ],
+      "position": [],
       "orientation": [
         {
           "time": 14,
@@ -221,12 +215,12 @@
       "orientation": [
         {
           "time": 11,
-          "delta": {"x": -0.44061, "y": -0.08714, "z": -0.0019, "w": 0.89346},
+          "delta": {"x": 0.10845, "y": -0.07451, "z": 0.04522, "w": 0.99027},
           "interpolationType": "smooth"
         },
         {
           "time": 42,
-          "delta": {"x": -0.44061, "y": -0.08714, "z": -0.0019, "w": 0.89346},
+          "delta": {"x": -0.32022, "y": -0.08664, "z": 0.00949, "w": 0.94333},
           "interpolationType": "smooth"
         }
       ],
@@ -250,12 +244,12 @@
       "orientation": [
         {
           "time": 11,
-          "delta": {"x": -0.44061, "y": 0.08664, "z": 0.00949, "w": 0.89346},
+          "delta": {"x": -0.32022, "y": 0.08714, "z": -0.0019, "w": 0.94333},
           "interpolationType": "smooth"
         },
         {
           "time": 42,
-          "delta": {"x": -0.44061, "y": 0.08664, "z": 0.00949, "w": 0.89346},
+          "delta": {"x": 0.08682, "y": 0.07899, "z": -0.03683, "w": 0.9924},
           "interpolationType": "smooth"
         }
       ],
