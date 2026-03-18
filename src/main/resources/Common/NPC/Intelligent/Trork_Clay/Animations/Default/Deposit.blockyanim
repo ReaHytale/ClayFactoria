@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "duration": 54,
+  "duration": 53,
   "holdLastKeyframe": true,
   "nodeAnimations": {
     "Chest": {
@@ -437,19 +437,6 @@
         {
           "time": 53,
           "delta": {"x": 0, "y": 0, "z": 0, "w": 1},
-          "interpolationType": "linear"
-        }
-      ],
-      "shapeStretch": [],
-      "shapeVisible": [],
-      "shapeUvOffset": []
-    },
-    "Lid": {
-      "position": [],
-      "orientation": [
-        {
-          "time": 53,
-          "delta": {"x": -0.70711, "y": 0, "z": 0, "w": 0.70711},
           "interpolationType": "linear"
         }
       ],

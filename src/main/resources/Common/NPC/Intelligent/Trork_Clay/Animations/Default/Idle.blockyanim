@@ -362,13 +362,7 @@
       "shapeUvOffset": []
     },
     "Origin": {
-      "position": [
-        {
-          "time": 0,
-          "delta": {"x": 0, "y": 6, "z": -14},
-          "interpolationType": "linear"
-        }
-      ],
+      "position": [],
       "orientation": [
         {
           "time": 0,

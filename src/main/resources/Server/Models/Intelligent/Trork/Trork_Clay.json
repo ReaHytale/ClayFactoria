@@ -49,7 +49,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Idle.blockyanim",
-          "BlendingDuration": 0.1,
+          "Looping": true,
           "Speed": 0.5
         }
       ]
@@ -58,7 +58,35 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 1.5
+          "Speed": 1.0,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1.5,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 2,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
         }
       ]
     },
@@ -70,6 +98,14 @@
         }
       ]
     },
+    "Deposit": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Deposit.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
     "Carry": {
       "Animations": [
         {
@@ -77,6 +113,76 @@
           "Speed": 1
         }
       ]
+    },
+    "IdlePassive": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around2.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Left.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Right.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink_Double.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left_Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right_Blink.blockyanim"
+        }
+      ],
+      "NextAnimationDelay": {
+        "Max": 1,
+        "Min": 0
+      }
     }
   }
 }
