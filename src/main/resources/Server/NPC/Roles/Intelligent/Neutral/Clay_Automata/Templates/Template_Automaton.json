@@ -1,6 +1,5 @@
 {
   "Type": "Abstract",
-  "Debug": "display",
   "StartState": "Idle",
   "Parameters": {
     "Appearance": {
@@ -16,7 +15,7 @@
       "Description": "Drop Items"
     },
     "MaxSpeed": {
-      "Value": 4,
+      "Value": 3,
       "Description": "Maximum walking speed"
     },
     "MaxHealth": {
@@ -94,6 +93,22 @@
           "Type": "DropInventory"
         }
       ]
+    },
+    {
+      "States": [
+        {
+          "From": [ ],
+          "To": [ "Path" ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "PlayAnimation",
+          "Slot": "Status",
+          "Animation": "Walk"
+        }
+      ],
+      "$Comment": "Play walking animation when pathing"
     }
   ],
   "Instructions": [
@@ -128,6 +143,41 @@
                 "Type": "SetLeashPosition",
                 "ToTarget": true
               }
+            }
+          ]
+        },
+        {
+          "$Comment": "Play Hold animation if holding an item right now",
+          "Continue": true,
+          "Sensor": {
+            "Type": "Flag",
+            "Name": "HoldingItem",
+            "Set": true
+          },
+          "Actions": [
+            {
+              "Type": "PlayAnimation",
+              "Slot": "Status",
+              "Animation": "Hold",
+              "Once": true
+            },
+            {
+              "Type": "DisplayName",
+              "DisplayName": "Holding Item"
+            }
+          ]
+        },
+        {
+          "Continue": true,
+          "Sensor": {
+            "Type": "Flag",
+            "Name": "HoldingItem",
+            "Set": false
+          },
+          "Actions": [
+            {
+              "Type": "DisplayName",
+              "DisplayName": "Not Holding Item"
             }
           ]
         }
@@ -303,6 +353,21 @@
           },
           "Instructions": [
             {
+              "$Comment": "Play Idle Animation while waiting to run action",
+              "Continue": true,
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Idle",
+                  "Once": true
+                }
+              ]
+            },
+            {
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
               "Sensor": {
                 "Type": "And",
@@ -319,6 +384,11 @@
               },
               "ActionsBlocking": true,
               "Actions": [
+                {
+                  "Type": "SetFlag",
+                  "Name": "HoldingItem",
+                  "SetTo": false
+                },
                 {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
@@ -337,8 +407,7 @@
                 },
                 {
                   "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Hold"
+                  "Slot": "Status"
                 }
               ]
             },
@@ -360,6 +429,11 @@
               "ActionsBlocking": true,
               "Actions": [
                 {
+                  "Type": "SetFlag",
+                  "Name": "HoldingItem",
+                  "SetTo": true
+                },
+                {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
                   "Animation": "Take"
@@ -374,11 +448,6 @@
                 {
                   "Type": "Timeout",
                   "Delay": [ 0.4, 0.4 ]
-                },
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Hold"
                 }
               ]
             },
@@ -404,7 +473,7 @@
               ]
             },
             {
-              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'TAKE'",
+              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'WORK'",
               "Sensor": {
                 "Type": "And",
                 "Sensors": [
@@ -612,5 +681,6 @@
         "Once": true
       }
     ]
-  }
+  },
+  "DisplayNames": [ "Holding Item", "Not Holding Item" ]
 }
