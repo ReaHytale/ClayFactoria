@@ -106,14 +106,6 @@
         }
       ]
     },
-    "Carry": {
-      "Animations": [
-        {
-          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Carry.blockyanim",
-          "Speed": 1
-        }
-      ]
-    },
     "IdlePassive": {
       "Animations": [
         {
