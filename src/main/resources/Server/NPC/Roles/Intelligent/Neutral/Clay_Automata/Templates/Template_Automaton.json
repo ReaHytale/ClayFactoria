@@ -317,9 +317,28 @@
                   }
                 ]
               },
+              "ActionsBlocking": true,
               "Actions": [
                 {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Deposit"
+                },
+                {
+                  "Type": "Timeout",
+                  "Delay": [ 0.4, 0.4 ]
+                },
+                {
                   "Type": "Deposit"
+                },
+                {
+                  "Type": "Timeout",
+                  "Delay": [ 0.4, 0.4 ]
+                },
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Hold"
                 }
               ]
             },
