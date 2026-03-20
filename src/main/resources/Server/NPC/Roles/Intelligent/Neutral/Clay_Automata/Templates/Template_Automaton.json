@@ -71,22 +71,6 @@
   },
   "StateTransitions": [
     {
-      "$Comment": "Always clear animation when moving from Alerted state",
-      "States": [
-        {
-          "To": [ ],
-          "From": [ "Alerted" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Idle"
-        }
-      ]
-    },
-    {
       "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
         {
@@ -108,35 +92,6 @@
         },
         {
           "Type": "DropInventory"
-        }
-      ]
-    },
-    {
-      "$Comment": "Clear idle anim",
-      "States": [
-        {
-          "To": [ ],
-          "From": [ "Idle" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status"
-        }
-      ]
-    },
-    {
-      "States": [
-        {
-          "From": [ ],
-          "To": [ "Action" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status"
         }
       ]
     }
