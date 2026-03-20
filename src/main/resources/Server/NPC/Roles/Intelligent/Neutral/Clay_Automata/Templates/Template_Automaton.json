@@ -1,6 +1,6 @@
 {
   "Type": "Abstract",
-  "Debug": "DisplayState",
+  "Debug": "display",
   "StartState": "Idle",
   "Parameters": {
     "Appearance": {
@@ -11,18 +11,6 @@
       "Value": 15,
       "Description": "View range"
     },
-    "ViewSector": {
-      "Value": 180,
-      "Description": "View sector"
-    },
-    "HearingRange": {
-      "Value": 10,
-      "Description": "Hearing range"
-    },
-    "AlertedRange": {
-      "Value": 30,
-      "Description": "A range within which the player can be seen/sensed when the NPC is alerted to their presence"
-    },
     "DropList": {
       "Value": "Drop_Kweebec_Clay",
       "Description": "Drop Items"
@@ -31,40 +19,40 @@
       "Value": 4,
       "Description": "Maximum walking speed"
     },
-    "AttitudeGroup": {
-      "Value": "Kweebec",
-      "Description": "This NPCs attitude group"
-    },
     "MaxHealth": {
       "Value": 100,
       "Description": "Max health for the NPC"
     },
-    "IsMemory": {
-      "Value": false,
-      "Description": "Defines if the NPC is a memory"
-    },
-    "MemoriesCategory": {
-      "Value": "Other",
-      "Description": "Defines the category of the memory"
-    },
-    "MemoriesNameOverride": {
-      "Value": "",
-      "Description": "Overrides the memory name if set"
-    },
     "NameTranslationKey": {
       "Value": "server.npcRoles.Template.name",
       "Description": "Translation key for NPC name display"
+    },
+    "CanDoTake": {
+      "Description": "Whether this automaton can perform the TAKE action",
+      "TypeHint": "Boolean",
+      "Value": false
+    },
+    "CanDoDeposit": {
+      "Description": "Whether this automaton can perform the DEPOSIT action",
+      "TypeHint": "Boolean",
+      "Value": false
+    },
+    "CanDoPosition": {
+      "Description": "Whether this automaton can perform the POSITION action",
+      "TypeHint": "Boolean",
+      "Value": true
+    },
+    "CanDoWork": {
+      "Description": "Whether this automaton can perform the WORK action",
+      "TypeHint": "Boolean",
+      "Value": false
     }
   },
-  "IsMemory": { "Compute": "IsMemory" },
-  "MemoriesCategory": { "Compute": "MemoriesCategory" },
-  "MemoriesNameOverride": { "Compute": "MemoriesNameOverride" },
   "Appearance": { "Compute": "Appearance" },
   "DropList": { "Compute": "DropList" },
   "DisableDamageGroups": [ "Self" ],
   "DefaultNPCAttitude": "Ignore",
   "DefaultPlayerAttitude": "Neutral",
-  "AttitudeGroup": { "Compute": "AttitudeGroup" },
   "KnockbackScale": 0.5,
   "MotionControllerList": [
     {
@@ -82,22 +70,6 @@
     "EntityEffect": "Immunity_Environmental"
   },
   "StateTransitions": [
-    {
-      "$Comment": "Always clear animation when moving from Alerted or Flee state.",
-      "States": [
-        {
-          "To": [ ],
-          "From": [ "Alerted", "Flee" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Idle"
-        }
-      ]
-    },
     {
       "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
@@ -122,40 +94,11 @@
           "Type": "DropInventory"
         }
       ]
-    },
-    {
-      "$Comment": "Clear idle anim",
-      "States": [
-        {
-          "To": [ ],
-          "From": [ "Idle" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status"
-        }
-      ]
-    },
-    {
-      "States": [
-        {
-          "From": [ ],
-          "To": [ "Action" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status"
-        }
-      ]
     }
   ],
   "Instructions": [
     {
-      "$Comment": "This is separate so I can run it all the time regardless of the rest of the script",
+      "$Comment": "Pathing, run all the time regardless of other instructions",
       "Continue": true,
       "Instructions": [
         {
@@ -193,52 +136,12 @@
     {
       "Instructions": [
         {
+          "$Comment": "Await player instruction",
           "Sensor": {
             "Type": "State",
             "State": "Idle"
           },
           "Instructions": [
-            {
-              "Reference": "Component_Instruction_Damage_Check",
-              "Modify": {
-                "_ExportStates": [ "Flee", "Panic" ],
-                "AlertedRange": { "Compute": "AlertedRange" }
-              }
-            },
-            {
-              "Sensor": {
-                "$Comment": "Switch to Alerted if Hostile",
-                "Type": "Or",
-                "Sensors": [
-                  {
-                    "Reference": "Component_Sensor_Sight_By_Attitude",
-                    "Modify": {
-                      "ViewRange": { "Compute": "AlertedRange" },
-                      "ViewSector": { "Compute": "ViewSector" },
-                      "Attitudes": [ "Hostile" ]
-                    }
-                  },
-                  {
-                    "Reference": "Component_Sensor_Sound_By_Attitude",
-                    "Modify": {
-                      "HearingRange": { "Compute": "HearingRange" },
-                      "Attitudes": [ "Hostile" ]
-                    }
-                  }
-                ]
-              },
-              "ActionsAtomic": true,
-              "Actions": [
-                {
-                  "Type": "Timeout",
-                  "Delay": [ 0, 0.2 ]
-                },
-                {
-                  "Type": "State",
-                  "State": "Alerted"
-                }
-              ]
-            },
             {
               "Sensor": {
                 "Type": "Player",
@@ -260,19 +163,13 @@
           ]
         },
         {
+          "$Comment": "Player nearby with brush in hand",
           "Sensor": {
             "$Comment": "Play Alerted Particle Effect. Look at player. Await Interaction. Timeout after 15, seconds",
             "Type": "State",
             "State": "Alerted"
           },
           "Instructions": [
-            {
-              "Reference": "Component_Instruction_Damage_Check",
-              "Modify": {
-                "_ExportStates": [ "Flee", "Panic" ],
-                "AlertedRange": { "Compute": "AlertedRange" }
-              }
-            },
             {
               "$Comment": "Animations",
               "Continue": true,
@@ -294,6 +191,7 @@
               ]
             },
             {
+              "$Comment": "Change back to idle once there is no longer a player in range",
               "Sensor": {
                 "Type": "Not",
                 "Sensor": {
@@ -314,79 +212,6 @@
                   "State": "Idle"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "State",
-            "State": "Flee"
-          },
-          "Instructions": [
-            {
-              "Reference": "Component_Instruction_Clear_Status_Animation"
-            },
-            {
-              "Reference": "Component_Instruction_Damage_Check",
-              "Modify": {
-                "_ExportStates": [ "Panic", "Panic" ],
-                "AlertedRange": { "Compute": "AlertedRange" }
-              }
-            },
-            {
-              "Sensor": {
-                "Type": "Or",
-                "Sensors": [
-                  {
-                    "Reference": "Component_Sensor_Sight_By_Attitude",
-                    "Modify": {
-                      "ViewRange": { "Compute": "ViewRange + 5" },
-                      "ViewSector": { "Compute": "ViewSector" },
-                      "Attitudes": [ "Hostile", "Neutral" ]
-                    }
-                  },
-                  {
-                    "Reference": "Component_Sensor_Sound_By_Attitude",
-                    "Modify": {
-                      "HearingRange": { "Compute": "HearingRange" },
-                      "ThroughWalls": false,
-                      "Attitudes": [ "Hostile", "Neutral" ]
-                    }
-                  }
-                ]
-              },
-              "BodyMotion": {
-                "Type": "Flee",
-                "SlowDownDistance": { "Compute": "ViewRange + 2" },
-                "StopDistance": { "Compute": "ViewRange + 5" },
-                "RelativeSpeed": 0.5
-              }
-            },
-            {
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Idle"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "Sensor": {
-            "Type": "State",
-            "State": "Panic"
-          },
-          "Instructions": [
-            {
-              "Reference": "Component_Kweebec_Instruction_Panic",
-              "Modify": {
-                "_ExportStates": [ "Alerted", "Flee", "Panic", "Idle" ],
-                "ViewRange": { "Compute": "ViewRange" },
-                "ViewSector": { "Compute": "ViewSector" },
-                "HearingRange": { "Compute": "HearingRange" },
-                "AlertedRange": { "Compute": "AlertedRange" }
-              }
             }
           ]
         },
@@ -478,11 +303,19 @@
           },
           "Instructions": [
             {
-              "Continue": true,
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
               "Sensor": {
-                "Type": "CanDoAction",
-                "Action": "Deposit"
+                "Type": "And",
+                "Sensors": [
+                  {
+                    "Type": "Switch",
+                    "Switch": { "Compute": "CanDoDeposit" }
+                  },
+                  {
+                    "Type": "CanDoAction",
+                    "Action": "Deposit"
+                  }
+                ]
               },
               "Actions": [
                 {
@@ -493,8 +326,17 @@
             {
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
               "Sensor": {
-                "Type": "CanDoAction",
-                "Action": "Take"
+                "Type": "And",
+                "Sensors": [
+                  {
+                    "Type": "Switch",
+                    "Switch": { "Compute": "CanDoTake" }
+                  },
+                  {
+                    "Type": "CanDoAction",
+                    "Action": "Take"
+                  }
+                ]
               },
               "ActionsBlocking": true,
               "Actions": [
@@ -524,12 +366,42 @@
             {
               "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
               "Sensor": {
-                "Type": "CanDoAction",
-                "Action": "Position"
+                "Type": "And",
+                "Sensors": [
+                  {
+                    "Type": "Switch",
+                    "Switch": { "Compute": "CanDoPosition" }
+                  },
+                  {
+                    "Type": "CanDoAction",
+                    "Action": "Position"
+                  }
+                ]
               },
               "Actions": [
                 {
                   "Type": "Position"
+                }
+              ]
+            },
+            {
+              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'TAKE'",
+              "Sensor": {
+                "Type": "And",
+                "Sensors": [
+                  {
+                    "Type": "Switch",
+                    "Switch": { "Compute": "CanDoWork" }
+                  },
+                  {
+                    "Type": "CanDoAction",
+                    "Action": "Work"
+                  }
+                ]
+              },
+              "Actions": [
+                {
+                  "Type": "Work"
                 }
               ]
             },
@@ -560,16 +432,14 @@
         "Instructions": [
           {
             "Sensor": {
-              "$Comment": "Exit first if not interactable with Brush in Hand. Checks this first before everything first to avoid extra work",
-              "Type": "Not",
-              "Sensor": {
-                "Type": "And",
-                "Sensors": [
-                  {
-                    "$Comment": "If Player Does NOT have Brush in Hand then Disable Interaction. If in Path State, do NOT disable Interactable",
-                    "Type": "Or",
-                    "Sensors": [
-                      {
+              "Type": "Or",
+              "Sensors": [
+                {
+                  "Type": "And",
+                  "Sensors": [
+                    {
+                      "Type": "Not",
+                      "Sensor": {
                         "Type": "Player",
                         "Range": { "Compute": "ViewRange" },
                         "Filters": [
@@ -578,27 +448,25 @@
                             "Items": [ "Tool_Brush" ]
                           }
                         ]
-                      },
-                      {
+                      }
+                    },
+                    {
+                      "Type": "Not",
+                      "Sensor": {
                         "Type": "State",
                         "State": "Path"
                       }
-                    ]
-                  },
-                  {
-                    "Type": "Not",
-                    "Sensor": {
-                      "Type": "State",
-                      "State": "Panic"
                     }
-                  },
-                  {
+                  ]
+                },
+                {
+                  "Type": "Not",
+                  "Sensor": {
                     "Type": "CanInteract",
-                    "ViewSector": 360,
-                    "Attitudes": [ "Neutral", "Friendly", "Revered" ]
+                    "ViewSector": 360
                   }
-                ]
-              }
+                }
+              ]
             },
             "Actions": [
               {
