@@ -160,24 +160,6 @@
               "Slot": "Status",
               "Animation": "Hold",
               "Once": true
-            },
-            {
-              "Type": "DisplayName",
-              "DisplayName": "Holding Item"
-            }
-          ]
-        },
-        {
-          "Continue": true,
-          "Sensor": {
-            "Type": "Flag",
-            "Name": "HoldingItem",
-            "Set": false
-          },
-          "Actions": [
-            {
-              "Type": "DisplayName",
-              "DisplayName": "Not Holding Item"
             }
           ]
         }
@@ -392,7 +374,8 @@
                 {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
-                  "Animation": "Deposit"
+                  "Animation": "Deposit",
+                  "Once": true
                 },
                 {
                   "Type": "Timeout",
@@ -407,7 +390,8 @@
                 },
                 {
                   "Type": "PlayAnimation",
-                  "Slot": "Status"
+                  "Slot": "Status",
+                  "Animation": ""
                 }
               ]
             },
@@ -436,7 +420,8 @@
                 {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
-                  "Animation": "Take"
+                  "Animation": "Take",
+                  "Once": true
                 },
                 {
                   "Type": "Timeout",
@@ -448,6 +433,11 @@
                 {
                   "Type": "Timeout",
                   "Delay": [ 0.4, 0.4 ]
+                },
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": ""
                 }
               ]
             },
@@ -682,5 +672,5 @@
       }
     ]
   },
-  "DisplayNames": [ "Holding Item", "Not Holding Item" ]
+  "Debug": "Flock"
 }
