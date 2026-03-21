@@ -86,8 +86,7 @@
         },
         {
           "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Idle"
+          "Slot": "Status"
         },
         {
           "Type": "DropInventory"
@@ -109,28 +108,6 @@
         }
       ],
       "$Comment": "Play walking animation when pathing"
-    },
-    {
-      "States": [
-        {
-          "From": [ ],
-          "To": [ "Alerted" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Alerted",
-          "Once": true
-        },
-        {
-          "Type": "SpawnParticles",
-          "Offset": [ 0, 1, 0 ],
-          "ParticleSystem": "Alerted",
-          "Once": true
-        }
-      ]
     }
   ],
   "Instructions": [
@@ -213,6 +190,18 @@
                   "State": "Alerted"
                 }
               ]
+            },
+            {
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Idle"
+                }
+              ]
             }
           ]
         },
@@ -226,6 +215,25 @@
           "Instructions": [
             {
               "$Comment": "Animations",
+              "Continue": true,
+              "Sensor": {
+                "Type": "Any",
+                "Once": true
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Alerted"
+                },
+                {
+                  "Type": "SpawnParticles",
+                  "Offset": [ 0, 1, 0 ],
+                  "ParticleSystem": "Alerted"
+                }
+              ]
+            },
+            {
               "Continue": true,
               "Sensor": {
                 "Type": "Player",
