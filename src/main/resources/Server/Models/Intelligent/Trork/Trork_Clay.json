@@ -2,12 +2,12 @@
   "Parent": "Player",
   "Model": "NPC/Intelligent/Trork_Clay/Models/Model.blockymodel",
   "Texture": "NPC/Intelligent/Trork_Clay/Models/Texture.png",
-  "EyeHeight": 0.6,
+  "EyeHeight": 0.8,
   "CrouchOffset": -0.1,
   "HitBox": {
     "Max": {
       "X": 0.5,
-      "Y": 0.75,
+      "Y": 0.9,
       "Z": 0.5
     },
     "Min": {
@@ -16,7 +16,7 @@
       "Z": -0.25
     }
   },
-  "MinScale": 0.8,
+  "MinScale": 1,
   "MaxScale": 1,
   "DefaultAttachments": [
     {
@@ -49,7 +49,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Idle.blockyanim",
-          "BlendingDuration": 0.1,
+          "Looping": true,
           "Speed": 0.5
         }
       ]
@@ -58,7 +58,35 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 1.5
+          "Speed": 1.0,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1.5,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 2,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
         }
       ]
     },
@@ -70,13 +98,101 @@
         }
       ]
     },
-    "Carry": {
+    "Deposit": {
       "Animations": [
         {
-          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Carry.blockyanim",
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Deposit.blockyanim",
           "Speed": 1
         }
       ]
+    },
+    "Hold": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Hold.blockyanim",
+          "Looping": true,
+          "Speed": 1
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Alerted.blockyanim",
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
+    "IdlePassive": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around2.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Left.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Right.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink_Double.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left_Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right_Blink.blockyanim"
+        }
+      ],
+      "NextAnimationDelay": {
+        "Max": 1,
+        "Min": 0
+      }
     }
   }
 }

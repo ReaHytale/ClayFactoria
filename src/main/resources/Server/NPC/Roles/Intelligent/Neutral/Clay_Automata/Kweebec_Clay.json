@@ -1,14 +1,12 @@
 {
   "Type": "Variant",
-  "Reference": "Template_Kweebec_Clay",
+  "Reference": "Template_Automaton",
   "Modify": {
     "Appearance": "Kweebec_Clay",
     "DropList": "Drop_Kweebec_Clay",
     "MaxHealth": 20,
-    "IsMemory": false,
-    "MemoriesCategory": "Kweebec",
-    "MemoriesNameOverride": "Kweebec_Clay",
-    "NameTranslationKey": { "Compute": "NameTranslationKey" }
+    "NameTranslationKey": { "Compute": "NameTranslationKey" },
+    "CanDoWork": true
   },
   "Parameters": {
     "NameTranslationKey": {
