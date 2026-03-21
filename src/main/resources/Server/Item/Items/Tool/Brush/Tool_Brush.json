@@ -8,8 +8,37 @@
   "Texture": "Items/Tools/Brush/Texture.png",
   "Quality": "Common",
   "Recipe": {
-    "Input": [],
-    "BenchRequirement": []
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Adamantite",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Thorium",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Cobalt",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Life_Essence_Concentrated",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Factoria_Automatons"
+        ],
+        "Id": "Clay_Factoria"
+      }
+    ]
   },
   "Interactions": {
     "Secondary": {
