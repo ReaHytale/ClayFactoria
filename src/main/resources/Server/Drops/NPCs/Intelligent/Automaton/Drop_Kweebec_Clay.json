@@ -9,9 +9,9 @@
           {
             "Type": "Single",
             "Item": {
-              "ItemId": "Soil_Clay",
+              "ItemId": "Egg_Spawner_Clay_Kweebec",
               "QuantityMin": 1,
-              "QuantityMax": 3
+              "QuantityMax": 1
             }
           }
         ]
