@@ -109,6 +109,28 @@
         }
       ],
       "$Comment": "Play walking animation when pathing"
+    },
+    {
+      "States": [
+        {
+          "From": [ ],
+          "To": [ "Alerted" ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "PlayAnimation",
+          "Slot": "Status",
+          "Animation": "Alerted",
+          "Once": true
+        },
+        {
+          "Type": "SpawnParticles",
+          "Offset": [ 0, 1, 0 ],
+          "ParticleSystem": "Alerted",
+          "Once": true
+        }
+      ]
     }
   ],
   "Instructions": [
@@ -206,21 +228,18 @@
               "$Comment": "Animations",
               "Continue": true,
               "Sensor": {
-                "Type": "Any",
-                "Once": true
+                "Type": "Player",
+                "Range": 10,
+                "Filters": [
+                  {
+                    "Type": "ItemInHand",
+                    "Items": [ "Tool_Brush" ]
+                  }
+                ]
               },
-              "Actions": [
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Alerted"
-                },
-                {
-                  "Type": "SpawnParticles",
-                  "Offset": [ 0, 1, 0 ],
-                  "ParticleSystem": "Alerted"
-                }
-              ]
+              "HeadMotion": {
+                "Type": "Watch"
+              }
             },
             {
               "$Comment": "Change back to idle once there is no longer a player in range",

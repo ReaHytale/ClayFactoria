@@ -115,6 +115,15 @@
         }
       ]
     },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Trork_Clay/Animations/Default/Alerted.blockyanim",
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
     "IdlePassive": {
       "Animations": [
         {
