@@ -1,6 +1,5 @@
 {
   "Type": "Abstract",
-  "Debug": "display",
   "StartState": "Idle",
   "Parameters": {
     "Appearance": {
@@ -16,7 +15,7 @@
       "Description": "Drop Items"
     },
     "MaxSpeed": {
-      "Value": 4,
+      "Value": 3,
       "Description": "Maximum walking speed"
     },
     "MaxHealth": {
@@ -87,13 +86,28 @@
         },
         {
           "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Idle"
+          "Slot": "Status"
         },
         {
           "Type": "DropInventory"
         }
       ]
+    },
+    {
+      "States": [
+        {
+          "From": [ ],
+          "To": [ "Path" ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "PlayAnimation",
+          "Slot": "Status",
+          "Animation": "Walk"
+        }
+      ],
+      "$Comment": "Play walking animation when pathing"
     }
   ],
   "Instructions": [
@@ -130,6 +144,23 @@
               }
             }
           ]
+        },
+        {
+          "$Comment": "Play Hold animation if holding an item right now",
+          "Continue": true,
+          "Sensor": {
+            "Type": "Flag",
+            "Name": "HoldingItem",
+            "Set": true
+          },
+          "Actions": [
+            {
+              "Type": "PlayAnimation",
+              "Slot": "Status",
+              "Animation": "Hold",
+              "Once": true
+            }
+          ]
         }
       ]
     },
@@ -157,6 +188,18 @@
                 {
                   "Type": "State",
                   "State": "Alerted"
+                }
+              ]
+            },
+            {
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Idle"
                 }
               ]
             }
@@ -189,6 +232,22 @@
                   "ParticleSystem": "Alerted"
                 }
               ]
+            },
+            {
+              "Continue": true,
+              "Sensor": {
+                "Type": "Player",
+                "Range": 10,
+                "Filters": [
+                  {
+                    "Type": "ItemInHand",
+                    "Items": [ "Tool_Brush" ]
+                  }
+                ]
+              },
+              "HeadMotion": {
+                "Type": "Watch"
+              }
             },
             {
               "$Comment": "Change back to idle once there is no longer a player in range",
@@ -303,6 +362,21 @@
           },
           "Instructions": [
             {
+              "$Comment": "Play Idle Animation while waiting to run action",
+              "Continue": true,
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Idle",
+                  "Once": true
+                }
+              ]
+            },
+            {
               "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
               "Sensor": {
                 "Type": "And",
@@ -317,9 +391,34 @@
                   }
                 ]
               },
+              "ActionsBlocking": true,
               "Actions": [
                 {
+                  "Type": "SetFlag",
+                  "Name": "HoldingItem",
+                  "SetTo": false
+                },
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Deposit",
+                  "Once": true
+                },
+                {
+                  "Type": "Timeout",
+                  "Delay": [ 0.4, 0.4 ]
+                },
+                {
                   "Type": "Deposit"
+                },
+                {
+                  "Type": "Timeout",
+                  "Delay": [ 0.4, 0.4 ]
+                },
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": ""
                 }
               ]
             },
@@ -341,9 +440,15 @@
               "ActionsBlocking": true,
               "Actions": [
                 {
+                  "Type": "SetFlag",
+                  "Name": "HoldingItem",
+                  "SetTo": true
+                },
+                {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
-                  "Animation": "Take"
+                  "Animation": "Take",
+                  "Once": true
                 },
                 {
                   "Type": "Timeout",
@@ -359,7 +464,7 @@
                 {
                   "Type": "PlayAnimation",
                   "Slot": "Status",
-                  "Animation": "Hold"
+                  "Animation": ""
                 }
               ]
             },
@@ -385,7 +490,7 @@
               ]
             },
             {
-              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'TAKE'",
+              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'WORK'",
               "Sensor": {
                 "Type": "And",
                 "Sensors": [
@@ -593,5 +698,6 @@
         "Once": true
       }
     ]
-  }
+  },
+  "Debug": "Flock"
 }
