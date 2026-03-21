@@ -1,6 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "server.items.Tool_Brush.name"
+    "Name": "server.items.Tool_Brush.name",
+    "Description": "server.items.Tool_Brush.description"
   },
   "Parent": "Tool_Pickaxe_Crude",
   "Icon": "Icons/ItemsGenerated/Tool_Brush.png",
