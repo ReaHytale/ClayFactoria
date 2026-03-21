@@ -63,32 +63,7 @@
       "Id": "Clay_Factoria",
       "TierLevels": [
         {
-          "CraftingTimeReductionModifier": 0.0,
-          "UpgradeRequirement": {
-            "Material": [
-              {
-                "ItemId": "Soil_Clay",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Plant_Petals_Red",
-                "Quantity": 20
-              },
-              {
-                "ItemId": "Ingredient_Leather_Heavy",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Ingredient_Fire_Essence",
-                "Quantity": 25
-              },
-              {
-                "ItemId": "Ingredient_Water_Essence",
-                "Quantity": 25
-              }
-            ],
-            "TimeSeconds": 5.0
-          }
+          "CraftingTimeReductionModifier": 0.0
         }
       ]
     },

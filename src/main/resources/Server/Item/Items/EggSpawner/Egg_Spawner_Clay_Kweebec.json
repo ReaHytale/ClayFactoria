@@ -9,12 +9,12 @@
         "Quantity": 10
       },
       {
-        "ItemId": "Ingredient_Life_Essence",
-        "Quantity": 30
+        "ItemId": "Ingredient_Life_Essence_Concentrated",
+        "Quantity": 2
       },
       {
         "ResourceTypeId": "Petals_Coloured",
-        "Quantity": 10
+        "Quantity": 20
       }
     ],
     "BenchRequirement": [
