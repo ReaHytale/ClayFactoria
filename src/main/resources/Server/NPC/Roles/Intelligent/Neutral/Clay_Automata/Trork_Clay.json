@@ -3,7 +3,7 @@
   "Reference": "Template_Automaton",
   "Modify": {
     "Appearance": "Trork_Clay",
-    "DropList": "Drop_Kweebec_Clay",
+    "DropList": "Drop_Trork_Clay",
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
     "CanDoTake": true,
