@@ -1,7 +1,7 @@
 npcRoles.Kweebec_Clay.name=Clay Kweebec
 npcRoles.Trork_Clay.name=Clay Trork
 items.Bench_ClayFactoria.name=Clay Factoria
-items.Bench_ClayFactoria.description=Automate with mini clay Kweebecs
+items.Bench_ClayFactoria.description=Mould your own automata from clay!
 interactionHints.command=Press [{key}] to Command
 items.Egg_Spawner_Clay_Kweebec.name=Egg Spawner - Clay Kweebec
 items.Egg_Spawner_Clay_Trork.name=Egg Spawner - Clay Trork
@@ -9,3 +9,4 @@ benchCategories.workbench.automatons=Automatons
 resourceType.Petals_Coloured.name=Any Petals
 items.Furniture_Mini_InConstruction_Sign.name=Mini Under Construction Sign
 items.Tool_Brush.name=Brush of Life
+items.Tool_Brush.description=Bend the power of Life Essence to design sequences of tasks for your automata to complete.\n\n<i>The automata are eager to fulfil your wishes and please you as their creator, just look at how happy they are!</i>

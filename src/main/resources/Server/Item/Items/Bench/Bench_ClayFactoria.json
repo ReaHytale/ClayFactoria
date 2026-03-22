@@ -63,63 +63,7 @@
       "Id": "Clay_Factoria",
       "TierLevels": [
         {
-          "CraftingTimeReductionModifier": 0.0,
-          "UpgradeRequirement": {
-            "Material": [
-              {
-                "ItemId": "Soil_Clay",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Plant_Petals_Red",
-                "Quantity": 20
-              },
-              {
-                "ItemId": "Ingredient_Leather_Heavy",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Ingredient_Fire_Essence",
-                "Quantity": 25
-              },
-              {
-                "ItemId": "Ingredient_Water_Essence",
-                "Quantity": 25
-              }
-            ],
-            "TimeSeconds": 5.0
-          }
-        },
-        {
-          "UpgradeRequirement": {
-            "Material": [
-              {
-                "ItemId": "Soil_Clay",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Plant_Petals_Red",
-                "Quantity": 20
-              },
-              {
-                "ItemId": "Ingredient_Leather_Heavy",
-                "Quantity": 30
-              },
-              {
-                "ItemId": "Ingredient_Fire_Essence",
-                "Quantity": 25
-              },
-              {
-                "ItemId": "Ingredient_Water_Essence",
-                "Quantity": 25
-              }
-            ],
-            "TimeSeconds": 10.0
-          },
-          "CraftingTimeReductionModifier": 0.15
-        },
-        {
-          "CraftingTimeReductionModifier": 0.3
+          "CraftingTimeReductionModifier": 0.0
         }
       ]
     },
@@ -132,42 +76,6 @@
         },
         "CraftCompletedInstant": {
           "CustomModelAnimation": "Blocks/Benches/Workbench_Crafting.blockyanim"
-        },
-        "Tier2": {
-          "CustomModel": "Blocks/Benches/Workbench2.blockymodel",
-          "CustomModelTexture": [
-            {
-              "Texture": "Blocks/Benches/Workbench2_Texture.png",
-              "Weight": 1
-            }
-          ],
-          "HitboxType": "Bench_Workbench2",
-          "State": {
-            "Id": "crafting",
-            "Definitions": {
-              "CraftCompleted": {
-                "CustomModelAnimation": "Blocks/Benches/Workbench2_Crafting.blockyanim"
-              }
-            }
-          }
-        },
-        "Tier3": {
-          "CustomModel": "Blocks/Benches/Workbench3.blockymodel",
-          "CustomModelTexture": [
-            {
-              "Texture": "Blocks/Benches/Workbench3_Texture.png",
-              "Weight": 1
-            }
-          ],
-          "HitboxType": "Bench_Workbench3",
-          "State": {
-            "Id": "crafting",
-            "Definitions": {
-              "CraftCompleted": {
-                "CustomModelAnimation": "Blocks/Benches/Workbench3_Crafting.blockyanim"
-              }
-            }
-          }
         }
       }
     },

@@ -1,6 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "server.items.Tool_Brush.name"
+    "Name": "server.items.Tool_Brush.name",
+    "Description": "server.items.Tool_Brush.description"
   },
   "Parent": "Tool_Pickaxe_Crude",
   "Icon": "Icons/ItemsGenerated/Tool_Brush.png",
@@ -8,8 +9,37 @@
   "Texture": "Items/Tools/Brush/Texture.png",
   "Quality": "Common",
   "Recipe": {
-    "Input": [],
-    "BenchRequirement": []
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Adamantite",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Thorium",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Bar_Cobalt",
+        "Quantity": 5
+      },
+      {
+        "ItemId": "Ingredient_Life_Essence_Concentrated",
+        "Quantity": 5
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": [
+          "Factoria_Automatons"
+        ],
+        "Id": "Clay_Factoria"
+      }
+    ]
   },
   "Interactions": {
     "Secondary": {
@@ -21,64 +51,63 @@
     }
   },
   "Tool": {
-    "Specs": [
-      {
-        "Power": 1,
-        "GatherType": "SoftBlocks"
-      },
-      {
-        "Power": 0.1,
-        "GatherType": "Soils"
-      },
-      {
-        "Power": 0.05,
-        "GatherType": "Woods"
-      },
-      {
-        "Power": 0.1,
-        "GatherType": "Rocks",
-        "Quality": 1
-      },
-      {
-        "Power": 0.5,
-        "GatherType": "Benches"
-      },
-      {
-        "Power": 0.034,
-        "GatherType": "VolcanicRocks"
-      },
-      {
-        "Power": 0.1,
-        "GatherType": "OreCopper"
-      },
-      {
-        "Power": 0.071,
-        "GatherType": "OreIron"
-      },
-      {
-        "Power": 0.071,
-        "GatherType": "OreSilver"
-      },
-      {
-        "Power": 0.071,
-        "GatherType": "OreGold"
-      },
-      {
-        "Power": 0.056,
-        "GatherType": "OreThorium"
-      },
-      {
-        "Power": 0.056,
-        "GatherType": "OreCobalt"
-      },
-      {
-        "Power": 0.045,
-        "GatherType": "OreAdamantite"
-      },
-      {
-        "Power": 0.038,
-        "GatherType": "OreMithril"
-      }
+      "Specs": [
+        {
+          "Power": 0.01,
+          "GatherType": "SoftBlocks"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "Soils"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "Woods"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "Rocks"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "Benches"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "VolcanicRocks"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreCopper"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreIron"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreSilver"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreGold"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreThorium"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreCobalt"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreAdamantite"
+        },
+        {
+          "Power": 0.01,
+          "GatherType": "OreMithril"
+        }
     ],
     "DurabilityLossBlockTypes": [
       {
