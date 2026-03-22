@@ -72,11 +72,9 @@ public class SensorLeashTarget extends SensorBaseLogger {
     }
 
     double distanceSquared = transformComponent.getPosition().distanceSquaredTo(currentTarget);
+
     if (distanceSquared == lastDistanceSquared) {
-      if (System.currentTimeMillis() - lastDistanceUpdateTime >
-          RECOMPUTE_WALK_DISTANCE_POLL_SECONDS * 1000L) {
-        recomputeWalkLocation(ref, store, currentTask);
-        lastDistanceUpdateTime = System.currentTimeMillis();
+      if (hasUpdatedWalkLocation(ref, store, currentTask)) {
         return false;
       }
     } else {
@@ -133,6 +131,22 @@ public class SensorLeashTarget extends SensorBaseLogger {
       ));
       return true;
     }
+  }
+
+  private boolean hasUpdatedWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
+      Task currentTask) {
+    if (hasNotChangedLocationInSomeTime()) {
+      recomputeWalkLocation(ref, store, currentTask);
+      lastDistanceUpdateTime = System.currentTimeMillis();
+      return true;  // yes, the npc "has updated its walk location"
+    } else {
+      return false;
+    }
+  }
+
+  private boolean hasNotChangedLocationInSomeTime() {
+    return System.currentTimeMillis() - lastDistanceUpdateTime >
+        RECOMPUTE_WALK_DISTANCE_POLL_SECONDS * 1000L;
   }
 
   private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
