@@ -10,10 +10,12 @@ import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,8 +55,8 @@ public class BrushComponent implements Component<EntityStore> {
     return ClayFactoria.brushComponentType;
   }
 
-  public void addTask(Vector3d location, Action action) {
-    this.tasks.add(new Task(location, action));
+  public void addTask(Vector3d location, Action action, World world) {
+    this.tasks.add(new Task(location, action, world));
   }
 
   // TODO: Switch this to Action.TAKE || Action.DEPOSIT and use for switching between task types

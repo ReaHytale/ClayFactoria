@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
@@ -29,8 +30,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TaskHelper {
+public final class TaskHelper {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
+  private TaskHelper() {
+  }
 
   @Nonnull
   public static NPCEntity getNPCEntity(
@@ -65,7 +70,8 @@ public class TaskHelper {
   }
 
   @Nullable
-  public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity, @Nullable ContainerSlot containerSlot) {
+  public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity,
+      @Nullable ContainerSlot containerSlot) {
     World world = checkNull(npcEntity.getWorld());
     // Action.TAKE looks for item containers, so we use that here as a dummy action
     Vector3i pos = checkNull(findNearbyPOI(npcEntity, Action.TAKE));
@@ -149,7 +155,7 @@ public class TaskHelper {
       if (itemStack == null) {
         return true;
       } else {
-        return itemStack.getQuantity() == prevQuantity-1;
+        return itemStack.getQuantity() == prevQuantity - 1;
       }
     }
     // No item found in storage, return false for failure.
