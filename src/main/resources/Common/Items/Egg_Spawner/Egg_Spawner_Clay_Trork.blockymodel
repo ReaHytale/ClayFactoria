@@ -3,7 +3,7 @@
     {
       "id": "1",
       "name": "Origin",
-      "position": {"x": -0.59218, "y": 31.31455, "z": 0.69768},
+      "position": {"x": -0.59218, "y": 26.31455, "z": 0.69768},
       "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
       "shape": {
         "type": "none",
@@ -22,7 +22,7 @@
         {
           "id": "2",
           "name": "Chest",
-          "position": {"x": 0.12968, "y": 8.12909, "z": -1.62208},
+          "position": {"x": 0.12968, "y": 13.12909, "z": -1.62208},
           "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
           "shape": {
             "type": "box",
@@ -491,7 +491,7 @@
                         "angle": 0
                       },
                       "left": {
-                        "offset": {"x": 73, "y": 106},
+                        "offset": {"x": 86, "y": 105},
                         "mirror": {"x": true, "y": false},
                         "angle": 0
                       },
@@ -561,7 +561,7 @@
                         "angle": 0
                       },
                       "left": {
-                        "offset": {"x": 73, "y": 106},
+                        "offset": {"x": 86, "y": 105},
                         "mirror": {"x": true, "y": false},
                         "angle": 0
                       },
@@ -839,7 +839,7 @@
         {
           "id": "22",
           "name": "L-Thigh",
-          "position": {"x": 6.27813, "y": -4.06455, "z": 0.81106},
+          "position": {"x": 6.27813, "y": 0.93545, "z": 0.81106},
           "orientation": {"x": 0, "y": -0.0192, "z": 0, "w": 0.99982},
           "shape": {
             "type": "box",
@@ -943,7 +943,7 @@
         {
           "id": "24",
           "name": "R-Thigh",
-          "position": {"x": -6.40782, "y": -4.06455, "z": 0.81102},
+          "position": {"x": -6.40782, "y": 0.93545, "z": 0.81102},
           "orientation": {"x": 0, "y": 0.0192, "z": 0, "w": 0.99982},
           "shape": {
             "type": "box",
