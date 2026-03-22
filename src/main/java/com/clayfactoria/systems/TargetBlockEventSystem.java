@@ -28,6 +28,8 @@ import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
@@ -97,7 +99,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       return;
     }
-    String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
+      String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
     LOGGER.atInfo().log(message);
     player.sendMessage(Message.raw(message).color(Color.GREEN));
 
