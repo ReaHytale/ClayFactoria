@@ -1,6 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "server.items.Egg_Spawner_Clay_Kweebec.name"
+    "Name": "server.items.Egg_Spawner_Clay_Kweebec.name",
+    "Description": "server.items.Egg_Spawner_Clay_Kweebec.description"
   },
   "Recipe": {
     "Input": [
@@ -28,7 +29,7 @@
     ]
   },
   "Quality": "Common",
-  "PlayerAnimationsId": "Item",
+  "PlayerAnimationsId": "Block",
   "Interactions": {
     "Primary": {
       "Interactions": [
@@ -44,9 +45,9 @@
       ]
     }
   },
-  "Model": "Items/Consumables/Food/Egg.blockymodel",
-  "Texture": "Items/Consumables/Food/Egg_White_Texture.png",
-  "Icon": "Icons/ItemsGenerated/Food_Egg_White.png",
+  "Model": "Items/Egg_Spawner/Egg_Spawner_Clay_Kweebec.blockymodel",
+  "Texture": "Items/Egg_Spawner/Egg_Spawner_Clay_Kweebec_Texture.png",
+  "Icon": "Icons/ItemsGenerated/Kweebec_Clay.png",
   "IconProperties": {
     "Rotation": [
       22.5,
@@ -59,9 +60,5 @@
       -5.4
     ]
   },
-  "Tags": {
-    "Type": [
-      "Food"
-    ]
-  }
+  "Tags": {}
 }

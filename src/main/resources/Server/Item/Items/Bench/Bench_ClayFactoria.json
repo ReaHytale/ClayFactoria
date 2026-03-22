@@ -39,7 +39,7 @@
     "CustomModel": "Blocks/Benches/ClayFactoria.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Benches/Workbench_Texture.png",
+        "Texture": "Blocks/Benches/ClayFactoria_Texture.png",
         "Weight": 1
       }
     ],
@@ -69,15 +69,7 @@
     },
     "State": {
       "Id": "crafting",
-      "Definitions": {
-        "CraftCompleted": {
-          "CustomModelAnimation": "Blocks/Benches/Workbench_Crafting.blockyanim",
-          "Looping": true
-        },
-        "CraftCompletedInstant": {
-          "CustomModelAnimation": "Blocks/Benches/Workbench_Crafting.blockyanim"
-        }
-      }
+      "Definitions": {}
     },
     "Gathering": {
       "Breaking": {
