@@ -12,11 +12,13 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import com.hypixel.hytale.server.npc.sensorinfo.PositionProvider;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Sense whether the NPC should continue to path or should move to action state.
@@ -28,6 +30,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
   protected final PositionProvider positionProvider = new PositionProvider();
   private double lastDistanceSquared;
   private long lastDistanceUpdateTime = System.currentTimeMillis();
+  private boolean recomputeFirstWalkDistance = true;
 
   public SensorLeashTarget(@Nonnull BuilderSensorLeashTarget builderSensorLeash) {
     super(builderSensorLeash);
@@ -39,6 +42,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
       @Nonnull Role role,
       double dt,
       @Nonnull Store<EntityStore> store) {
+
     TransformComponent transformComponent =
         store.getComponent(ref, TransformComponent.getComponentType());
     checkNull(transformComponent, "Transform Component was null");
@@ -54,6 +58,11 @@ public class SensorLeashTarget extends SensorBaseLogger {
       return false;
     }
 
+    if (recomputeFirstWalkDistance) {
+      recomputeWalkLocation(ref, store, currentTask);
+      recomputeFirstWalkDistance = false;
+    }
+
     Vector3d currentTarget = currentTask.getWalkLocation();
     if (currentTarget == null) {
       LOGGER.atInfo().log(
@@ -66,12 +75,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
     if (distanceSquared == lastDistanceSquared) {
       if (System.currentTimeMillis() - lastDistanceUpdateTime >
           RECOMPUTE_WALK_DISTANCE_POLL_SECONDS * 1000L) {
-        try {
-          currentTask.findValidWalkLocation(
-              Objects.requireNonNull(TaskHelper.getNPCEntity(ref, store).getWorld()));
-        } catch (IllegalStateException exception) {
-          // All fine, none was found
-        }
+        recomputeWalkLocation(ref, store, currentTask);
         lastDistanceUpdateTime = System.currentTimeMillis();
         return false;
       }
@@ -111,6 +115,8 @@ public class SensorLeashTarget extends SensorBaseLogger {
         return false;
       }
 
+      recomputeWalkLocation(ref, store, nextTask);
+
       Vector3d nextTaskLocation = nextTask.getWalkLocation();
       if (nextTaskLocation == null) {
         this.positionProvider.clear();
@@ -126,6 +132,17 @@ public class SensorLeashTarget extends SensorBaseLogger {
           nextTaskLocation
       ));
       return true;
+    }
+  }
+
+  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
+      Task currentTask) {
+    try {
+      NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
+      currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
+          entity.getOldPosition());
+    } catch (IllegalStateException exception) {
+      // All fine, none was found
     }
   }
 

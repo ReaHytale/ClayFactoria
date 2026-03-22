@@ -8,6 +8,8 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 /**
@@ -54,10 +56,10 @@ public class Task {
   public Task(Vector3d location, Action action, World world) throws IllegalStateException {
     this.location = location;
     this.action = action;
-    findValidWalkLocation(world);
+    findValidWalkLocation(world, location);
   }
 
-  public void findValidWalkLocation(World world) throws IllegalStateException {
+  public void findValidWalkLocation(World world, Vector3d from) throws IllegalStateException {
 
     BlockType blockType = world.getBlockType(location.toVector3i());
     if (blockType == null) {
@@ -68,13 +70,12 @@ public class Task {
     Vector3i end = new Vector3i();
     findStartEndAndMinimumY(start, end, location, world);
 
-    Vector3d foundLocation = tryLookingForLocationInXAxis(start, end, world);
-    if (foundLocation != null) {
-      this.walkLocation = foundLocation;
-      return;
-    }
+    List<Vector3d> foundLocations = new ArrayList<>();
+    foundLocations.addAll(tryLookingForLocationInXAxis(start, end, world));
+    foundLocations.addAll(tryLookingForLocationInZAxis(start, end, world));
 
-    foundLocation = tryLookingForLocationInZAxis(start, end, world);
+    Vector3d foundLocation = findNearestWalkLocation(foundLocations, from);
+
     if (foundLocation != null) {
       this.walkLocation = foundLocation;
       return;
@@ -141,32 +142,34 @@ public class Task {
     }
   }
 
-  private Vector3d tryLookingForLocationInXAxis(Vector3i start, Vector3i end, World world) {
+  private List<Vector3d> tryLookingForLocationInXAxis(Vector3i start, Vector3i end, World world) {
+    List<Vector3d> result = new ArrayList<>();
     for (int x = start.x; x <= end.x; x++) {
       Vector3i topLineLocation = new Vector3i(x, start.y, start.z - 1);
       if (isValidLocation(world, topLineLocation)) {
-        return finalValidLocation(topLineLocation);
+         result.add(finalValidLocation(topLineLocation));
       }
       Vector3i bottomLineLocation = new Vector3i(x, start.y, end.z + 1);
       if (isValidLocation(world, bottomLineLocation)) {
-        return finalValidLocation(bottomLineLocation);
+        result.add(finalValidLocation(bottomLineLocation));
       }
     }
-    return null;
+    return result;
   }
 
-  private Vector3d tryLookingForLocationInZAxis(Vector3i start, Vector3i end, World world) {
+  private List<Vector3d> tryLookingForLocationInZAxis(Vector3i start, Vector3i end, World world) {
+    List<Vector3d> result = new ArrayList<>();
     for (int z = start.z; z <= end.z; z++) {
       Vector3i leftLineLocation = new Vector3i(start.x - 1, start.y, z);
       if (isValidLocation(world, leftLineLocation)) {
-        return finalValidLocation(leftLineLocation);
+        result.add(finalValidLocation(leftLineLocation));
       }
       Vector3i rightLineLocation = new Vector3i(end.x + 1, start.y, z);
       if (isValidLocation(world, rightLineLocation)) {
-        return finalValidLocation(rightLineLocation);
+        result.add(finalValidLocation(rightLineLocation));
       }
     }
-    return null;
+    return result;
   }
 
   private Vector3d finalValidLocation(Vector3i location) {
@@ -178,6 +181,21 @@ public class Task {
     BlockType blockTypeAbove = world.getBlockType(location.clone().add(new Vector3i(0, 1, 0)));
     return blockType != null && blockType.isFullySupportive() &&
         (blockTypeAbove == null || !blockTypeAbove.isFullySupportive());
+  }
+
+  private Vector3d findNearestWalkLocation(List<Vector3d> foundLocations, Vector3d from) {
+    if (foundLocations.isEmpty()) return null;
+    Vector3d nearest = foundLocations.getFirst();
+    double nearestDistance = nearest.distanceSquaredTo(from);
+    for (int i = 1; i < foundLocations.size(); i++) {
+      Vector3d location = foundLocations.get(i);
+      double distance = location.distanceSquaredTo(from);
+      if (distance < nearestDistance) {
+        nearest = location;
+        nearestDistance = distance;
+      }
+    }
+    return nearest;
   }
 
   @Override
