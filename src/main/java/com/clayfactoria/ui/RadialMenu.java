@@ -2,6 +2,8 @@ package com.clayfactoria.ui;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
+import com.clayfactoria.ui.RadialMenu.RadialMenuEventData;
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
@@ -9,6 +11,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -16,6 +19,7 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -28,11 +32,12 @@ import javax.annotation.Nonnull;
  * @author Lordimass
  */
 public final class RadialMenu
-    extends InteractiveCustomUIPage<RadialMenu.CommandSelectionEventData> {
+    extends InteractiveCustomUIPage<RadialMenuEventData> {
 
   public static final String UI_PATH = "RadialMenu.ui";
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   private static final String EVENT_COMMAND_ID = "CommandId";
+  private static final String RESET_COMMAND_ID = "Reset";
   private static final int MAX_COMMAND_BUTTONS = 4;
   private static final long LINKED_PANEL_REFRESH_INTERVAL_MS = 1000L;
 
@@ -45,7 +50,7 @@ public final class RadialMenu
     super(
         playerRef,
         CustomPageLifetime.CanDismissOrCloseThroughInteraction,
-        CommandSelectionEventData.CODEC);
+        RadialMenuEventData.CODEC);
     this.options = new Action[]{Action.TAKE, Action.DEPOSIT, Action.WORK, Action.POSITION};
     this.refreshLoopStarted = false;
     this.dismissed = false;
@@ -60,11 +65,10 @@ public final class RadialMenu
       @Nonnull Store<EntityStore> store) {
     commandBuilder.append(UI_PATH);
     commandBuilder.set("#CommandMenuWheel.Visible", true);
-    commandBuilder.set("#CommandMenuTitle.Text", "Select Command");
-    commandBuilder.set("#CommandMenuSubtitle.Text", "Click a command to set it.");
     commandBuilder.set("#CommandMenuCurrent.Text", "Current: " + brushComponent.getAction());
 
     buildCommandButtons(commandBuilder, eventBuilder);
+    buildResetButton(commandBuilder, eventBuilder);
     startRefreshLoop();
   }
 
@@ -72,9 +76,15 @@ public final class RadialMenu
   public void handleDataEvent(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Store<EntityStore> store,
-      @Nonnull CommandSelectionEventData data) {
-    LOGGER.atInfo().log("Set Brush command to: " + data.task);
-    brushComponent.setAction(data.task);
+      @Nonnull RadialMenuEventData data) {
+    if (data.task != null) {
+      LOGGER.atInfo().log("Set Brush command to: " + data.task);
+      brushComponent.setAction(data.task);
+    } else if (data.reset != null) {
+      LOGGER.atInfo().log("Resetting tasks");
+      brushComponent.resetTasks(
+          Objects.requireNonNull(store.getComponent(ref, Player.getComponentType())));
+    }
     close();
   }
 
@@ -100,6 +110,15 @@ public final class RadialMenu
           EventData.of(EVENT_COMMAND_ID, String.valueOf(option)),
           false);
     }
+  }
+
+  private void buildResetButton(@Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
+    eventBuilder.addEventBinding(
+        CustomUIEventBindingType.Activating,
+        "#ResetButton",
+        EventData.of(RESET_COMMAND_ID, ""),
+        false
+    );
   }
 
   private void startRefreshLoop() {
@@ -136,16 +155,27 @@ public final class RadialMenu
   }
 
   /** Event payload emitted by command-button clicks in the command selection page. */
-  public static final class CommandSelectionEventData {
-    public static final BuilderCodec<CommandSelectionEventData> CODEC =
-        BuilderCodec.builder(CommandSelectionEventData.class, CommandSelectionEventData::new)
+  public static final class RadialMenuEventData {
+    public static final BuilderCodec<RadialMenuEventData> CODEC =
+        BuilderCodec.builder(RadialMenuEventData.class, RadialMenuEventData::new)
             .append(
                 new KeyedCodec<>(EVENT_COMMAND_ID, Action.CODEC),
                 (event, value) -> event.task = value,
                 event -> event.task)
             .add()
+            .append(new KeyedCodec<>(RESET_COMMAND_ID, Codec.STRING),
+                    (event, value) -> event.reset = value,
+                    event -> event.reset)
+            .add()
             .build();
 
     private Action task;
+    // Using a String here for ease, but it just means that if it's not null, we should reset, regardless of the value
+    private String reset;
+  }
+
+  public static class ResetEventData {
+    public static final BuilderCodec<ResetEventData> CODEC =
+        BuilderCodec.builder(ResetEventData.class, ResetEventData::new).build();
   }
 }

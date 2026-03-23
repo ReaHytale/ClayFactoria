@@ -4,7 +4,11 @@ import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
-import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.ArchetypeChunk;
+import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -14,7 +18,6 @@ import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DamageBlockEvent;
@@ -26,10 +29,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
+import java.awt.Color;
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
@@ -82,15 +82,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     targetTransform.setPosition(targetBlockLocOnTopOfBlock);
     targetTransform.setRotation(headRotation);
 
-    BlockType blockType = damageBlockEvent.getBlockType();
-    if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Red_Block")) {
-      resetPath(damageBlockEvent, player, commandBuffer);
-      return;
-    } else if (blockType == BlockType.getAssetMap().getAsset("Rock_Crystal_Green_Block")) {
-      togglePathType(damageBlockEvent, player, commandBuffer);
-      return;
-    }
-
     // Add the task to the task list, with the action being set to the one currently selected by the player.
     Action action = brushComponent.getAction();
     try {
@@ -112,60 +103,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
   @Override
   public Query<EntityStore> getQuery() {
     return PlayerRef.getComponentType();
-  }
-
-  /**
-   * Remove all tasks, resetting the path
-   *
-   * @param damageBlockEvent The event that triggered the reset
-   * @param player The player that triggered the reset
-   * @param commandBuffer The command buffer
-   */
-  private void resetPath(
-      DamageBlockEvent damageBlockEvent,
-      Player player,
-      CommandBuffer<EntityStore> commandBuffer
-  ) {
-    Store<EntityStore> store = checkNull(player.getReference()).getStore();
-    BrushComponent brushComponent = checkNull(store.getComponent(player.getReference(), this.brushComponentType));
-    Vector3d targetBlockLoc = damageBlockEvent.getTargetBlock().toVector3d();
-    Vector3d targetBlockLocOnTopOfBlock =
-        new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
-
-    player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
-    ParticleUtil.spawnParticleEffect("Block_Break_Dust", targetBlockLocOnTopOfBlock, store);
-    SoundUtil.playSoundEvent2d(
-        SoundEvent.getAssetMap().getIndex("SFX_Drag_Items_Clay"),
-        SoundCategory.SFX,
-        commandBuffer);
-    brushComponent.setTasks(new ArrayList<>());
-    damageBlockEvent.setDamage(0);
-  }
-
-  /**
-   * Change the path type between ONCE and LOOP
-   *
-   * @param damageBlockEvent The event that triggered the toggle
-   * @param player The player that triggered the toggle
-   * @param commandBuffer The command buffer
-   */
-  private void togglePathType(
-      DamageBlockEvent damageBlockEvent,
-      Player player,
-      CommandBuffer<EntityStore> commandBuffer
-  ) {
-    Store<EntityStore> store = checkNull(player.getReference()).getStore();
-    BrushComponent brushComponent = checkNull(store.getComponent(player.getReference(), this.brushComponentType));
-
-    brushComponent.togglePathType();
-    player.sendMessage(
-        Message.raw(String.format("Toggling PathType to: %s", brushComponent.getPathType()))
-            .color(Color.GREEN));
-    SoundUtil.playSoundEvent2d(
-        SoundEvent.getAssetMap().getIndex("SFX_Clay_Pot_Small_Hit"),
-        SoundCategory.SFX,
-        commandBuffer);
-    damageBlockEvent.setDamage(0);
   }
 
   /**

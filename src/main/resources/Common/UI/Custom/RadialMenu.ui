@@ -68,7 +68,7 @@ $C.@PageOverlay {
 
     Label #CommandMenuTitle {
       Anchor: (Top: 18, Width: 620, Height: 42, Left: 150);
-      Text: "";
+      Text: "Select Action";
       Style: (
         FontSize: 38,
         RenderBold: true,
@@ -80,7 +80,7 @@ $C.@PageOverlay {
 
     Label #CommandMenuSubtitle {
       Anchor: (Top: 62, Width: 620, Height: 26, Left: 150);
-      Text: "";
+      Text: "Click an action to set your brush mode.";
       Style: (
         FontSize: 16,
         TextColor: #dbe4e7,
@@ -162,6 +162,12 @@ $C.@PageOverlay {
         Anchor: (Top: 80, Left: 80, Width: 80, Height: 80);
         Background: (TexturePath: "ImageAssets/Position.png");
       }
+    }
+
+    $C.@TextButton #ResetButton {
+      Anchor: (Top: 660, Left: 380, Width: 160, Height: 64);
+      Text: "Clear Path";
+      TooltipText: "Reset the task list";
     }
   }
 }
