@@ -2,18 +2,18 @@
   "Parent": "Player",
   "Model": "NPC/Intelligent/Kweebec_Clay/Models/Model.blockymodel",
   "Texture": "NPC/Intelligent/Kweebec_Clay/Models/Texture.png",
-  "EyeHeight": 0.3,
-  "CrouchOffset": -0.05,
+  "EyeHeight": 0.5,
+  "CrouchOffset": 0,
   "HitBox": {
     "Max": {
-      "X": 0.25,
-      "Y": 0.5,
-      "Z": 0.25
+      "X": 0.13,
+      "Y": 0.62,
+      "Z": 0.13
     },
     "Min": {
-      "X": -0.25,
+      "X": -0.13,
       "Y": 0,
-      "Z": -0.25
+      "Z": -0.13
     }
   },
   "MinScale": 0.8,
