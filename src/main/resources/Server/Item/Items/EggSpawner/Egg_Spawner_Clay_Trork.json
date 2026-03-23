@@ -50,14 +50,14 @@
   "Icon": "Icons/ItemsGenerated/Trork_Clay.png",
   "IconProperties": {
     "Rotation": [
-      22.5,
-      45,
-      22.5
+      -22.5,
+      225,
+      -22.5
     ],
-    "Scale": 0.7,
+    "Scale": 0.6,
     "Translation": [
       0,
-      -5.4
+      -27.4
     ]
   },
   "Tags": {}
