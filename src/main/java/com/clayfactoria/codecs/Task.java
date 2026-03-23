@@ -5,6 +5,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.BlockMaterial;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -14,19 +15,13 @@ import lombok.Getter;
 
 /**
  * A task which is performable by an NPC. It is split into two parts
+ *
  * <ul>
- *   <li>A location to navigate to</li>
- *   <li>An NPC Action to perform at that location.</li>
+ *   <li>A location to navigate to
+ *   <li>An NPC Action to perform at that location.
  * </ul>
  */
 public class Task {
-
-  @Getter
-  private Vector3d location;
-  @Getter
-  private Vector3d walkLocation;
-  @Getter
-  private Action action;
 
   public static final BuilderCodec<Task> CODEC =
       BuilderCodec.builder(Task.class, Task::new)
@@ -49,9 +44,11 @@ public class Task {
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
           .build();
+  @Getter private Vector3d location;
+  @Getter private Vector3d walkLocation;
+  @Getter private Action action;
 
-  private Task() {
-  }
+  private Task() {}
 
   public Task(Vector3d location, Action action, World world) throws IllegalStateException {
     this.location = location;
@@ -86,16 +83,16 @@ public class Task {
         "Could not find neighbouring valid location for target location " + location + "!");
   }
 
-  private void findStartEndAndMinimumY(Vector3i start, Vector3i end, Vector3d location,
-      World world) {
+  private void findStartEndAndMinimumY(
+      Vector3i start, Vector3i end, Vector3d location, World world) {
 
-    BlockPosition baseBlock = BlockUtils.getCorrectlyRoundedBaseBlock(world, location.x,
-        location.y - 1, location.z);
+    BlockPosition baseBlock =
+        BlockUtils.getCorrectlyRoundedBaseBlock(world, location.x, location.y - 1, location.z);
 
     int minY = baseBlock.y;
     for (int y = minY - 1; y >= 0; y--) {
-      BlockPosition queryBlock = world.getBaseBlock(
-          new BlockPosition((int) location.x, y, (int) location.z));
+      BlockPosition queryBlock =
+          world.getBaseBlock(new BlockPosition((int) location.x, y, (int) location.z));
       if (!queryBlock.equals(baseBlock)) {
         break;
       }
@@ -147,7 +144,7 @@ public class Task {
     for (int x = start.x; x <= end.x; x++) {
       Vector3i topLineLocation = new Vector3i(x, start.y, start.z - 1);
       if (isValidLocation(world, topLineLocation)) {
-         result.add(finalValidLocation(topLineLocation));
+        result.add(finalValidLocation(topLineLocation));
       }
       Vector3i bottomLineLocation = new Vector3i(x, start.y, end.z + 1);
       if (isValidLocation(world, bottomLineLocation)) {
@@ -179,8 +176,9 @@ public class Task {
   private boolean isValidLocation(World world, Vector3i location) {
     BlockType blockType = world.getBlockType(location);
     BlockType blockTypeAbove = world.getBlockType(location.clone().add(new Vector3i(0, 1, 0)));
-    return blockType != null && blockType.isFullySupportive() &&
-        (blockTypeAbove == null || !blockTypeAbove.isFullySupportive());
+    return blockType != null
+        && blockType.isFullySupportive()
+        && (blockTypeAbove == null || blockTypeAbove.getMaterial().equals(BlockMaterial.Empty));
   }
 
   private Vector3d findNearestWalkLocation(List<Vector3d> foundLocations, Vector3d from) {
