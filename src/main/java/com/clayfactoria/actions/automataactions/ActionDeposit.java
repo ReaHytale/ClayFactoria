@@ -5,6 +5,7 @@ import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
@@ -50,7 +51,12 @@ public class ActionDeposit extends ActionBaseLogger {
   }
 
   private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, TaskComponent taskComponent) {
-    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, containerSlot);
+    Task currentTask = taskComponent.getCurrentTask();
+    checkNull(currentTask, "No task when trying to deposit");
+    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
+        npcEntity.getWorld(),
+        currentTask.getLocation().toVector3i(),
+        containerSlot);
     checkNull(itemContainer);
     boolean result = TaskHelper.transferItem(
         npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
