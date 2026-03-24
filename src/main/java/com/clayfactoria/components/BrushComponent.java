@@ -9,7 +9,7 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -57,7 +57,7 @@ public class BrushComponent implements Component<EntityStore> {
     return ClayFactoria.brushComponentType;
   }
 
-  public void addTask(Vector3d location, Action action, World world) {
+  public void addTask(Vector3i location, Action action, World world) {
     this.tasks.add(new Task(location, action, world));
   }
 

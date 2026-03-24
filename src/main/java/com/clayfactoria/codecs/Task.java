@@ -3,6 +3,7 @@ package com.clayfactoria.codecs;
 import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockMaterial;
@@ -22,14 +23,13 @@ import lombok.Getter;
  * </ul>
  */
 public class Task {
-
   public static final BuilderCodec<Task> CODEC =
       BuilderCodec.builder(Task.class, Task::new)
           .append(
-              new KeyedCodec<>("Location", Vector3d.CODEC),
+              new KeyedCodec<>("Location", Vector3i.CODEC),
               (comp, position) -> comp.location = position,
               (comp) -> comp.location)
-          .documentation("The Vector3d location for the task to take place")
+          .documentation("The Vector3i location of the block on which the action should be performed")
           .add()
           .append(
               new KeyedCodec<>("Action", Action.CODEC),
@@ -44,21 +44,22 @@ public class Task {
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
           .build();
-  @Getter private Vector3d location;
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+  @Getter private Vector3i location;
   @Getter private Vector3d walkLocation;
   @Getter private Action action;
 
   private Task() {}
 
-  public Task(Vector3d location, Action action, World world) throws IllegalStateException {
+  public Task(Vector3i location, Action action, World world) throws IllegalStateException {
     this.location = location;
     this.action = action;
-    findValidWalkLocation(world, location);
+    findValidWalkLocation(world, location.toVector3d());
   }
 
   public void findValidWalkLocation(World world, Vector3d from) throws IllegalStateException {
 
-    BlockType blockType = world.getBlockType(location.toVector3i());
+    BlockType blockType = world.getBlockType(location);
     if (blockType == null) {
       throw new IllegalStateException("Block Type is null at location " + location + "!");
     }
@@ -84,15 +85,15 @@ public class Task {
   }
 
   private void findStartEndAndMinimumY(
-      Vector3i start, Vector3i end, Vector3d location, World world) {
+      Vector3i start, Vector3i end, Vector3i location, World world) {
 
     BlockPosition baseBlock =
-        BlockUtils.getCorrectlyRoundedBaseBlock(world, location.x, location.y - 1, location.z);
+        BlockUtils.getCorrectlyRoundedBaseBlock(world, location.x, location.y, location.z);
 
     int minY = baseBlock.y;
     for (int y = minY - 1; y >= 0; y--) {
       BlockPosition queryBlock =
-          world.getBaseBlock(new BlockPosition((int) location.x, y, (int) location.z));
+          world.getBaseBlock(new BlockPosition(location.x, y, location.z));
       if (!queryBlock.equals(baseBlock)) {
         break;
       }

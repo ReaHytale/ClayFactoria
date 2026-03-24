@@ -55,7 +55,7 @@ public class ActionDeposit extends ActionBaseLogger {
     checkNull(currentTask, "No task when trying to deposit");
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
         npcEntity.getWorld(),
-        currentTask.getLocation().toVector3i(),
+        currentTask.getLocation(),
         containerSlot);
     checkNull(itemContainer);
     boolean result = TaskHelper.transferItem(
