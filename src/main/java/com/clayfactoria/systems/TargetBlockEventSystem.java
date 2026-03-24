@@ -12,9 +12,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.Message;
@@ -23,13 +21,12 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DamageBlockEvent;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.awt.Color;
+import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
@@ -54,35 +51,18 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     Ref<EntityStore> entityStoreRef = archetypeChunk.getReferenceTo(index);
 
-    Player player = store.getComponent(entityStoreRef, Player.getComponentType());
-    if (player == null) return;
-
-    Ref<EntityStore> playerRef = checkNull(player.getReference(), "playerRef was null");
+    Player player = Objects.requireNonNull(store.getComponent(entityStoreRef, Player.getComponentType()));
+    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(), "playerRef was null");
 
     // Check that the player has the wand equipped
     if (!isWandEquipped(player)) {
       return;
     }
 
-    BrushComponent brushComponent = checkNull(store.getComponent(playerRef, this.brushComponentType));
-
-    HeadRotation headRotationComponent = checkNull(store.getComponent(
-        entityStoreRef, HeadRotation.getComponentType()
-    ));
-    Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
-    Vector3f headRotation = headRotationComponent.getRotation();
-
-    TransformComponent entityTransformComp = checkNull(store.getComponent(
-        entityStoreRef, TransformComponent.getComponentType()
-    ));
-
-    Transform targetTransform = entityTransformComp.getTransform().clone();
-    Vector3d targetBlockLocOnTopOfBlock =
-        new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
-    targetTransform.setPosition(targetBlockLocOnTopOfBlock);
-    targetTransform.setRotation(headRotation);
-
     // Add the task to the task list, with the action being set to the one currently selected by the player.
+    BrushComponent brushComponent = checkNull(store.getComponent(playerRef, this.brushComponentType));
+    Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
+
     Action action = brushComponent.getAction();
     try {
       brushComponent.addTask(targetBlockLoc, action, player.getWorld());
@@ -96,6 +76,10 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     player.sendMessage(Message.raw(message).color(Color.GREEN));
 
     damageBlockEvent.setDamage(0);
+    Vector3d targetBlockLocOnTopOfBlock =
+        new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
+    // TODO: Replace this with a more colourful paint splash particle effect
+    // TODO: Spawn this particle where the player hit, rather than on top of the block.
     ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
