@@ -1,7 +1,6 @@
 package com.clayfactoria.actions.automataactions;
 
 import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
-import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
@@ -18,6 +17,7 @@ import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class ActionDeposit extends ActionBaseLogger {
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent, "Task Component was null");
 
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
     if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent)) {
@@ -52,12 +52,12 @@ public class ActionDeposit extends ActionBaseLogger {
 
   private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, TaskComponent taskComponent) {
     Task currentTask = taskComponent.getCurrentTask();
-    checkNull(currentTask, "No task when trying to deposit");
+    Objects.requireNonNull(currentTask, "No task when trying to deposit");
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
         npcEntity.getWorld(),
         currentTask.getLocation(),
         containerSlot);
-    checkNull(itemContainer);
+    Objects.requireNonNull(itemContainer);
     boolean result = TaskHelper.transferItem(
         npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
     );

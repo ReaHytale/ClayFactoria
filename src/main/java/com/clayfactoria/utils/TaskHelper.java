@@ -1,7 +1,5 @@
 package com.clayfactoria.utils;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.codecs.Action;
 import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
 import com.hypixel.hytale.component.ComponentType;
@@ -26,6 +24,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -40,16 +39,16 @@ public final class TaskHelper {
   public static NPCEntity getNPCEntity(
       @Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-    checkNull(component, "NPCEntity Component Type was null");
+    Objects.requireNonNull(component, "NPCEntity Component Type was null");
     NPCEntity npcEntity = store.getComponent(ref, component);
-    checkNull(npcEntity, "NPCEntity was null");
+    Objects.requireNonNull(npcEntity, "NPCEntity was null");
     return npcEntity;
   }
 
 
   @Nullable
   public static Vector3i findNearbyPOI(NPCEntity npcEntity, Action action) {
-    World world = checkNull(npcEntity.getWorld());
+    World world = Objects.requireNonNull(npcEntity.getWorld());
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
     List<Vector3i> shuffled = getAdjacentDirections();
     for (Vector3i dir : shuffled) {
@@ -71,9 +70,9 @@ public final class TaskHelper {
   @Nullable
   public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity,
       @Nullable ContainerSlot containerSlot) {
-    World world = checkNull(npcEntity.getWorld());
+    World world = Objects.requireNonNull(npcEntity.getWorld());
     // Action.TAKE looks for item containers, so we use that here as a dummy action
-    Vector3i pos = checkNull(findNearbyPOI(npcEntity, Action.TAKE));
+    Vector3i pos = Objects.requireNonNull(findNearbyPOI(npcEntity, Action.TAKE));
     return getItemContainerAtPos(world, pos, containerSlot);
   }
 
@@ -82,7 +81,7 @@ public final class TaskHelper {
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
   ) {
-    BlockState blockState = checkNull(
+    BlockState blockState = Objects.requireNonNull(
         getBlockStateAtPos(world, pos),
         "null BlockState at position where container was expected: " + pos
     );
@@ -134,9 +133,9 @@ public final class TaskHelper {
   public static BlockState getBlockStateAtPos(World world, Vector3i pos) {
     long chunkIndex = ChunkUtil.indexChunkFromBlock(pos.x, pos.z);
     WorldChunk worldChunk = world.getChunk(chunkIndex);
-    checkNull(worldChunk);
+    Objects.requireNonNull(worldChunk);
     EntityChunk entityChunk = worldChunk.getEntityChunk();
-    checkNull(entityChunk);
+    Objects.requireNonNull(entityChunk);
     BlockPosition base = world.getBaseBlock(new BlockPosition(pos.x, pos.y, pos.z));
     return world.getState(base.x, base.y, base.z, false);
   }

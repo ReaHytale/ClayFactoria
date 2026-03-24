@@ -1,7 +1,5 @@
 package com.clayfactoria.actions.automataactions;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
 import com.clayfactoria.components.TaskComponent;
@@ -10,6 +8,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +24,7 @@ public class ActionPosition extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent, "Task Component was null");
     taskComponent.setComplete(true);
     return true;
   }

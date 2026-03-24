@@ -1,7 +1,5 @@
 package com.clayfactoria.systems;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -60,7 +58,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     }
 
     // Add the task to the task list, with the action being set to the one currently selected by the player.
-    BrushComponent brushComponent = checkNull(store.getComponent(playerRef, this.brushComponentType));
+    BrushComponent brushComponent = Objects.requireNonNull(store.getComponent(playerRef, this.brushComponentType));
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     Action action = brushComponent.getAction();
@@ -103,7 +101,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
       // Get item in active hotbar slot.
       byte slot = inventory.getActiveHotbarSlot();
-      ItemStack itemStack = checkNull(inventory.getHotbar().getItemStack(slot));
+      ItemStack itemStack = Objects.requireNonNull(inventory.getHotbar().getItemStack(slot));
 
       // Check if held item is the wand.
       return itemStack.getItemId().equals(WAND_ITEM_ID);

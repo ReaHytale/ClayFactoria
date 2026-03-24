@@ -1,7 +1,6 @@
 package com.clayfactoria.actions.automataactions;
 
 import static com.clayfactoria.utils.TaskHelper.getBlockStateAtPos;
-import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
@@ -17,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,13 +35,13 @@ public class ActionWork extends ActionBaseLogger {
     NPCEntity npc = TaskHelper.getNPCEntity(ref, store);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent, "Task Component was null");
     taskComponent.setComplete(true);
-    Vector3i pos = checkNull(TaskHelper.findNearbyPOI(npc, Action.WORK));
+    Vector3i pos = Objects.requireNonNull(TaskHelper.findNearbyPOI(npc, Action.WORK));
 
     // Find processing bench
-    BlockState blockState = checkNull(
-        getBlockStateAtPos(checkNull(npc.getWorld()), pos),
+    BlockState blockState = Objects.requireNonNull(
+        getBlockStateAtPos(Objects.requireNonNull(npc.getWorld()), pos),
         "null BlockState at position where container was expected: " + pos
     );
     ProcessingBenchState processingBenchState;

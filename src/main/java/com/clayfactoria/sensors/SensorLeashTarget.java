@@ -1,7 +1,5 @@
 package com.clayfactoria.sensors;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
@@ -36,6 +34,17 @@ public class SensorLeashTarget extends SensorBaseLogger {
     super(builderSensorLeash);
   }
 
+  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
+      Task currentTask) {
+    try {
+      NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
+      currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
+          entity.getOldPosition());
+    } catch (IllegalStateException exception) {
+      // All fine, none was found
+    }
+  }
+
   @Override
   public boolean matchesNullChecked(
       @Nonnull Ref<EntityStore> ref,
@@ -45,10 +54,10 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
     TransformComponent transformComponent =
         store.getComponent(ref, TransformComponent.getComponentType());
-    checkNull(transformComponent, "Transform Component was null");
+    Objects.requireNonNull(transformComponent, "Transform Component was null");
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent, "Task Component was null");
 
     Task currentTask = taskComponent.getCurrentTask();
     if (currentTask == null) {
@@ -147,17 +156,6 @@ public class SensorLeashTarget extends SensorBaseLogger {
   private boolean hasNotChangedLocationInSomeTime() {
     return System.currentTimeMillis() - lastDistanceUpdateTime >
         RECOMPUTE_WALK_DISTANCE_POLL_SECONDS * 1000L;
-  }
-
-  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
-      Task currentTask) {
-    try {
-      NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
-      currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
-          entity.getOldPosition());
-    } catch (IllegalStateException exception) {
-      // All fine, none was found
-    }
   }
 
   @Override

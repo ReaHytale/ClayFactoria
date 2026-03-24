@@ -1,7 +1,5 @@
 package com.clayfactoria.actions;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -16,6 +14,7 @@ import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,15 +38,15 @@ public class ActionPutItemInHand extends ActionBaseLogger {
       @Nonnull Store<EntityStore> store) {
     // Get the player
     Ref<EntityStore> playerRef = role.getStateSupport().getInteractionIterationTarget();
-    checkNull(playerRef, "playerRef was null");
+    Objects.requireNonNull(playerRef, "playerRef was null");
     Player player = store.getComponent(playerRef, Player.getComponentType());
-    checkNull(player, "Player was null");
+    Objects.requireNonNull(player, "Player was null");
 
     // Get the NPC
     ComponentType<EntityStore, NPCEntity> componentType = NPCEntity.getComponentType();
-    checkNull(componentType, "componentType was null");
+    Objects.requireNonNull(componentType, "componentType was null");
     NPCEntity npc = store.getComponent(ref, NPCEntity.getComponentType());
-    checkNull(npc, "npc was null");
+    Objects.requireNonNull(npc, "npc was null");
 
     // Get the Item Stack in the player's & NPC's active slots
     ItemStack playerActiveItemStack = player.getInventory().getItemInHand();
@@ -58,7 +57,7 @@ public class ActionPutItemInHand extends ActionBaseLogger {
       return false;
     }
     ItemStack playerAtomicItemStack = playerActiveItemStack.withQuantity(1);
-    checkNull(playerAtomicItemStack, "playerAtomicItemStack was null");
+    Objects.requireNonNull(playerAtomicItemStack, "playerAtomicItemStack was null");
 
     // If the NPC inventory is full, drop item in hand
     if (npc.getInventory().getCombinedStorageFirst().canAddItemStack(playerAtomicItemStack)) {

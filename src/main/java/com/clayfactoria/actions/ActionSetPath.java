@@ -1,7 +1,5 @@
 package com.clayfactoria.actions;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
@@ -17,9 +15,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
-
 import java.awt.Color;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /** Action triggered to finalise a created path and set it on the target entity. */
@@ -47,25 +45,25 @@ public class ActionSetPath extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     Ref<EntityStore> playerRef = role.getStateSupport().getInteractionIterationTarget();
-    checkNull(playerRef, "playerRef was null");
+    Objects.requireNonNull(playerRef, "playerRef was null");
 
     BrushComponent brushComponent = store.getComponent(
         playerRef,
         BrushComponent.getComponentType()
     );
-    checkNull(brushComponent, "brushComponent was null");
+    Objects.requireNonNull(brushComponent, "brushComponent was null");
 
     ComponentType<EntityStore, NPCEntity> npcEntityComponentType = NPCEntity.getComponentType();
-    checkNull(npcEntityComponentType, "Failed to get NPC Entity Component Type of NPC");
+    Objects.requireNonNull(npcEntityComponentType, "Failed to get NPC Entity Component Type of NPC");
 
     NPCEntity npcComponent = store.getComponent(ref, npcEntityComponentType);
-    checkNull(npcComponent, "npcComponent was null");
+    Objects.requireNonNull(npcComponent, "npcComponent was null");
 
     Player player = store.getComponent(playerRef, Player.getComponentType());
-    checkNull(player, "Player was null");
+    Objects.requireNonNull(player, "Player was null");
 
     UUIDComponent playerIdComp = store.getComponent(playerRef, UUIDComponent.getComponentType());
-    checkNull(playerIdComp, "playerIdComp was null");
+    Objects.requireNonNull(playerIdComp, "playerIdComp was null");
 
     TaskComponent taskComponent =
         store.ensureAndGetComponent(ref, TaskComponent.getComponentType());

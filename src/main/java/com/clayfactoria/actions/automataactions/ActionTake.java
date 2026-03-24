@@ -1,7 +1,6 @@
 package com.clayfactoria.actions.automataactions;
 
 import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
-import static com.clayfactoria.utils.Utils.checkNull;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
@@ -17,6 +16,7 @@ import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,10 +37,10 @@ public class ActionTake extends ActionBaseLogger {
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
     ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, ContainerSlot.Output);
-    checkNull(itemContainer);
+    Objects.requireNonNull(itemContainer);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    checkNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent, "Task Component was null");
 
     // Take an item from the container
     boolean result =

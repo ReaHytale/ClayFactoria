@@ -1,7 +1,5 @@
 package com.clayfactoria.sensors;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.sensors.builders.BuilderSensorBlockUnder;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -14,6 +12,7 @@ import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,16 +29,16 @@ public class SensorBlockUnder extends SensorBaseLogger {
   public boolean matchesNullChecked(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, double dt, @Nonnull
   Store<EntityStore> store) {
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-    checkNull(component);
+    Objects.requireNonNull(component);
     NPCEntity npcEntity = store.getComponent(ref, component);
-    checkNull(npcEntity);
+    Objects.requireNonNull(npcEntity);
 
     Vector3d pos = npcEntity.getOldPosition();
     World world = npcEntity.getWorld();
-    checkNull(world);
+    Objects.requireNonNull(world);
 
     BlockType blockType = world.getBlockType(pos.toVector3i().add(0,-1,0));
-    checkNull(blockType);
+    Objects.requireNonNull(blockType);
     return blockType.getId().equals(block);
   }
 

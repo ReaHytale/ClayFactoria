@@ -1,7 +1,5 @@
 package com.clayfactoria.components;
 
-import static com.clayfactoria.utils.Utils.checkNull;
-
 import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Task;
 import com.hypixel.hytale.codec.Codec;
@@ -11,24 +9,20 @@ import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Keeps track of a circular queue of {@link Task Tasks} for an entity.
  */
 public class TaskComponent implements Component<EntityStore> {
-  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-
   @Nonnull
   public static final BuilderCodec<TaskComponent> CODEC =
       BuilderCodec.builder(TaskComponent.class, TaskComponent::new)
@@ -63,12 +57,16 @@ public class TaskComponent implements Component<EntityStore> {
           .documentation("Flag for when a task is complete or not")
           .add()
           .build();
-
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   @Getter @Setter @Nullable private UUID playerId;
   @Getter @Setter private List<Task> tasks = new ArrayList<>();
   @Getter @Setter @Nullable private Task currentTask;
   @Getter @Setter private int currentTargetIndex;
   @Getter @Setter private boolean isComplete = false;
+
+  public static ComponentType<EntityStore, TaskComponent> getComponentType() {
+    return ClayFactoria.ownerComponentType;
+  }
 
   /**
    * Move on to the next task in the queue
@@ -92,9 +90,5 @@ public class TaskComponent implements Component<EntityStore> {
     taskComponent.currentTargetIndex = this.currentTargetIndex;
     taskComponent.isComplete = this.isComplete;
     return taskComponent;
-  }
-
-  public static ComponentType<EntityStore, TaskComponent> getComponentType() {
-    return ClayFactoria.ownerComponentType;
   }
 }
