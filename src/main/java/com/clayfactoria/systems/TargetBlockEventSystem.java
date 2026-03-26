@@ -2,6 +2,7 @@ package com.clayfactoria.systems;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
+import com.clayfactoria.utils.ParticleBoxUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -20,7 +21,6 @@ import com.hypixel.hytale.server.core.event.events.ecs.DamageBlockEvent;
 import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.awt.Color;
@@ -62,23 +62,28 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     Action action = brushComponent.getAction();
+    boolean success = true;
     try {
       brushComponent.addTask(targetBlockLoc, action, player.getWorld());
     } catch (IllegalStateException e) {
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
-      return;
+      success = false;
     }
+
+    if (success) {
       String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
-    LOGGER.atInfo().log(message);
-    player.sendMessage(Message.raw(message).color(Color.GREEN));
+      LOGGER.atInfo().log(message);
+      player.sendMessage(Message.raw(message).color(Color.GREEN));
+    }
 
     damageBlockEvent.setDamage(0);
     Vector3d targetBlockLocOnTopOfBlock =
         new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
     // TODO: Replace this with a more colourful paint splash particle effect
     // TODO: Spawn this particle where the player hit, rather than on top of the block.
-    ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
+    //ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
+    ParticleBoxUtils.drawParticleHitbox(targetBlockLoc, store, player.getWorld());
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
   }
