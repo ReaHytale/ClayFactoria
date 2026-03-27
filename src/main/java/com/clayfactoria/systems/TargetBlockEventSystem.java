@@ -2,7 +2,7 @@ package com.clayfactoria.systems;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.utils.ParticleBoxUtils;
+import com.clayfactoria.particles.ParticleBox;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -13,6 +13,7 @@ import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -28,7 +29,10 @@ import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
-  /** ID of the item to use as a wand for setting Automaton paths. */
+
+  /**
+   * ID of the item to use as a wand for setting Automaton paths.
+   */
   private static final String WAND_ITEM_ID = "Tool_Brush";
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -49,8 +53,10 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     Ref<EntityStore> entityStoreRef = archetypeChunk.getReferenceTo(index);
 
-    Player player = Objects.requireNonNull(store.getComponent(entityStoreRef, Player.getComponentType()));
-    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(), "playerRef was null");
+    Player player = Objects.requireNonNull(
+        store.getComponent(entityStoreRef, Player.getComponentType()));
+    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(),
+        "playerRef was null");
 
     // Check that the player has the wand equipped
     if (!isWandEquipped(player)) {
@@ -58,7 +64,8 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     }
 
     // Add the task to the task list, with the action being set to the one currently selected by the player.
-    BrushComponent brushComponent = Objects.requireNonNull(store.getComponent(playerRef, this.brushComponentType));
+    BrushComponent brushComponent = Objects.requireNonNull(
+        store.getComponent(playerRef, this.brushComponentType));
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     Action action = brushComponent.getAction();
@@ -83,7 +90,11 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     // TODO: Replace this with a more colourful paint splash particle effect
     // TODO: Spawn this particle where the player hit, rather than on top of the block.
     //ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
-    ParticleBoxUtils.drawParticleHitbox(targetBlockLoc, store, player.getWorld());
+    ParticleBox particleBox = new ParticleBox(
+        new BlockPosition(targetBlockLoc.x, targetBlockLoc.y, targetBlockLoc.z), store,
+        player.getWorld());
+    particleBox.startDrawing();
+//    ParticleBoxUtils.drawParticleHitbox(targetBlockLoc, store, player.getWorld());
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
   }
@@ -110,7 +121,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
       // Check if held item is the wand.
       return itemStack.getItemId().equals(WAND_ITEM_ID);
-    } catch (NullPointerException e ) {
+    } catch (NullPointerException e) {
       return false;
     }
   }
