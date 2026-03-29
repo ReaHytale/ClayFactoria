@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 /** Action triggered to finalise a created path and set it on the target entity. */
@@ -94,6 +95,9 @@ public class ActionSetPath extends ActionBaseLogger {
               .color(Color.YELLOW));
       return false;
     }
+
+    LOGGER.atInfo().log("Tasks: " + tasks.stream().map(task -> task.getAction() + ";" +
+        task.getLocation() + ";" + task.getWalkLocation()).collect(Collectors.joining(";;; ")));
 
     // Transfer paths from brush to entity
     taskComponent.setTasks(tasks);

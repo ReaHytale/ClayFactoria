@@ -2,6 +2,7 @@ package com.clayfactoria.codecs;
 
 import com.clayfactoria.utils.BlockUtils;
 import com.clayfactoria.utils.TaskHelper;
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes;
 import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes.RotatedVariantBoxes;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,13 @@ public class Task {
               (comp) -> comp.walkLocation)
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
+          .append(
+              new KeyedCodec<>("Location equals Walk Location", Codec.BOOLEAN),
+              (comp, locationEqualsWalkLocation) ->
+                  comp.locationEqualsWalkLocation = locationEqualsWalkLocation,
+              (comp) -> comp.locationEqualsWalkLocation)
+          .documentation("Whether the walk location should instead be the Location")
+          .add()
           .build();
   @Getter
   private Vector3i location;
@@ -55,14 +64,22 @@ public class Task {
   private Vector3d walkLocation;
   @Getter
   private Action action;
+  @Getter
+  private boolean locationEqualsWalkLocation;
 
   private Task() {
   }
 
-  public Task(Vector3i location, Action action, World world) throws IllegalStateException {
+  public Task(Vector3i location, Action action, World world, boolean locationEqualsWalkLocation)
+      throws IllegalStateException {
     this.location = location;
     this.action = action;
-    findValidWalkLocation(world, location.toVector3d());
+    this.locationEqualsWalkLocation = locationEqualsWalkLocation;
+    if (!locationEqualsWalkLocation) {
+      findValidWalkLocation(world, location.toVector3d());
+    } else {
+      walkLocation = location.toVector3d().add(new Vector3d(0.5, 1, 0.5));
+    }
   }
 
   public void findValidWalkLocation(World world, Vector3d from) throws IllegalStateException {
@@ -79,16 +96,16 @@ public class Task {
       throw new IllegalStateException("Bounding boxes are null at location " + location + "!");
     }
 
-    Vector3i roundedLocation = from.toVector3i();
+    Vector3i roundedLocation = location;
     int rotationIndex = world.getBlockRotationIndex(roundedLocation.x, roundedLocation.y,
         roundedLocation.z);
     RotatedVariantBoxes rotatedVariantBoxes = boundingBoxes.get(rotationIndex);
 
     Vector3i start = BlockUtils.roundToNearestIntegerLocation(
-        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().min))
+            roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().min))
         .add(new Vector3i(0, -1, 0));
     Vector3i end = BlockUtils.roundToNearestIntegerLocation(
-        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().max))
+            roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().max))
         .add(new Vector3i(-1, 0, -1));
     end.y = start.y;
 
