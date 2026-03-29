@@ -8,6 +8,7 @@ import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -16,13 +17,17 @@ import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction
 import com.hypixel.hytale.server.core.inventory.transaction.MoveTransaction;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -111,7 +116,7 @@ public final class TaskHelper {
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
   ) {
-    Holder<ChunkStore> holder = world.getBlockComponentHolder(pos.x, pos.y, pos.z);
+    Holder<ChunkStore> holder = getBlockComponentHolderDirectReference(world, pos.x, pos.y, pos.z);
     assert holder != null;
     ItemContainerBlock itemContainerBlock = holder.getComponent(
         ItemContainerBlock.getComponentType());
@@ -125,6 +130,30 @@ public final class TaskHelper {
       return null;
     }
     return getItemContainerFromComponent(processingBenchBlock, containerSlot);
+  }
+
+  private static Holder<ChunkStore> getBlockComponentHolderDirectReference(World world, int x,
+      int y, int z) {
+    WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
+    assert chunk != null;
+
+    return y >= 0 && y < 320 ? getBlockComponentHolderDirectReference(chunk, x, y, z) : null;
+  }
+
+  private static Holder<ChunkStore> getBlockComponentHolderDirectReference(WorldChunk chunk, int x, int y,
+      int z) {
+    if (y >= 0 && y < 320) {
+      if (!chunk.getWorld().isInThread()) {
+        return CompletableFuture.supplyAsync(
+            () -> getBlockComponentHolderDirectReference(chunk, x, y, z), chunk.getWorld()).join();
+      } else {
+        int index = ChunkUtil.indexBlockInColumn(x, y, z);
+        assert chunk.getBlockComponentChunk() != null;
+        return chunk.getBlockComponentChunk().getEntityHolder(index);
+      }
+    } else {
+      return null;
+    }
   }
 
   public static ItemContainer getItemContainerFromComponent(
@@ -158,11 +187,8 @@ public final class TaskHelper {
       if (itemStack == null) {
         continue;
       }
-
-      MoveTransaction<ItemStackTransaction> itemStackTransactionMoveTransaction = source.moveItemStackFromSlot(
-          slot, 1, target);
-      LOGGER.atInfo().log("" + itemStackTransactionMoveTransaction);
-      // Check whether it actually succeeded to transfer
+      MoveTransaction<ItemStackTransaction> itemStackTransactionMoveTransaction =
+          source.moveItemStackFromSlot(slot, 1, target);
       return itemStackTransactionMoveTransaction.succeeded();
     }
     // No item found in storage, return false for failure.
