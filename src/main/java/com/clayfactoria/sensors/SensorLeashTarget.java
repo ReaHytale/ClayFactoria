@@ -24,6 +24,7 @@ import org.jspecify.annotations.NonNull;
 public class SensorLeashTarget extends SensorBaseLogger {
 
   private static final int RECOMPUTE_WALK_DISTANCE_POLL_SECONDS = 2;
+  private static final double EQUAL_DISTANCE_EPSILON = 0.1;
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final PositionProvider positionProvider = new PositionProvider();
   private double lastDistanceSquared;
@@ -34,12 +35,19 @@ public class SensorLeashTarget extends SensorBaseLogger {
     super(builderSensorLeash);
   }
 
-  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
+  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref,
+      @NonNull Store<EntityStore> store,
       Task currentTask) {
+    if (currentTask.isLocationEqualsWalkLocation()) {
+      return;
+    }
     try {
       NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
+      Vector3d oldWalkLocation = currentTask.getWalkLocation().clone();
       currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
           entity.getOldPosition());
+      LOGGER.atInfo().log("For entity at " + entity.getOldPosition() + " found walk location "
+          + currentTask.getWalkLocation() + " (it was " + oldWalkLocation + ")");
     } catch (IllegalStateException exception) {
       // All fine, none was found
     }
@@ -82,7 +90,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
     double distanceSquared = transformComponent.getPosition().distanceSquaredTo(currentTarget);
 
-    if (distanceSquared == lastDistanceSquared) {
+    if (Math.abs(distanceSquared - lastDistanceSquared) <= EQUAL_DISTANCE_EPSILON) {
       if (hasUpdatedWalkLocation(ref, store, currentTask)) {
         return false;
       }
@@ -91,7 +99,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
       lastDistanceUpdateTime = System.currentTimeMillis();
     }
 
-    if (distanceSquared > 0.1f) {
+    if (distanceSquared > EQUAL_DISTANCE_EPSILON) { // walking to destination
       Ref<EntityStore> target = this.positionProvider.getTarget();
       if (target == null) {
         this.positionProvider.setTarget(currentTarget);
@@ -109,7 +117,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
         this.positionProvider.setTarget(currentTarget);
         return true;
       }
-    } else {
+    } else {  // reached destination
       if (!taskComponent.isComplete()) {
         return false;
       }
@@ -142,7 +150,8 @@ public class SensorLeashTarget extends SensorBaseLogger {
     }
   }
 
-  private boolean hasUpdatedWalkLocation(@NonNull Ref<EntityStore> ref, @NonNull Store<EntityStore> store,
+  private boolean hasUpdatedWalkLocation(@NonNull Ref<EntityStore> ref,
+      @NonNull Store<EntityStore> store,
       Task currentTask) {
     if (hasNotChangedLocationInSomeTime()) {
       recomputeWalkLocation(ref, store, currentTask);

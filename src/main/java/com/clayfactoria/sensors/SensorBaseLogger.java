@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class SensorBaseLogger extends SensorBase {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   public SensorBaseLogger(@NotNull BuilderSensorBase builderSensorBase) {
@@ -33,11 +34,10 @@ public abstract class SensorBaseLogger extends SensorBase {
       return this.matchesNullChecked(ref, role, dt, store);
     } catch (NullPointerException e) {
       if (e.getMessage() != null) {
-        String className = e
-            .getStackTrace()[1]
-            .getClassName()
-            .split("\\.")[0];
-        LOGGER.atInfo().log(String.format("%s [Null]: %s", className, e.getMessage()));
+        String className = e.getStackTrace()[0].getFileName()
+            + ":"
+            + e.getStackTrace()[0].getLineNumber();
+        LOGGER.atWarning().log(String.format("%s [Null]: %s", className, e));
       }
       return false;
     }

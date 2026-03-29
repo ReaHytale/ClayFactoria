@@ -1,24 +1,20 @@
 package com.clayfactoria.utils;
 
 import com.clayfactoria.codecs.Action;
-import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
+import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.StateData;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.EntityChunk;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
-import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
-import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerState;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import java.util.Arrays;
@@ -45,9 +41,8 @@ public final class TaskHelper {
     return npcEntity;
   }
 
-
   @Nullable
-  public static Vector3i findNearbyPOI(NPCEntity npcEntity, Action action) {
+  public static Holder<ChunkStore> findNearbyPOIHolder(NPCEntity npcEntity, Action action) {
     World world = Objects.requireNonNull(npcEntity.getWorld());
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
     List<Vector3i> shuffled = getAdjacentDirections();
@@ -56,13 +51,48 @@ public final class TaskHelper {
       if (type == null) {
         continue;
       }
-      StateData stateData = type.getState();
-      if (stateData == null
-          || stateData.getId() == null
-          || Arrays.stream(action.blockStates).noneMatch(stateData.getId()::equals)) {
+      Holder<ChunkStore> holder = type.getBlockEntity();
+      if (holder != null) {
+        return holder;
+      }
+    }
+    return null;
+  }
+
+  @Nullable
+  public static Component<ChunkStore> findNearbyPOI(NPCEntity npcEntity, Action action) {
+    World world = Objects.requireNonNull(npcEntity.getWorld());
+    Vector3i pos = npcEntity.getOldPosition().toVector3i();
+    List<Vector3i> shuffled = getAdjacentDirections();
+    for (Vector3i dir : shuffled) {
+      BlockType type = world.getBlockType(pos.clone().add(dir));
+      if (type == null) {
         continue;
       }
-      return pos.add(dir);
+      Holder<ChunkStore> holder = type.getBlockEntity();
+      if (holder == null) {
+        continue;
+      }
+      ItemContainerBlock itemContainerBlock = holder.getComponent(
+          ItemContainerBlock.getComponentType());
+      ProcessingBenchBlock processingBenchBlock = holder.getComponent(
+          ProcessingBenchBlock.getComponentType());
+
+      switch (action) {
+        case POSITION:
+          return null;
+        case TAKE, DEPOSIT: // Find a container
+          if (itemContainerBlock != null) {
+            return itemContainerBlock;
+          }
+          if (processingBenchBlock != null) {
+            return processingBenchBlock;
+          }
+        case WORK: // Find a processing bench
+          if (processingBenchBlock != null) {
+            return processingBenchBlock;
+          }
+      }
     }
     return null;
   }
@@ -72,8 +102,8 @@ public final class TaskHelper {
       @Nullable ContainerSlot containerSlot) {
     World world = Objects.requireNonNull(npcEntity.getWorld());
     // Action.TAKE looks for item containers, so we use that here as a dummy action
-    Vector3i pos = Objects.requireNonNull(findNearbyPOI(npcEntity, Action.TAKE));
-    return getItemContainerAtPos(world, pos, containerSlot);
+    Component<ChunkStore> poi = Objects.requireNonNull(findNearbyPOI(npcEntity, Action.TAKE));
+    return getItemContainerFromComponent(poi, containerSlot);
   }
 
   public static ItemContainer getItemContainerAtPos(
@@ -81,38 +111,34 @@ public final class TaskHelper {
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
   ) {
-    BlockState blockState = Objects.requireNonNull(
-        getBlockStateAtPos(world, pos),
-        "null BlockState at position where container was expected: " + pos
-    );
-    // Normal Item Container
-    if (blockState.getClass() == ItemContainerState.class) {
-      return ((ItemContainerState) blockState).getItemContainer();
+    BlockType type = world.getBlockType(pos);
+    if (type == null) {
+      return null;
     }
-    // Processing Bench
-    else if (blockState.getClass() == ProcessingBenchState.class) {
-      CombinedItemContainer comb = ((ProcessingBenchState) blockState).getItemContainer();
-      switch (containerSlot) {
-        case Fuel -> {
-          return comb.getContainer(0);
-        }
-        case Input -> {
-          return comb.getContainer(1);
-        }
-        case Output -> {
-          return comb.getContainer(2);
-        }
-        case null, default -> {
-          return comb;
-        }
-      }
+    Holder<ChunkStore> holder = type.getBlockEntity();
+    ItemContainerBlock itemContainerBlock = holder.getComponent(
+        ItemContainerBlock.getComponentType());
+    if (itemContainerBlock != null) {
+      // This is an item container, not a processing bench, so we return straight away
+      return itemContainerBlock.getItemContainer();
     }
+    ProcessingBenchBlock processingBenchBlock = holder.getComponent(
+        ProcessingBenchBlock.getComponentType());
+    if (processingBenchBlock == null || containerSlot == null) {
+      return null;
+    }
+    return getItemContainerFromComponent(processingBenchBlock, containerSlot);
+  }
 
-    // Unexpected BlockState
-    else {
-      LOGGER.atSevere().log(String.format(
-          "Unexpected BlockState \"%s\" at %s.",
-          blockState.getClass(), pos));
+  public static ItemContainer getItemContainerFromComponent(
+      Component<ChunkStore> component,
+      @Nullable ContainerSlot containerSlot
+  ) {
+    if (component.getClass() == ItemContainerBlock.class) {
+      return ((ItemContainerBlock) component).getItemContainer();
+    } else if (component.getClass() == ProcessingBenchBlock.class && containerSlot != null) {
+      return containerSlot.getItemContainer((ProcessingBenchBlock) component);
+    } else {
       return null;
     }
   }
@@ -127,17 +153,6 @@ public final class TaskHelper {
     List<Vector3i> shuffled = Arrays.asList(directions);
     Collections.shuffle(shuffled);
     return shuffled;
-  }
-
-  @Nullable
-  public static BlockState getBlockStateAtPos(World world, Vector3i pos) {
-    long chunkIndex = ChunkUtil.indexChunkFromBlock(pos.x, pos.z);
-    WorldChunk worldChunk = world.getChunk(chunkIndex);
-    Objects.requireNonNull(worldChunk);
-    EntityChunk entityChunk = worldChunk.getEntityChunk();
-    Objects.requireNonNull(entityChunk);
-    BlockPosition base = world.getBaseBlock(new BlockPosition(pos.x, pos.y, pos.z));
-    return world.getState(base.x, base.y, base.z, false);
   }
 
   public static boolean transferItem(ItemContainer source, ItemContainer target) {

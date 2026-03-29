@@ -5,15 +5,16 @@ import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.utils.TaskHelper;
+import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 public class SensorCanDoAction extends SensorBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final Action action;
 
@@ -65,20 +67,29 @@ public class SensorCanDoAction extends SensorBaseLogger {
     }
 
     // Otherwise, check that there's a nearby POI for the action.
-    Vector3i nearbyPOILocation = TaskHelper.findNearbyPOI(npcEntity, action);
-    if (nearbyPOILocation == null) {
+    Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, action);
+    if (nearbyPOI == null) {
       return false;
     }
 
     // If this is a TAKE or DEPOSIT action, we have to check that the container is ready.
     if (action == Action.TAKE || action == Action.DEPOSIT) {
-      ItemContainer container = TaskHelper.getItemContainerAtPos(npcEntity.getWorld(), nearbyPOILocation, null);
+      ItemContainer container = TaskHelper.getItemContainerFromComponent(
+          nearbyPOI, null);
       Objects.requireNonNull(container);
 
       // Simple item container, no input/output/fuel.
       if (container.getClass() == SimpleItemContainer.class) {
         // There must be items available to be taken
         if (action == Action.TAKE) {
+          // FIXME: Fix issue here, the container is apparently empty.
+          //  It must be that I have the wrong item container or something, but I'm not sure how
+          //  that's happening...
+          try {
+            for (int i = 0; i < 99999; i++) {
+              LOGGER.atInfo().log(String.valueOf(container.getItemStack((short) i)));
+            }
+          } catch (Exception ex) {}
           return !container.isEmpty();
         }
         // Action is DEPOSIT, there must be space to deposit.
