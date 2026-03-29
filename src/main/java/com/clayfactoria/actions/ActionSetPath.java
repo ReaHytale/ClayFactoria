@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
-/** Action triggered to finalise a created path and set it on the target entity. */
+/**
+ * Action triggered to finalise a created path and set it on the target entity.
+ */
 public class ActionSetPath extends ActionBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   public ActionSetPath(@Nonnull BuilderActionSetPath builder) {
@@ -57,7 +59,8 @@ public class ActionSetPath extends ActionBaseLogger {
     Objects.requireNonNull(brushComponent, "brushComponent was null");
 
     ComponentType<EntityStore, NPCEntity> npcEntityComponentType = NPCEntity.getComponentType();
-    Objects.requireNonNull(npcEntityComponentType, "Failed to get NPC Entity Component Type of NPC");
+    Objects.requireNonNull(npcEntityComponentType,
+        "Failed to get NPC Entity Component Type of NPC");
 
     NPCEntity npcComponent = store.getComponent(ref, npcEntityComponentType);
     Objects.requireNonNull(npcComponent, "npcComponent was null");
@@ -89,7 +92,8 @@ public class ActionSetPath extends ActionBaseLogger {
 
     List<Task> tasks = brushComponent.getTasks();
     if (tasks == null || tasks.isEmpty()) {
-      LOGGER.atWarning().log("Action Set Path: execute -> Brush Component: Tasks were null or empty");
+      LOGGER.atWarning()
+          .log("Action Set Path: execute -> Brush Component: Tasks were null or empty");
       player.sendMessage(
           Message.raw("You must set at least one target task with the Brush")
               .color(Color.YELLOW));
@@ -97,7 +101,8 @@ public class ActionSetPath extends ActionBaseLogger {
     }
 
     // Transfer paths from brush to entity
-    taskComponent.setTasks(tasks);
+    taskComponent.setTasks(new ArrayList<>(tasks));
+    brushComponent.setEntityId(null);
     taskComponent.setCurrentTask(tasks.getFirst());
 
     String message = "Set Pathing";

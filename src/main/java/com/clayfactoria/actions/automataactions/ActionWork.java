@@ -2,14 +2,14 @@ package com.clayfactoria.actions.automataactions;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
-import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
-import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -35,16 +35,24 @@ public class ActionWork extends ActionBaseLogger {
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     Objects.requireNonNull(taskComponent, "Task Component was null");
-    taskComponent.setComplete(true);
-    Holder<ChunkStore> poi = Objects.requireNonNull(
-        TaskHelper.findNearbyPOIHolder(npc, Action.WORK));
-    ProcessingBenchBlock processingBenchBlock = poi.getComponent(
+
+    World world = npc.getWorld();
+    assert world != null;
+    assert taskComponent.getCurrentTask() != null;
+    Vector3i pos = taskComponent.getCurrentTask().getLocation();
+    Ref<ChunkStore> blockRef = TaskHelper.getBlockComponentHolderDirectReference(world, pos.x,
+        pos.y, pos.z);
+    assert blockRef != null;
+    ProcessingBenchBlock processingBenchBlock = blockRef.getStore().getComponent(blockRef,
         ProcessingBenchBlock.getComponentType());
-    BenchBlock benchBlock = poi.getComponent(BenchBlock.getComponentType());
+    BenchBlock benchBlock = blockRef.getStore()
+        .getComponent(blockRef, BenchBlock.getComponentType());
+
     if (processingBenchBlock == null || benchBlock == null) {
       return false;
     }
     processingBenchBlock.setActive(true, benchBlock, null);
+    taskComponent.setComplete(true);
     return true;
   }
 }

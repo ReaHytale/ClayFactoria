@@ -44,25 +44,28 @@ public class ActionDeposit extends ActionBaseLogger {
     Objects.requireNonNull(taskComponent, "Task Component was null");
 
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
-    if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent)) {
+    if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent, store)) {
       return true;
     }
-    return deposit(ContainerSlot.Input, npcEntity, taskComponent);
+    return deposit(ContainerSlot.Input, npcEntity, taskComponent, store);
   }
 
-  private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, TaskComponent taskComponent) {
+  private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity,
+      TaskComponent taskComponent, Store<EntityStore> store) {
     Task currentTask = taskComponent.getCurrentTask();
     Objects.requireNonNull(currentTask, "No task when trying to deposit");
+
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
-        npcEntity.getWorld(),
+        Objects.requireNonNull(npcEntity.getWorld()),
         currentTask.getLocation(),
         containerSlot);
     Objects.requireNonNull(itemContainer);
-    boolean result = TaskHelper.transferItem(
-        npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
-    );
+
+    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
+    boolean result = TaskHelper.transferItem(npcInventory, itemContainer);
+
     if (result) {
-      LOGGER.atInfo().log("Deposit action complete ["+ containerSlot + "]");
+      LOGGER.atInfo().log("Deposit action complete\n");
       taskComponent.setComplete(true);
     }
     return result;

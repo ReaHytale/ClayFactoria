@@ -59,10 +59,10 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
     TransformComponent transformComponent =
         store.getComponent(ref, TransformComponent.getComponentType());
-    Objects.requireNonNull(transformComponent, "Transform Component was null");
+    Objects.requireNonNull(transformComponent);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent, "Task Component was null");
+    Objects.requireNonNull(taskComponent);
 
     Task currentTask = taskComponent.getCurrentTask();
     if (currentTask == null) {
