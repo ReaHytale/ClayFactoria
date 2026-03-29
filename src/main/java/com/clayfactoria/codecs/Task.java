@@ -80,20 +80,18 @@ public class Task {
       throw new IllegalStateException("Bounding boxes are null at location " + location + "!");
     }
 
-    Vector3i roundedLocation = BlockUtils.getCorrectlyRoundedLocation(from);
-    RotatedVariantBoxes rotatedVariantBoxes = boundingBoxes.get(world.getBlockRotationIndex(
-        roundedLocation.x, roundedLocation.y, roundedLocation.z));
-
-    LOGGER.atInfo().log(
-        rotatedVariantBoxes.getBoundingBox().getMin() + " " + rotatedVariantBoxes.getBoundingBox()
-            .getMax());
+    Vector3i roundedLocation = from.toVector3i();
+    int rotationIndex = world.getBlockRotationIndex(roundedLocation.x, roundedLocation.y,
+        roundedLocation.z);
+    RotatedVariantBoxes rotatedVariantBoxes = boundingBoxes.get(rotationIndex);
 
     Vector3i start = BlockUtils.roundToNearestIntegerLocation(
-        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().min));
+        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().min))
+        .add(new Vector3i(0, -1, 0));
     Vector3i end = BlockUtils.roundToNearestIntegerLocation(
-        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().max));
-
-    LOGGER.atInfo().log("effectively is: " + start + ";" + end);
+        roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().max))
+        .add(new Vector3i(-1, 0, -1));
+    end.y = start.y;
 
     List<Vector3d> foundLocations = new ArrayList<>();
     foundLocations.addAll(tryLookingForLocationInXAxis(start, end, world));
