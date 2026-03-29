@@ -11,6 +11,8 @@ import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
@@ -44,14 +46,14 @@ public class ActionDeposit extends ActionBaseLogger {
     Objects.requireNonNull(taskComponent, "Task Component was null");
 
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
-    if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent)) {
+    if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent, store)) {
       return true;
     }
-    return deposit(ContainerSlot.Input, npcEntity, taskComponent);
+    return deposit(ContainerSlot.Input, npcEntity, taskComponent, store);
   }
 
   private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity,
-      TaskComponent taskComponent) {
+      TaskComponent taskComponent, Store<EntityStore> store) {
     Task currentTask = taskComponent.getCurrentTask();
     Objects.requireNonNull(currentTask, "No task when trying to deposit");
 
@@ -60,12 +62,17 @@ public class ActionDeposit extends ActionBaseLogger {
         currentTask.getLocation(),
         containerSlot);
     Objects.requireNonNull(itemContainer);
-    // TODO: Replace with non-deprecated method of accessing NPC inventory.
+
+    assert npcEntity.getReference() != null;
+    CombinedItemContainer combinedItemContainer = InventoryComponent.getCombined(store,
+        npcEntity.getReference(), InventoryComponent.Hotbar.getComponentType());
+
     boolean result = TaskHelper.transferItem(
-        npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
+        combinedItemContainer, itemContainer
     );
+
     if (result) {
-      LOGGER.atInfo().log("Deposit action complete [" + containerSlot + "]");
+      LOGGER.atInfo().log("Deposit action complete");
       taskComponent.setComplete(true);
     }
     return result;

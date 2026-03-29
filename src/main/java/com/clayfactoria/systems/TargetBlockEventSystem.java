@@ -1,6 +1,5 @@
 package com.clayfactoria.systems;
 
-import com.clayfactoria.actions.automataactions.ActionPosition;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -30,7 +29,10 @@ import java.util.Objects;
 import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
-  /** ID of the item to use as a wand for setting Automaton paths. */
+
+  /**
+   * ID of the item to use as a wand for setting Automaton paths.
+   */
   private static final String WAND_ITEM_ID = "Tool_Brush";
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -51,8 +53,10 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     Ref<EntityStore> entityStoreRef = archetypeChunk.getReferenceTo(index);
 
-    Player player = Objects.requireNonNull(store.getComponent(entityStoreRef, Player.getComponentType()));
-    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(), "playerRef was null");
+    Player player = Objects.requireNonNull(
+        store.getComponent(entityStoreRef, Player.getComponentType()));
+    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(),
+        "playerRef was null");
 
     // Check that the player has the wand equipped
     if (!isWandEquipped(player)) {
@@ -60,7 +64,8 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     }
 
     // Add the task to the task list, with the action being set to the one currently selected by the player.
-    BrushComponent brushComponent = Objects.requireNonNull(store.getComponent(playerRef, this.brushComponentType));
+    BrushComponent brushComponent = Objects.requireNonNull(
+        store.getComponent(playerRef, this.brushComponentType));
 
     World world = player.getWorld();
     assert world != null;
@@ -120,7 +125,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
       // Check if held item is the wand.
       return itemStack.getItemId().equals(WAND_ITEM_ID);
-    } catch (NullPointerException e ) {
+    } catch (NullPointerException e) {
       return false;
     }
   }
