@@ -44,8 +44,6 @@ public class ActionTake extends ActionBaseLogger {
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     Objects.requireNonNull(taskComponent, "Task Component was null");
 
-    // TODO: Replace with non-deprecated method of accessing NPC inventory.
-    // Take an item from the container
     boolean result =
         TaskHelper.transferItem(itemContainer, npcEntity.getInventory().getCombinedStorageFirst());
 

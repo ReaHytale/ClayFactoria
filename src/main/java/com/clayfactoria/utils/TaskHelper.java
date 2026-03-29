@@ -21,8 +21,6 @@ import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -106,7 +104,6 @@ public final class TaskHelper {
   public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity,
       @Nullable ContainerSlot containerSlot) {
     World world = Objects.requireNonNull(npcEntity.getWorld());
-    // Action.TAKE looks for item containers, so we use that here as a dummy action
     Component<ChunkStore> poi = Objects.requireNonNull(findNearbyPOI(npcEntity, Action.TAKE));
     return getItemContainerFromComponent(poi, containerSlot);
   }
@@ -116,15 +113,15 @@ public final class TaskHelper {
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
   ) {
-    Holder<ChunkStore> holder = getBlockComponentHolderDirectReference(world, pos.x, pos.y, pos.z);
-    assert holder != null;
-    ItemContainerBlock itemContainerBlock = holder.getComponent(
+    Ref<ChunkStore> ref = getBlockComponentHolderDirectReference(world, pos.x, pos.y, pos.z);
+    assert ref != null;
+    ItemContainerBlock itemContainerBlock = ref.getStore().getComponent(ref,
         ItemContainerBlock.getComponentType());
     if (itemContainerBlock != null) {
       // This is an item container, not a processing bench, so we return straight away
       return itemContainerBlock.getItemContainer();
     }
-    ProcessingBenchBlock processingBenchBlock = holder.getComponent(
+    ProcessingBenchBlock processingBenchBlock = ref.getStore().getComponent(ref,
         ProcessingBenchBlock.getComponentType());
     if (processingBenchBlock == null || containerSlot == null) {
       return null;
@@ -132,24 +129,33 @@ public final class TaskHelper {
     return getItemContainerFromComponent(processingBenchBlock, containerSlot);
   }
 
-  private static Holder<ChunkStore> getBlockComponentHolderDirectReference(World world, int x,
+  private static Ref<ChunkStore> getBlockComponentHolderDirectReference(World world, int x,
       int y, int z) {
+    LOGGER.atInfo().log("Get block component holder");
     WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
+    LOGGER.atInfo().log("Chunk at x;z =" + x + ";" + z);
     assert chunk != null;
+    LOGGER.atInfo().log("Chunk is not null");
 
-    return y >= 0 && y < 320 ? getBlockComponentHolderDirectReference(chunk, x, y, z) : null;
+    return y >= 0 && y < 320 ? internalGetBlockComponentHolderDirectReference(chunk, x, y, z)
+        : null;
   }
 
-  private static Holder<ChunkStore> getBlockComponentHolderDirectReference(WorldChunk chunk, int x, int y,
+  private static Ref<ChunkStore> internalGetBlockComponentHolderDirectReference(WorldChunk chunk,
+      int x,
+      int y,
       int z) {
     if (y >= 0 && y < 320) {
       if (!chunk.getWorld().isInThread()) {
         return CompletableFuture.supplyAsync(
-            () -> getBlockComponentHolderDirectReference(chunk, x, y, z), chunk.getWorld()).join();
+                () -> internalGetBlockComponentHolderDirectReference(chunk, x, y, z), chunk.getWorld())
+            .join();
       } else {
         int index = ChunkUtil.indexBlockInColumn(x, y, z);
         assert chunk.getBlockComponentChunk() != null;
-        return chunk.getBlockComponentChunk().getEntityHolder(index);
+        Ref<ChunkStore> entityReference = chunk.getBlockComponentChunk().getEntityReference(index);
+        assert entityReference != null;
+        return entityReference;
       }
     } else {
       return null;
