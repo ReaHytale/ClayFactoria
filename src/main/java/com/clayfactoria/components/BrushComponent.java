@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class BrushComponent implements Component<EntityStore> {
+
   @Nonnull
   public static final BuilderCodec<BrushComponent> CODEC =
       BuilderCodec.builder(BrushComponent.class, BrushComponent::new)
@@ -58,17 +59,27 @@ public class BrushComponent implements Component<EntityStore> {
 
           .build();
 
-  @Getter @Setter private List<Task> tasks = new ArrayList<>();
-  @Getter @Setter private PathType pathType = PathType.LOOP;
-  @Getter @Setter @Nonnull private Action action = Action.TAKE;
-  @Getter @Setter private UUID entityId;
+  @Getter
+  @Setter
+  private List<Task> tasks = new ArrayList<>();
+  @Getter
+  @Setter
+  private PathType pathType = PathType.LOOP;
+  @Getter
+  @Setter
+  @Nonnull
+  private Action action = Action.TAKE;
+  @Getter
+  @Setter
+  private UUID entityId;
 
   public static ComponentType<EntityStore, BrushComponent> getComponentType() {
     return ClayFactoria.brushComponentType;
   }
 
-  public void addTask(Vector3i location, Action action, World world) {
-    this.tasks.add(new Task(location, action, world));
+  public void addTask(Vector3i location, Action action, World world,
+      boolean locationEqualsWalkLocation) {
+    this.tasks.add(new Task(location, action, world, locationEqualsWalkLocation));
   }
 
   // TODO: Switch this to Action.TAKE || Action.DEPOSIT and use for switching between task types
