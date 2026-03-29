@@ -16,8 +16,10 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 
 /** Action triggered to finalise a created path and set it on the target entity. */
@@ -64,6 +66,19 @@ public class ActionSetPath extends ActionBaseLogger {
 
     UUIDComponent playerIdComp = store.getComponent(playerRef, UUIDComponent.getComponentType());
     Objects.requireNonNull(playerIdComp, "playerIdComp was null");
+
+    UUID entityUUID = brushComponent.getEntityId();
+    if (entityUUID == null || !entityUUID.equals(npcComponent.getUuid())) {
+      LOGGER.atInfo().log("Reset brush component for Player " + player.getDisplayName());
+      brushComponent.setEntityId(npcComponent.getUuid());
+      if (brushComponent.getTasks() != null) {
+        brushComponent.getTasks().clear();
+      }
+      player.sendMessage(
+          Message.raw("Starting new Path...")
+              .color(Color.YELLOW));
+      return true;
+    }
 
     TaskComponent taskComponent =
         store.ensureAndGetComponent(ref, TaskComponent.getComponentType());

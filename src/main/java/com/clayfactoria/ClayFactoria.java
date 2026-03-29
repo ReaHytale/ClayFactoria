@@ -29,6 +29,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import javax.annotation.Nonnull;
 
 public class ClayFactoria extends JavaPlugin {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
   public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
@@ -42,7 +43,9 @@ public class ClayFactoria extends JavaPlugin {
   @Override
   protected void setup() {
     LOGGER.atInfo().log("Registering OpenWandMenu interaction");
+
     Interaction.CODEC.register("OpenWandMenu", OpenWandMenu.class, OpenWandMenu.CODEC);
+
     LOGGER.atInfo().log("Registering Brush Component");
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
