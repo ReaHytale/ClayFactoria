@@ -12,7 +12,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
-import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -73,7 +72,7 @@ public class ActionDeposit extends ActionBaseLogger {
     );
 
     if (result) {
-      LOGGER.atInfo().log("Deposit action complete [" + containerSlot + "]");
+      LOGGER.atInfo().log("Deposit action complete");
       taskComponent.setComplete(true);
     }
     return result;

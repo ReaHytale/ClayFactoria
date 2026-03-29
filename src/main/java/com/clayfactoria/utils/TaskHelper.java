@@ -12,6 +12,8 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
+import com.hypixel.hytale.server.core.inventory.transaction.MoveTransaction;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -109,11 +111,8 @@ public final class TaskHelper {
       Vector3i pos,
       @Nullable ContainerSlot containerSlot
   ) {
-    BlockType type = world.getBlockType(pos);
-    if (type == null) {
-      return null;
-    }
-    Holder<ChunkStore> holder = type.getBlockEntity();
+    Holder<ChunkStore> holder = world.getBlockComponentHolder(pos.x, pos.y, pos.z);
+    assert holder != null;
     ItemContainerBlock itemContainerBlock = holder.getComponent(
         ItemContainerBlock.getComponentType());
     if (itemContainerBlock != null) {
@@ -154,20 +153,17 @@ public final class TaskHelper {
   }
 
   public static boolean transferItem(ItemContainer source, ItemContainer target) {
-    for (short slot = 0; slot < source.getCapacity() - 1; slot++) {
+    for (short slot = 0; slot < source.getCapacity(); slot++) {
       ItemStack itemStack = source.getItemStack(slot);
       if (itemStack == null) {
         continue;
       }
-      int prevQuantity = itemStack.getQuantity();
-      source.moveItemStackFromSlot(slot, 1, target);
+
+      MoveTransaction<ItemStackTransaction> itemStackTransactionMoveTransaction = source.moveItemStackFromSlot(
+          slot, 1, target);
+      LOGGER.atInfo().log("" + itemStackTransactionMoveTransaction);
       // Check whether it actually succeeded to transfer
-      itemStack = source.getItemStack(slot);
-      if (itemStack == null) {
-        return true;
-      } else {
-        return itemStack.getQuantity() == prevQuantity - 1;
-      }
+      return itemStackTransactionMoveTransaction.succeeded();
     }
     // No item found in storage, return false for failure.
     return false;

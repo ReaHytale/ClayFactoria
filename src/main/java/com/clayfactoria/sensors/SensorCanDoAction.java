@@ -68,7 +68,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
     // Otherwise, check that there's a nearby POI for the action.
     Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, action);
     if (nearbyPOI == null) {
-      LOGGER.atInfo().log("No nearby POI");
       return false;
     }
 
@@ -82,7 +81,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
             ContainerSlot.Output);
         Objects.requireNonNull(container, "Unexpected null ItemContainer");
         // There must be items available to be taken, and there must be space in hands
-        LOGGER.atInfo().log(String.valueOf(heldItemStack == null), container.isEmpty());
         return heldItemStack == null && !container.isEmpty();
       } else {
         ItemContainer inputContainer = TaskHelper.getItemContainerFromComponent(nearbyPOI,
@@ -93,10 +91,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
         Objects.requireNonNull(fuelContainer, "Unexpected null fuel ItemContainer");
         // There must be space in the container for the item stack, and there must be space in hands
         Objects.requireNonNull(heldItemStack);
-        LOGGER.atInfo().log(
-            fuelContainer.canAddItemStack(heldItemStack) + " " +
-                inputContainer.canAddItemStack(heldItemStack)
-        );
         return heldItemStack != null && (fuelContainer.canAddItemStack(heldItemStack)
             || inputContainer.canAddItemStack(heldItemStack));
       }
