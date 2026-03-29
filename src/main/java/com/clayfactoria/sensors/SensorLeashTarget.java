@@ -43,11 +43,8 @@ public class SensorLeashTarget extends SensorBaseLogger {
     }
     try {
       NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
-      Vector3d oldWalkLocation = currentTask.getWalkLocation().clone();
       currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
           entity.getOldPosition());
-      LOGGER.atInfo().log("For entity at " + entity.getOldPosition() + " found walk location "
-          + currentTask.getWalkLocation() + " (it was " + oldWalkLocation + ")");
     } catch (IllegalStateException exception) {
       // All fine, none was found
     }

@@ -85,11 +85,6 @@ public class SensorCanDoAction extends SensorBaseLogger {
           // FIXME: Fix issue here, the container is apparently empty.
           //  It must be that I have the wrong item container or something, but I'm not sure how
           //  that's happening...
-          try {
-            for (int i = 0; i < 99999; i++) {
-              LOGGER.atInfo().log(String.valueOf(container.getItemStack((short) i)));
-            }
-          } catch (Exception ex) {}
           return !container.isEmpty();
         }
         // Action is DEPOSIT, there must be space to deposit.

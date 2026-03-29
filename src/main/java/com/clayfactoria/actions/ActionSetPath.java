@@ -96,9 +96,6 @@ public class ActionSetPath extends ActionBaseLogger {
       return false;
     }
 
-    LOGGER.atInfo().log("Tasks: " + tasks.stream().map(task -> task.getAction() + ";" +
-        task.getLocation() + ";" + task.getWalkLocation()).collect(Collectors.joining(";;; ")));
-
     // Transfer paths from brush to entity
     taskComponent.setTasks(tasks);
     taskComponent.setCurrentTask(tasks.getFirst());
