@@ -11,8 +11,6 @@ import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.inventory.InventoryComponent;
-import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
@@ -63,16 +61,11 @@ public class ActionDeposit extends ActionBaseLogger {
         containerSlot);
     Objects.requireNonNull(itemContainer);
 
-    assert npcEntity.getReference() != null;
-    CombinedItemContainer combinedItemContainer = InventoryComponent.getCombined(store,
-        npcEntity.getReference(), InventoryComponent.Hotbar.getComponentType());
-
-    boolean result = TaskHelper.transferItem(
-        combinedItemContainer, itemContainer
-    );
+    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
+    boolean result = TaskHelper.transferItem(npcInventory, itemContainer);
 
     if (result) {
-      LOGGER.atInfo().log("Deposit action complete");
+      LOGGER.atInfo().log("Deposit action complete\n");
       taskComponent.setComplete(true);
     }
     return result;

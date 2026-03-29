@@ -11,10 +11,9 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
-import com.hypixel.hytale.server.core.inventory.transaction.MoveTransaction;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
@@ -100,14 +99,6 @@ public final class TaskHelper {
     return null;
   }
 
-  @Nullable
-  public static ItemContainer getOrthogonalItemContainer(NPCEntity npcEntity,
-      @Nullable ContainerSlot containerSlot) {
-    World world = Objects.requireNonNull(npcEntity.getWorld());
-    Component<ChunkStore> poi = Objects.requireNonNull(findNearbyPOI(npcEntity, Action.TAKE));
-    return getItemContainerFromComponent(poi, containerSlot);
-  }
-
   public static ItemContainer getItemContainerAtPos(
       World world,
       Vector3i pos,
@@ -129,13 +120,10 @@ public final class TaskHelper {
     return getItemContainerFromComponent(processingBenchBlock, containerSlot);
   }
 
-  private static Ref<ChunkStore> getBlockComponentHolderDirectReference(World world, int x,
+  public static Ref<ChunkStore> getBlockComponentHolderDirectReference(World world, int x,
       int y, int z) {
-    LOGGER.atInfo().log("Get block component holder");
     WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(x, z));
-    LOGGER.atInfo().log("Chunk at x;z =" + x + ";" + z);
     assert chunk != null;
-    LOGGER.atInfo().log("Chunk is not null");
 
     return y >= 0 && y < 320 ? internalGetBlockComponentHolderDirectReference(chunk, x, y, z)
         : null;
@@ -193,11 +181,23 @@ public final class TaskHelper {
       if (itemStack == null) {
         continue;
       }
-      MoveTransaction<ItemStackTransaction> itemStackTransactionMoveTransaction =
-          source.moveItemStackFromSlot(slot, 1, target);
-      return itemStackTransactionMoveTransaction.succeeded();
+      int prevQuantity = itemStack.getQuantity();
+      source.moveItemStackFromSlot(slot, 1, target);
+      // Check whether it actually succeeded to transfer
+      itemStack = source.getItemStack(slot);
+      if (itemStack == null) {
+        return true;
+      } else {
+        return itemStack.getQuantity() == prevQuantity - 1;
+      }
     }
     // No item found in storage, return false for failure.
     return false;
+  }
+
+  public static ItemContainer getNPCInventory(NPCEntity npcEntity, Store<EntityStore> store) {
+    assert npcEntity.getReference() != null;
+    return InventoryComponent.getCombined(store, npcEntity.getReference(),
+        InventoryComponent.Hotbar.getComponentType());
   }
 }
