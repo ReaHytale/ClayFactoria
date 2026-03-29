@@ -49,7 +49,6 @@ public class Task {
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
           .build();
-  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   @Getter
   private Vector3i location;
   @Getter
