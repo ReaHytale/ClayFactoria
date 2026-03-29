@@ -4,6 +4,7 @@ import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.codecs.Task;
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
@@ -18,6 +19,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,11 +49,19 @@ public class BrushComponent implements Component<EntityStore> {
           .documentation("Type of task to be added to the tasks list on next brush paint.")
           .add()
 
+          .append(
+              new KeyedCodec<>("SelectedEntity", Codec.UUID_STRING),
+              (comp, value) -> comp.entityId = value,
+              (comp) -> comp.entityId)
+          .documentation("The entity's internal UUID.")
+          .add()
+
           .build();
 
   @Getter @Setter private List<Task> tasks = new ArrayList<>();
   @Getter @Setter private PathType pathType = PathType.LOOP;
   @Getter @Setter @Nonnull private Action action = Action.TAKE;
+  @Getter @Setter private UUID entityId;
 
   public static ComponentType<EntityStore, BrushComponent> getComponentType() {
     return ClayFactoria.brushComponentType;

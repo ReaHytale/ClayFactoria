@@ -82,10 +82,14 @@ public class SensorCanDoAction extends SensorBaseLogger {
       if (container.getClass() == SimpleItemContainer.class) {
         // There must be items available to be taken
         if (action == Action.TAKE) {
-          // TODO: Fix issue here, the container is apparently empty.
+          // FIXME: Fix issue here, the container is apparently empty.
           //  It must be that I have the wrong item container or something, but I'm not sure how
           //  that's happening...
-          LOGGER.atInfo().log(String.valueOf(container.getItemStack((short) 0)));
+          try {
+            for (int i = 0; i < 99999; i++) {
+              LOGGER.atInfo().log(String.valueOf(container.getItemStack((short) i)));
+            }
+          } catch (Exception ex) {}
           return !container.isEmpty();
         }
         // Action is DEPOSIT, there must be space to deposit.
