@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionTake extends ActionBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final int quantity;
 
@@ -36,12 +37,14 @@ public class ActionTake extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
-    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, ContainerSlot.Output);
+    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity,
+        ContainerSlot.Output);
     Objects.requireNonNull(itemContainer);
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     Objects.requireNonNull(taskComponent, "Task Component was null");
 
+    // TODO: Replace with non-deprecated method of accessing NPC inventory.
     // Take an item from the container
     boolean result =
         TaskHelper.transferItem(itemContainer, npcEntity.getInventory().getCombinedStorageFirst());

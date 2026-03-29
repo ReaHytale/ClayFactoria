@@ -50,19 +50,22 @@ public class ActionDeposit extends ActionBaseLogger {
     return deposit(ContainerSlot.Input, npcEntity, taskComponent);
   }
 
-  private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, TaskComponent taskComponent) {
+  private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity,
+      TaskComponent taskComponent) {
     Task currentTask = taskComponent.getCurrentTask();
     Objects.requireNonNull(currentTask, "No task when trying to deposit");
+
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
-        npcEntity.getWorld(),
+        Objects.requireNonNull(npcEntity.getWorld()),
         currentTask.getLocation(),
         containerSlot);
     Objects.requireNonNull(itemContainer);
+    // TODO: Replace with non-deprecated method of accessing NPC inventory.
     boolean result = TaskHelper.transferItem(
         npcEntity.getInventory().getCombinedStorageFirst(), itemContainer
     );
     if (result) {
-      LOGGER.atInfo().log("Deposit action complete ["+ containerSlot + "]");
+      LOGGER.atInfo().log("Deposit action complete [" + containerSlot + "]");
       taskComponent.setComplete(true);
     }
     return result;

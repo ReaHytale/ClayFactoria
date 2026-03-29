@@ -65,11 +65,9 @@ public final class TaskHelper {
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
     List<Vector3i> shuffled = getAdjacentDirections();
     for (Vector3i dir : shuffled) {
-      BlockType type = world.getBlockType(pos.clone().add(dir));
-      if (type == null) {
-        continue;
-      }
-      Holder<ChunkStore> holder = type.getBlockEntity();
+      Vector3i baseBlock = BlockUtils.getBaseBlock(new Vector3i(pos.add(dir)), world);
+      Holder<ChunkStore> holder = world.getBlockComponentHolder(baseBlock.x, baseBlock.y,
+          baseBlock.z);
       if (holder == null) {
         continue;
       }

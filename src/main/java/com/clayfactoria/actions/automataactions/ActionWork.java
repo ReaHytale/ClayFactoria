@@ -35,16 +35,18 @@ public class ActionWork extends ActionBaseLogger {
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     Objects.requireNonNull(taskComponent, "Task Component was null");
-    taskComponent.setComplete(true);
+
     Holder<ChunkStore> poi = Objects.requireNonNull(
         TaskHelper.findNearbyPOIHolder(npc, Action.WORK));
     ProcessingBenchBlock processingBenchBlock = poi.getComponent(
         ProcessingBenchBlock.getComponentType());
     BenchBlock benchBlock = poi.getComponent(BenchBlock.getComponentType());
+
     if (processingBenchBlock == null || benchBlock == null) {
       return false;
     }
     processingBenchBlock.setActive(true, benchBlock, null);
+    taskComponent.setComplete(true);
     return true;
   }
 }
