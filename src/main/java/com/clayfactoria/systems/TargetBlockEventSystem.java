@@ -23,6 +23,7 @@ import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.awt.Color;
 import java.util.Objects;
@@ -66,12 +67,25 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     // Add the task to the task list, with the action being set to the one currently selected by the player.
     BrushComponent brushComponent = Objects.requireNonNull(
         store.getComponent(playerRef, this.brushComponentType));
+
+    World world = player.getWorld();
+    assert world != null;
+
+    // If no selected entity, let the user know...
+    if (brushComponent.getEntityId() == null
+        || world.getEntityRef(brushComponent.getEntityId()) == null) {
+      player.sendMessage(Message.raw("You must first select the automaton you want to command!")
+          .color(Color.RED));
+      return;
+    }
+
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     Action action = brushComponent.getAction();
     boolean success = true;
     try {
-      brushComponent.addTask(targetBlockLoc, action, player.getWorld());
+      boolean locationEqualsWalkLocation = action == Action.POSITION;
+      brushComponent.addTask(targetBlockLoc, action, player.getWorld(), locationEqualsWalkLocation);
     } catch (IllegalStateException e) {
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());

@@ -4,6 +4,7 @@ import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
@@ -21,6 +22,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionTake extends ActionBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final int quantity;
 
@@ -36,18 +38,21 @@ public class ActionTake extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
-    ItemContainer itemContainer = TaskHelper.getOrthogonalItemContainer(npcEntity, ContainerSlot.Output);
+    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
+    Objects.requireNonNull(taskComponent);
+    Task currentTask = taskComponent.getCurrentTask();
+    Objects.requireNonNull(currentTask);
+
+    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
+        Objects.requireNonNull(npcEntity.getWorld()),
+        currentTask.getLocation(), ContainerSlot.Output);
     Objects.requireNonNull(itemContainer);
 
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent, "Task Component was null");
-
-    // Take an item from the container
-    boolean result =
-        TaskHelper.transferItem(itemContainer, npcEntity.getInventory().getCombinedStorageFirst());
+    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
+    boolean result = TaskHelper.transferItem(itemContainer, npcInventory);
 
     if (result) {
-      LOGGER.atSevere().log("Action Take: Set Complete to true\n");
+      LOGGER.atInfo().log("Action Take: Set Complete to true\n");
       taskComponent.setComplete(true);
     }
 

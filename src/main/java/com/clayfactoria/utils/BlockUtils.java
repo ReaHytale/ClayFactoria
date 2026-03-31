@@ -13,10 +13,6 @@ public final class BlockUtils {
   private BlockUtils() {
   }
 
-  public static BlockPosition getCorrectlyRoundedBaseBlock(Vector3d location, World world) {
-    return getCorrectlyRoundedBaseBlock(world, location.x, location.y, location.z);
-  }
-
   /**
    * Returns the correctly rounded base block.<br> For a given location, if the X or Z component is
    * in the negatives, the rounding should use the ceiling function on the absolute value of the
@@ -27,28 +23,49 @@ public final class BlockUtils {
    * to the <code>int</code> primitive would result in (-425, 100, 320), which would be wrong -
    * hence why the "correctly rounded base block" method is actually necessary.
    *
-   * @param world
-   * @param x
-   * @param y
-   * @param z
-   * @return
+   * @param location - <code>Vector3d</code> location
+   * @return A <code>Vector3i</code> rounded correctly
    */
-  public static BlockPosition getCorrectlyRoundedBaseBlock(World world, double x, double y,
-      double z) {
+  public static Vector3i getCorrectlyRoundedLocation(Vector3d location) {
     int xx, zz;
-    xx = x < 0 ? (int) x - 1 : (int) x;
-    zz = z < 0 ? (int) z - 1 : (int) z;
-    return world.getBaseBlock(new BlockPosition(xx, (int) y, zz));
+    xx = location.x < 0 ? (int) location.x - 1 : (int) location.x;
+    zz = location.z < 0 ? (int) location.z - 1 : (int) location.z;
+    return new Vector3i(xx, (int) location.y, zz);
+  }
+
+  /**
+   * Rounds a <code>Vector3d</code> to the nearest integer <code>Vector3i</code>.
+   *
+   * @param location - Vector3d location
+   * @return A <code>Vector3i</code> that is rounded to the nearest integer location
+   */
+  public static Vector3i roundToNearestIntegerLocation(Vector3d location) {
+    return new Vector3i(
+        (int) Math.round(location.x),
+        (int) Math.round(location.y),
+        (int) Math.round(location.z)
+    );
+  }
+
+  /**
+   * Get the base for a multiblock, given the position of one of its blocks in the world.
+   *
+   * @param position The position of the block.
+   * @param world    The world of the block.
+   * @return The base block of the multi-block at this position.
+   */
+  public static Vector3i getBaseBlock(Vector3i position, World world) {
+    BlockPosition blockPosition = world.getBaseBlock(
+        new BlockPosition(position.x, position.y, position.z));
+    return new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
+  }
+
+  public static Vector3i blockPositionToVector3i(BlockPosition blockPosition) {
+    return new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
   }
 
   public static RotatedVariantBoxes getRotatedVariantBoxes(Vector3d location, World world) {
-    return getRotatedVariantBoxes(getCorrectlyRoundedBaseBlock(location, world), world);
-  }
-
-  public static RotatedVariantBoxes getRotatedVariantBoxes(BlockPosition location, World world) {
-    return getRotatedVariantBoxes(
-        new Vector3i(location.x, location.y, location.z),
-        world);
+    return getRotatedVariantBoxes(getCorrectlyRoundedLocation(location), world);
   }
 
   /**

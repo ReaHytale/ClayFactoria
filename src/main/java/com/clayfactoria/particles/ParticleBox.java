@@ -44,7 +44,7 @@ public class ParticleBox {
   public ParticleBox(BlockPosition blockPosition, Store<EntityStore> store, World world,
       String particle_name) {
     Vector3i location = new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
-    RotatedVariantBoxes rotatedVariantBoxes = BlockUtils.getRotatedVariantBoxes(blockPosition,
+    RotatedVariantBoxes rotatedVariantBoxes = BlockUtils.getRotatedVariantBoxes(location,
         world);
     Vector3d min, max;
     if (rotatedVariantBoxes == null) {

@@ -4,16 +4,16 @@ import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
+import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
+import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -23,6 +23,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 public class SensorCanDoAction extends SensorBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   protected final Action action;
 
@@ -65,41 +66,33 @@ public class SensorCanDoAction extends SensorBaseLogger {
     }
 
     // Otherwise, check that there's a nearby POI for the action.
-    Vector3i nearbyPOILocation = TaskHelper.findNearbyPOI(npcEntity, action);
-    if (nearbyPOILocation == null) {
+    Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, action);
+    if (nearbyPOI == null) {
       return false;
     }
 
     // If this is a TAKE or DEPOSIT action, we have to check that the container is ready.
     if (action == Action.TAKE || action == Action.DEPOSIT) {
-      ItemContainer container = TaskHelper.getItemContainerAtPos(npcEntity.getWorld(), nearbyPOILocation, null);
-      Objects.requireNonNull(container);
+      // TODO: Replace with non-deprecated method of accessing NPC inventory.
+      ItemStack heldItemStack = npcEntity.getInventory().getItemInHand();
 
-      // Simple item container, no input/output/fuel.
-      if (container.getClass() == SimpleItemContainer.class) {
-        // There must be items available to be taken
-        if (action == Action.TAKE) {
-          return !container.isEmpty();
-        }
-        // Action is DEPOSIT, there must be space to deposit.
-        ItemStack heldItemStack = npcEntity.getInventory().getItemInHand();
+      if (action == Action.TAKE) {
+        ItemContainer container = TaskHelper.getItemContainerFromComponent(nearbyPOI,
+            ContainerSlot.Output);
+        Objects.requireNonNull(container, "Unexpected null ItemContainer");
+        // There must be items available to be taken, and there must be space in hands
+        return heldItemStack == null && !container.isEmpty();
+      } else {
+        ItemContainer inputContainer = TaskHelper.getItemContainerFromComponent(nearbyPOI,
+            ContainerSlot.Input);
+        Objects.requireNonNull(inputContainer, "Unexpected null input ItemContainer");
+        ItemContainer fuelContainer = TaskHelper.getItemContainerFromComponent(
+            nearbyPOI, ContainerSlot.Fuel);
+        Objects.requireNonNull(fuelContainer, "Unexpected null fuel ItemContainer");
+        // There must be space in the container for the item stack, and there must be space in hands
         Objects.requireNonNull(heldItemStack);
-        return container.canAddItemStack(heldItemStack);
-      }
-      // Combined item container, we have different slots that items could go in.
-      else if (container.getClass() == CombinedItemContainer.class) {
-        CombinedItemContainer combinedItemContainer = (CombinedItemContainer) container;
-        // There must be items available to be taken
-        if (action == Action.TAKE) {
-          ItemContainer output = combinedItemContainer.getContainer(2);
-          return !output.isEmpty();
-        }
-        // There must be space in either the fuel or input containers for DEPOSIT to happen.
-        ItemContainer input = combinedItemContainer.getContainer(0);
-        ItemContainer fuel = combinedItemContainer.getContainer(1);
-        ItemStack heldItemStack = npcEntity.getInventory().getItemInHand();
-        Objects.requireNonNull(heldItemStack);
-        return input.canAddItemStack(heldItemStack) || fuel.canAddItemStack(heldItemStack);
+        return heldItemStack != null && (fuelContainer.canAddItemStack(heldItemStack)
+            || inputContainer.canAddItemStack(heldItemStack));
       }
       // There must be items in the output container for TAKE to happen
 

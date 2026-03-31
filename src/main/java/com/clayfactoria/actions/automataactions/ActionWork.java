@@ -1,17 +1,16 @@
 package com.clayfactoria.actions.automataactions;
 
-import static com.clayfactoria.utils.TaskHelper.getBlockStateAtPos;
-
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
-import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.utils.TaskHelper;
-import com.hypixel.hytale.builtin.crafting.state.ProcessingBenchState;
+import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
+import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
@@ -36,23 +35,24 @@ public class ActionWork extends ActionBaseLogger {
 
     TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
     Objects.requireNonNull(taskComponent, "Task Component was null");
-    taskComponent.setComplete(true);
-    Vector3i pos = Objects.requireNonNull(TaskHelper.findNearbyPOI(npc, Action.WORK));
 
-    // Find processing bench
-    BlockState blockState = Objects.requireNonNull(
-        getBlockStateAtPos(Objects.requireNonNull(npc.getWorld()), pos),
-        "null BlockState at position where container was expected: " + pos
-    );
-    ProcessingBenchState processingBenchState;
-    if (blockState.getClass() == ProcessingBenchState.class) {
-      processingBenchState = (ProcessingBenchState) blockState;
-    } else {
+    World world = npc.getWorld();
+    assert world != null;
+    assert taskComponent.getCurrentTask() != null;
+    Vector3i pos = taskComponent.getCurrentTask().getLocation();
+    Ref<ChunkStore> blockRef = TaskHelper.getBlockComponentHolderDirectReference(world, pos.x,
+        pos.y, pos.z);
+    assert blockRef != null;
+    ProcessingBenchBlock processingBenchBlock = blockRef.getStore().getComponent(blockRef,
+        ProcessingBenchBlock.getComponentType());
+    BenchBlock benchBlock = blockRef.getStore()
+        .getComponent(blockRef, BenchBlock.getComponentType());
+
+    if (processingBenchBlock == null || benchBlock == null) {
       return false;
     }
-
-    // Activate processing bench
-    processingBenchState.setActive(true);
+    processingBenchBlock.setActive(true, benchBlock, null);
+    taskComponent.setComplete(true);
     return true;
   }
 }
