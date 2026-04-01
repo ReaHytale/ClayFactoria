@@ -1,7 +1,6 @@
 package com.clayfactoria.utils;
 
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.matrix.Matrix4d;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -106,15 +105,5 @@ public final class BlockUtils {
       p2 = pos.toVector3d().add(box.max);
     }
     return new Box(p1, p2);
-  }
-
-  public static Matrix4d getBoxMatrixFromBox(Box box) {
-    Vector3d size = box.getMax().clone().subtract(box.getMin());
-    Vector3d center = box.getMin().clone().add(box.getMax()).scale(0.5);
-    Matrix4d matrix = new Matrix4d();
-    matrix.identity();
-    matrix.translate(center);
-    matrix.scale(size.x, size.y, size.z);
-    return matrix;
   }
 }
