@@ -6,12 +6,13 @@ import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
-import com.clayfactoria.actions.builders.BuilderPutItemInHand;
+import com.clayfactoria.actions.builders.BuilderActionPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
+import com.clayfactoria.sensors.builders.BuilderSensorHasAnyTasks;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.clayfactoria.systems.TaskBoxSystem;
@@ -52,6 +53,7 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Brush Component");
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
+
     LOGGER.atInfo().log("Registering Task Component");
     ownerComponentType =
         this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
@@ -60,33 +62,21 @@ public class ClayFactoria extends JavaPlugin {
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
+        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, "ClayFactoriaTaskComponent",
+                TaskComponent.CODEC);
+
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
-    LOGGER.atInfo().log("Registering Set Path Action");
     NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
-
-    LOGGER.atInfo().log("Registering Sensor Leash Target");
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
-
-    LOGGER.atInfo().log("Registering Sensor Can Do Action");
     NPCPlugin.get().registerCoreComponentType("CanDoAction", BuilderSensorCanDoAction::new);
+    NPCPlugin.get().registerCoreComponentType("HasAnyTasks", BuilderSensorHasAnyTasks::new);
 
-    LOGGER.atInfo().log("Registering Put Item In Hand Action");
-    NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderPutItemInHand::new);
-
-    LOGGER.atInfo().log("Registering Take From Nearby Storage or Station Action");
+    NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderActionPutItemInHand::new);
     NPCPlugin.get().registerCoreComponentType("Take", BuilderActionTake::new);
-
-    LOGGER.atInfo().log("Registering Deposit From Nearby Storage or Station Action");
     NPCPlugin.get().registerCoreComponentType("Deposit", BuilderActionDeposit::new);
-
-    LOGGER.atInfo().log("Registering Position Action");
     NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
-
-    LOGGER.atInfo().log("Registering Work Action");
     NPCPlugin.get().registerCoreComponentType("Work", BuilderActionWork::new);
-
-    LOGGER.atInfo().log("Registering Drop Inventory Action");
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
   }
 

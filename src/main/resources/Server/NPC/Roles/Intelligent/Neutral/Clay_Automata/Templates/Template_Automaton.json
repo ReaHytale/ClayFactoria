@@ -175,6 +175,17 @@
           "Instructions": [
             {
               "Sensor": {
+                "Type": "HasAnyTasks"
+              },
+              "Actions": [
+                {
+                  "Type": "State",
+                  "State": "Path"
+                }
+              ]
+            },
+            {
+              "Sensor": {
                 "Type": "Player",
                 "Range": 10,
                 "Filters": [

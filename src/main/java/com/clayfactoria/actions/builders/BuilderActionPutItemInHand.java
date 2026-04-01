@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
 import com.hypixel.hytale.server.npc.instructions.Action;
 import javax.annotation.Nonnull;
 
-public class BuilderPutItemInHand extends BuilderActionBase {
+public class BuilderActionPutItemInHand extends BuilderActionBase {
   @Override
   @Nonnull
   public Action build(@Nonnull BuilderSupport builderSupport) {
