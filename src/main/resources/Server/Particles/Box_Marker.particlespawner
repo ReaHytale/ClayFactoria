@@ -2,15 +2,15 @@
   "EmitOffset": {
     "X": {
       "Min": 0,
-      "Max": 0
+      "Max": 0.01
     },
     "Y": {
       "Min": 0,
-      "Max": 0
+      "Max": 0.01
     },
     "Z": {
       "Min": 0,
-      "Max": 0
+      "Max": 0.01
     }
   },
   "ParticleRotationInfluence": "Billboard",
@@ -19,18 +19,18 @@
   "ParticleRotateWithSpawner": false,
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
-  "MaxConcurrentParticles": 500,
+  "MaxConcurrentParticles": 1000,
   "ParticleLifeSpan": {
-    "Min": 0.3333333333333333,
-    "Max": 0.5
+    "Min": 0.99999,
+    "Max": 0.99999
   },
   "SpawnRate": {
-    "Min": 15,
-    "Max": 15
+    "Min": 100,
+    "Max": 100
   },
   "TotalParticles": {
-    "Min": 15,
-    "Max": 15
+    "Min": 1,
+    "Max": 5
   },
   "InitialVelocity": {
     "Speed": {
@@ -84,17 +84,17 @@
         "Scale": {
           "X": {
             "Min": 1,
-            "Max": 1
+            "Max": 1.2
           },
           "Y": {
             "Min": 1,
-            "Max": 1
+            "Max": 1.1
           }
         },
         "Rotation": {
           "X": {
             "Min": 0,
-            "Max": 0
+            "Max": 180
           },
           "Y": {
             "Min": 0,
@@ -102,26 +102,20 @@
           },
           "Z": {
             "Min": 0,
-            "Max": 0
+            "Max": 180
           }
         },
-        "Opacity": 0
-      },
-      "10": {
         "Opacity": 1
       },
-      "90": {
-        "Opacity": 0.8
-      },
       "100": {
-        "Opacity": 0
+        "Opacity": 1
       }
     },
     "InitialAnimationFrame": {
       "Rotation": {
         "X": {
           "Min": 0,
-          "Max": 360
+          "Max": 0
         },
         "Y": {
           "Min": 0,
@@ -129,16 +123,16 @@
         },
         "Z": {
           "Min": 0,
-          "Max": 360
+          "Max": 0
         }
       },
       "Scale": {
         "X": {
-          "Min": 0.1,
+          "Min": 0.3,
           "Max": 0.3
         },
         "Y": {
-          "Min": 0.1,
+          "Min": 0.3,
           "Max": 0.3
         }
       },

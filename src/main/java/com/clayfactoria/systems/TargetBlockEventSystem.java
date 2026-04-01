@@ -2,7 +2,7 @@ package com.clayfactoria.systems;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.particles.ParticleBox;
+import com.clayfactoria.utils.ParticleShapeUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -11,9 +11,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -99,16 +97,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     }
 
     damageBlockEvent.setDamage(0);
-    Vector3d targetBlockLocOnTopOfBlock =
-        new Vector3d(targetBlockLoc.x + 0.5, targetBlockLoc.y + 1, targetBlockLoc.z + 0.5);
-    // TODO: Replace this with a more colourful paint splash particle effect
-    // TODO: Spawn this particle where the player hit, rather than on top of the block.
-    //ParticleUtil.spawnParticleEffect("Block_Hit_Dirt", targetBlockLocOnTopOfBlock, store);
-    ParticleBox particleBox = new ParticleBox(
-        new BlockPosition(targetBlockLoc.x, targetBlockLoc.y, targetBlockLoc.z), store,
-        player.getWorld());
-    particleBox.startDrawing();
-//    ParticleBoxUtils.drawParticleHitbox(targetBlockLoc, store, player.getWorld());
+    ParticleShapeUtils.addParticleHitbox(targetBlockLoc, store, playerRef, world);
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
   }
