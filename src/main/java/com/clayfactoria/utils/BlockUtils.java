@@ -1,11 +1,18 @@
 package com.clayfactoria.utils;
 
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.shape.Box;
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
+import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes;
+import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes.RotatedVariantBoxes;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.math.vector.Vector3d;
 
 public final class BlockUtils {
+
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   private BlockUtils() {
   }
@@ -32,6 +39,7 @@ public final class BlockUtils {
 
   /**
    * Rounds a <code>Vector3d</code> to the nearest integer <code>Vector3i</code>.
+   *
    * @param location - Vector3d location
    * @return A <code>Vector3i</code> that is rounded to the nearest integer location
    */
@@ -58,5 +66,44 @@ public final class BlockUtils {
 
   public static Vector3i blockPositionToVector3i(BlockPosition blockPosition) {
     return new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
+  }
+
+  public static RotatedVariantBoxes getRotatedVariantBoxes(Vector3d location, World world) {
+    return getRotatedVariantBoxes(getCorrectlyRoundedLocation(location), world);
+  }
+
+  /**
+   * Gets the {@link RotatedVariantBoxes} of a block at a given location in the world. This can be
+   * used in turn to retrieve the bounding box(es) of said block.
+   *
+   * @param location The location of the block
+   * @param world    The world in which the block is located
+   * @return The {@link RotatedVariantBoxes} for the block at the given location in the world.
+   */
+  public static RotatedVariantBoxes getRotatedVariantBoxes(Vector3i location, World world) {
+    BlockType blockType = world.getBlockType(location);
+    if (blockType == null) {
+      return null;
+    }
+    BlockBoundingBoxes blockBoundingBoxes = BlockBoundingBoxes.getAssetMap()
+        .getAsset(blockType.getHitboxTypeIndex());
+    if (blockBoundingBoxes == null) {
+      return null;
+    }
+    return blockBoundingBoxes.get(world.getBlockRotationIndex(location.x, location.y, location.z));
+  }
+
+  public static Box getBlockBox(Vector3i pos, World world) {
+    Vector3d p1, p2;
+    RotatedVariantBoxes rotatedVariantBoxes = BlockUtils.getRotatedVariantBoxes(pos, world);
+    if (rotatedVariantBoxes == null) {
+      p1 = pos.toVector3d();
+      p2 = pos.toVector3d().add(1, 1, 1);
+    } else {
+      Box box = rotatedVariantBoxes.getBoundingBox();
+      p1 = pos.toVector3d().add(box.min);
+      p2 = pos.toVector3d().add(box.max);
+    }
+    return new Box(p1, p2);
   }
 }

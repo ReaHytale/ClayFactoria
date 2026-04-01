@@ -1,19 +1,15 @@
 package com.clayfactoria.codecs;
 
 import com.clayfactoria.utils.BlockUtils;
-import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockMaterial;
-import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes;
 import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes.RotatedVariantBoxes;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +20,7 @@ import lombok.Getter;
  *
  * <ul>
  *   <li>A location to navigate to
- *   <li>An NPC Action to perform at that location.
+ *   <li>An NPC {@link Action} to perform at that location.
  * </ul>
  */
 public class Task {
