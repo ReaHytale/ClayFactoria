@@ -41,6 +41,28 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     super(DamageBlockEvent.class);
   }
 
+  /**
+   * Checks if the specified player is holding the wand item.
+   *
+   * @param player The player to check the condition in relation to.
+   * @return <code>true</code> if the player is holding the wand, <code>false</code> otherwise.
+   */
+  public static boolean isWandEquipped(Player player) {
+    // Get player inventory.
+    try {
+      Inventory inventory = player.getInventory();
+
+      // Get item in active hotbar slot.
+      byte slot = inventory.getActiveHotbarSlot();
+      ItemStack itemStack = Objects.requireNonNull(inventory.getHotbar().getItemStack(slot));
+
+      // Check if held item is the wand.
+      return itemStack.getItemId().equals(WAND_ITEM_ID);
+    } catch (NullPointerException e) {
+      return false;
+    }
+  }
+
   @Override
   public void handle(
       int index,
@@ -104,27 +126,5 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
   @Override
   public Query<EntityStore> getQuery() {
     return PlayerRef.getComponentType();
-  }
-
-  /**
-   * Checks if the specified player is holding the wand item.
-   *
-   * @param player The player to check the condition in relation to.
-   * @return <code>true</code> if the player is holding the wand, <code>false</code> otherwise.
-   */
-  private boolean isWandEquipped(Player player) {
-    // Get player inventory.
-    try {
-      Inventory inventory = player.getInventory();
-
-      // Get item in active hotbar slot.
-      byte slot = inventory.getActiveHotbarSlot();
-      ItemStack itemStack = Objects.requireNonNull(inventory.getHotbar().getItemStack(slot));
-
-      // Check if held item is the wand.
-      return itemStack.getItemId().equals(WAND_ITEM_ID);
-    } catch (NullPointerException e) {
-      return false;
-    }
   }
 }

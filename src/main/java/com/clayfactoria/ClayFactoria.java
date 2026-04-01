@@ -8,13 +8,13 @@ import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.DebugBoxComponent.DebugBoxesComponent;
+import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
-import com.clayfactoria.systems.DebugBoxSystem;
 import com.clayfactoria.systems.TargetBlockEventSystem;
+import com.clayfactoria.systems.TaskBoxSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -35,7 +35,7 @@ public class ClayFactoria extends JavaPlugin {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
   public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
-  public static ComponentType<EntityStore, DebugBoxesComponent> debugBoxesComponentType;
+  public static ComponentType<EntityStore, TaskBoxesComponent> debugBoxesComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
     super(init);
@@ -58,7 +58,7 @@ public class ClayFactoria extends JavaPlugin {
     LOGGER.atInfo().log("Registering Particle Line Component");
     debugBoxesComponentType =
         this.getEntityStoreRegistry()
-            .registerComponent(DebugBoxesComponent.class, DebugBoxesComponent::new);
+            .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
@@ -103,7 +103,7 @@ public class ClayFactoria extends JavaPlugin {
     this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
 
     LOGGER.atInfo().log("Registering Particle System");
-    this.getEntityStoreRegistry().registerSystem(new DebugBoxSystem());
+    this.getEntityStoreRegistry().registerSystem(new TaskBoxSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

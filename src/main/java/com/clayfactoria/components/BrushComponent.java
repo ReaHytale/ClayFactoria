@@ -4,7 +4,8 @@ import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.codecs.Task;
-import com.clayfactoria.components.DebugBoxComponent.DebugBoxesComponent;
+import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
+import com.clayfactoria.systems.TaskBoxSystem;
 import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
@@ -14,7 +15,8 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.shape.Box;
+import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -86,12 +88,13 @@ public class BrushComponent implements Component<EntityStore> {
       boolean locationEqualsWalkLocation, ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> playerRef) {
     this.tasks.add(new Task(location, action, world, locationEqualsWalkLocation));
-    DebugBoxesComponent debugBoxesComponent = componentAccessor.getComponent(playerRef,
-        DebugBoxesComponent.getComponentType());
-    if (debugBoxesComponent != null) {
-      debugBoxesComponent.boxes.add(new DebugBoxComponent(
-          new Vector3f(1F, 0, 0),
-          BlockUtils.getBlockBox(location, world)));
+    TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
+        TaskBoxesComponent.getComponentType());
+    if (taskBoxesComponent != null) {
+      Box box = BlockUtils.getBlockBox(location, world);
+      Vector3d min = box.min.subtract(TaskBoxSystem.BOX_PADDING);
+      Vector3d max = box.max.add(TaskBoxSystem.BOX_PADDING);
+      taskBoxesComponent.boxes.add(new TaskBoxComponent(action.color, new Box(min, max)));
     }
   }
 
@@ -120,10 +123,10 @@ public class BrushComponent implements Component<EntityStore> {
         componentAccessor.getComponent(playerRef, Player.getComponentType()));
     player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
     this.tasks = new ArrayList<>();
-    DebugBoxesComponent debugBoxesComponent = componentAccessor.getComponent(playerRef,
-        DebugBoxesComponent.getComponentType());
-    if (debugBoxesComponent != null) {
-      debugBoxesComponent.boxes.clear();
+    TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
+        TaskBoxesComponent.getComponentType());
+    if (taskBoxesComponent != null) {
+      taskBoxesComponent.boxes.clear();
     }
   }
 }

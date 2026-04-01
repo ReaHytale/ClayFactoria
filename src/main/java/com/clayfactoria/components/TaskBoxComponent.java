@@ -14,10 +14,10 @@ import java.util.List;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-public class DebugBoxComponent implements Component<EntityStore> {
+public class TaskBoxComponent implements Component<EntityStore> {
 
-  public static final BuilderCodec<DebugBoxComponent> CODEC = BuilderCodec.builder(
-          DebugBoxComponent.class, DebugBoxComponent::new)
+  public static final BuilderCodec<TaskBoxComponent> CODEC = BuilderCodec.builder(
+          TaskBoxComponent.class, TaskBoxComponent::new)
       .append(
           new KeyedCodec<>("Colour", Vector3f.CODEC),
           (comp, colour) -> comp.colour = colour,
@@ -39,34 +39,34 @@ public class DebugBoxComponent implements Component<EntityStore> {
   @Getter
   private Box box;
 
-  private DebugBoxComponent() {
+  private TaskBoxComponent() {
   }
 
-  public DebugBoxComponent(Vector3f colour, Box box) {
+  public TaskBoxComponent(Vector3f colour, Box box) {
     this.colour = colour;
     this.box = box;
   }
 
   @Override
   public @Nullable Component<EntityStore> clone() {
-    return new DebugBoxComponent(colour, box);
+    return new TaskBoxComponent(colour, box);
   }
 
-  public static class DebugBoxesComponent implements Component<EntityStore> {
+  public static class TaskBoxesComponent implements Component<EntityStore> {
 
-    public static final ArrayCodec<DebugBoxComponent> CODEC = new ArrayCodec<>(
-        DebugBoxComponent.CODEC, DebugBoxComponent[]::new);
-    public List<DebugBoxComponent> boxes = new ArrayList<>();
+    public static final ArrayCodec<TaskBoxComponent> CODEC = new ArrayCodec<>(
+        TaskBoxComponent.CODEC, TaskBoxComponent[]::new);
+    public List<TaskBoxComponent> boxes = new ArrayList<>();
 
-    public static ComponentType<EntityStore, DebugBoxesComponent> getComponentType() {
+    public static ComponentType<EntityStore, TaskBoxesComponent> getComponentType() {
       return ClayFactoria.debugBoxesComponentType;
     }
 
     @Override
-    public @Nullable DebugBoxComponent.DebugBoxesComponent clone() {
-      DebugBoxesComponent debugBoxesComponent = new DebugBoxesComponent();
-      debugBoxesComponent.boxes = new ArrayList<>(boxes);
-      return debugBoxesComponent;
+    public @Nullable TaskBoxComponent.TaskBoxesComponent clone() {
+      TaskBoxesComponent taskBoxesComponent = new TaskBoxesComponent();
+      taskBoxesComponent.boxes = new ArrayList<>(boxes);
+      return taskBoxesComponent;
     }
   }
 }
