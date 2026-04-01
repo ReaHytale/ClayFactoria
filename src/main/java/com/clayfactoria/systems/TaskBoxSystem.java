@@ -64,7 +64,7 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
         boxComponent.getColour());
   }
 
-  public static void drawRect(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4, World world,
+  private static void drawRect(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4, World world,
       Vector3f color) {
     drawLine(p1, p2, world, color);
     drawLine(p1, p3, world, color);
@@ -72,12 +72,12 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
     drawLine(p3, p4, world, color);
   }
 
-  public static void drawLine(Vector3d start, Vector3d end,
+  private static void drawLine(Vector3d start, Vector3d end,
       World world, Vector3f color) {
     DebugUtils.addLine(world, start, end, color, 0.03D, 0.6F, DebugUtils.FLAG_NO_WIREFRAME);
   }
 
-  public static void drawArrow(Vector3d start, Vector3d end,
+  private static void drawArrow(Vector3d start, Vector3d end,
       World world, Vector3f color) {
     Vector3d direction = end.clone().subtract(start).normalize();
     double half = start.distanceTo(end) / 2;
