@@ -80,8 +80,8 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
   public static void drawArrow(Vector3d start, Vector3d end,
       World world, Vector3f color) {
     Vector3d direction = end.clone().subtract(start).normalize();
-    double half = start.distanceTo(end) / 4;
-    Vector3d position = start.clone().add(direction.scale(half));
+    double half = start.distanceTo(end) / 2;
+    Vector3d position = start.clone().add(direction.clone().scale(half));
     DebugUtils.addLine(world, start, end, color, 0.03D, 0.6F, DebugUtils.FLAG_NO_WIREFRAME);
     DebugUtils.addArrow(world, position, direction, color, 1F,
         0.6F,
