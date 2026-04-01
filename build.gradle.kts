@@ -1,7 +1,6 @@
 plugins {
     `maven-publish`
     id("hytale-mod") version "0.+"
-    kotlin("jvm")
 }
 
 group = "com.clayfactoria"
@@ -27,7 +26,6 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:$lombokVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 hytale {
