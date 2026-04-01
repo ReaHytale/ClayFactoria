@@ -1,10 +1,10 @@
 package com.clayfactoria.systems;
 
-import static com.clayfactoria.ClayFactoria.particleLinesComponentType;
+import static com.clayfactoria.ClayFactoria.debugBoxesComponentType;
 
-import com.clayfactoria.components.ParticleLineComponent;
-import com.clayfactoria.components.ParticleLineComponent.ParticleLinesComponent;
-import com.clayfactoria.utils.ParticleShapeUtils;
+import com.clayfactoria.components.DebugBoxComponent;
+import com.clayfactoria.components.DebugBoxComponent.DebugBoxesComponent;
+import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -14,21 +14,24 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.matrix.Matrix4d;
+import com.hypixel.hytale.protocol.DebugShape;
+import com.hypixel.hytale.server.core.modules.debug.DebugUtils;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ParticleSystem extends DelayedEntitySystem<EntityStore> {
+public class DebugBoxSystem extends DelayedEntitySystem<EntityStore> {
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   @Nonnull
   private static final ComponentType<EntityStore, TransformComponent> TRANSFORM_COMPONENT_TYPE = TransformComponent.getComponentType();
   private boolean even = true;
 
-  public ParticleSystem() {
-    super(0.1F);
+  public DebugBoxSystem() {
+    super(1F);
   }
 
   @Nullable
@@ -50,16 +53,25 @@ public class ParticleSystem extends DelayedEntitySystem<EntityStore> {
       @Nonnull Store<EntityStore> store,
       @Nonnull CommandBuffer<EntityStore> commandBuffer
   ) {
-    ParticleLinesComponent particleLinesComponent = archetypeChunk.getComponent(index,
-        particleLinesComponentType);
+    DebugBoxesComponent debugBoxesComponent = archetypeChunk.getComponent(index,
+        debugBoxesComponentType);
 
-    if (particleLinesComponent == null) {
+    if (debugBoxesComponent == null) {
       return;
     }
+
     even = !even;
-    for (ParticleLineComponent line : particleLinesComponent.lines) {
-      ParticleShapeUtils.drawParticleLine(line.getStart(), line.getEnd(), line.getParticleName(),
-          commandBuffer, even);
+    for (DebugBoxComponent box : debugBoxesComponent.boxes) {
+      Matrix4d matrix = BlockUtils.getBoxMatrixFromBox(box.getBox());
+      DebugUtils.add(
+          commandBuffer.getExternalData().getWorld(),
+          DebugShape.Cube,
+          matrix.scale(1.15, 1.15, 1.15),
+          box.getColour(),
+          0.3F,
+          1F,
+          DebugUtils.FLAG_NO_WIREFRAME
+      );
     }
   }
 

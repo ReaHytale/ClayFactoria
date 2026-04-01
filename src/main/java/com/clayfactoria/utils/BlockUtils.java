@@ -1,5 +1,8 @@
 package com.clayfactoria.utils;
 
+import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.matrix.Matrix4d;
+import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
@@ -9,6 +12,8 @@ import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 
 public final class BlockUtils {
+
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   private BlockUtils() {
   }
@@ -89,4 +94,27 @@ public final class BlockUtils {
     return blockBoundingBoxes.get(world.getBlockRotationIndex(location.x, location.y, location.z));
   }
 
+  public static Box getBlockBox(Vector3i pos, World world) {
+    Vector3d p1, p2;
+    RotatedVariantBoxes rotatedVariantBoxes = BlockUtils.getRotatedVariantBoxes(pos, world);
+    if (rotatedVariantBoxes == null) {
+      p1 = pos.toVector3d();
+      p2 = pos.toVector3d().add(1, 1, 1);
+    } else {
+      Box box = rotatedVariantBoxes.getBoundingBox();
+      p1 = pos.toVector3d().add(box.min);
+      p2 = pos.toVector3d().add(box.max);
+    }
+    return new Box(p1, p2);
+  }
+
+  public static Matrix4d getBoxMatrixFromBox(Box box) {
+    Vector3d size = box.getMax().clone().subtract(box.getMin());
+    Vector3d center = box.getMin().clone().add(box.getMax()).scale(0.5);
+    Matrix4d matrix = new Matrix4d();
+    matrix.identity();
+    matrix.translate(center);
+    matrix.scale(size.x, size.y, size.z);
+    return matrix;
+  }
 }

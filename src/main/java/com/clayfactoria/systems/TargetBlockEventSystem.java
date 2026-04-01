@@ -2,7 +2,6 @@ package com.clayfactoria.systems;
 
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.utils.ParticleShapeUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -83,7 +82,8 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     boolean success = true;
     try {
       boolean locationEqualsWalkLocation = action == Action.POSITION;
-      brushComponent.addTask(targetBlockLoc, action, player.getWorld(), locationEqualsWalkLocation);
+      brushComponent.addTask(targetBlockLoc, player.getWorld(), locationEqualsWalkLocation, store,
+          playerRef);
     } catch (IllegalStateException e) {
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
@@ -97,7 +97,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     }
 
     damageBlockEvent.setDamage(0);
-    ParticleShapeUtils.addParticleHitbox(targetBlockLoc, store, playerRef, world);
     SoundUtil.playSoundEvent2d(
         SoundEvent.getAssetMap().getIndex("SFX_Drop_Items_Clay"), SoundCategory.SFX, commandBuffer);
   }

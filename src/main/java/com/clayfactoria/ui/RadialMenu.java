@@ -11,7 +11,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -19,7 +18,6 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -82,8 +80,7 @@ public final class RadialMenu
       brushComponent.setAction(data.task);
     } else if (data.reset != null) {
       LOGGER.atInfo().log("Resetting tasks");
-      brushComponent.resetTasks(
-          Objects.requireNonNull(store.getComponent(ref, Player.getComponentType())));
+      brushComponent.resetTasks(store, ref);
     }
     close();
   }
@@ -112,7 +109,8 @@ public final class RadialMenu
     }
   }
 
-  private void buildResetButton(@Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
+  private void buildResetButton(@Nonnull UICommandBuilder commandBuilder,
+      @Nonnull UIEventBuilder eventBuilder) {
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
         "#ResetButton",
@@ -154,8 +152,11 @@ public final class RadialMenu
     }
   }
 
-  /** Event payload emitted by command-button clicks in the command selection page. */
+  /**
+   * Event payload emitted by command-button clicks in the command selection page.
+   */
   public static final class RadialMenuEventData {
+
     public static final BuilderCodec<RadialMenuEventData> CODEC =
         BuilderCodec.builder(RadialMenuEventData.class, RadialMenuEventData::new)
             .append(
@@ -164,8 +165,8 @@ public final class RadialMenu
                 event -> event.task)
             .add()
             .append(new KeyedCodec<>(RESET_COMMAND_ID, Codec.STRING),
-                    (event, value) -> event.reset = value,
-                    event -> event.reset)
+                (event, value) -> event.reset = value,
+                event -> event.reset)
             .add()
             .build();
 
@@ -175,6 +176,7 @@ public final class RadialMenu
   }
 
   public static class ResetEventData {
+
     public static final BuilderCodec<ResetEventData> CODEC =
         BuilderCodec.builder(ResetEventData.class, ResetEventData::new).build();
   }

@@ -4,12 +4,17 @@ import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.codecs.Task;
+import com.clayfactoria.components.DebugBoxComponent.DebugBoxesComponent;
+import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -19,6 +24,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Getter;
@@ -60,7 +66,6 @@ public class BrushComponent implements Component<EntityStore> {
           .build();
 
   @Getter
-  @Setter
   private List<Task> tasks = new ArrayList<>();
   @Getter
   @Setter
@@ -77,9 +82,17 @@ public class BrushComponent implements Component<EntityStore> {
     return ClayFactoria.brushComponentType;
   }
 
-  public void addTask(Vector3i location, Action action, World world,
-      boolean locationEqualsWalkLocation) {
+  public void addTask(Vector3i location, World world,
+      boolean locationEqualsWalkLocation, ComponentAccessor<EntityStore> componentAccessor,
+      Ref<EntityStore> playerRef) {
     this.tasks.add(new Task(location, action, world, locationEqualsWalkLocation));
+    DebugBoxesComponent debugBoxesComponent = componentAccessor.getComponent(playerRef,
+        DebugBoxesComponent.getComponentType());
+    if (debugBoxesComponent != null) {
+      debugBoxesComponent.boxes.add(new DebugBoxComponent(
+          new Vector3f(1F, 0, 0),
+          BlockUtils.getBlockBox(location, world)));
+    }
   }
 
   // TODO: Switch this to Action.TAKE || Action.DEPOSIT and use for switching between task types
@@ -101,8 +114,16 @@ public class BrushComponent implements Component<EntityStore> {
     return brushComponent;
   }
 
-  public void resetTasks(Player player) {
+  public void resetTasks(ComponentAccessor<EntityStore> componentAccessor,
+      Ref<EntityStore> playerRef) {
+    Player player = Objects.requireNonNull(
+        componentAccessor.getComponent(playerRef, Player.getComponentType()));
     player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
     this.tasks = new ArrayList<>();
+    DebugBoxesComponent debugBoxesComponent = componentAccessor.getComponent(playerRef,
+        DebugBoxesComponent.getComponentType());
+    if (debugBoxesComponent != null) {
+      debugBoxesComponent.boxes.clear();
+    }
   }
 }

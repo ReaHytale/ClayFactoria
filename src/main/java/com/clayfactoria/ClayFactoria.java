@@ -8,12 +8,12 @@ import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderPutItemInHand;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.ParticleLineComponent.ParticleLinesComponent;
+import com.clayfactoria.components.DebugBoxComponent.DebugBoxesComponent;
 import com.clayfactoria.components.TaskComponent;
 import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
-import com.clayfactoria.systems.ParticleSystem;
+import com.clayfactoria.systems.DebugBoxSystem;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
@@ -35,7 +35,7 @@ public class ClayFactoria extends JavaPlugin {
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
   public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
-  public static ComponentType<EntityStore, ParticleLinesComponent> particleLinesComponentType;
+  public static ComponentType<EntityStore, DebugBoxesComponent> debugBoxesComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
     super(init);
@@ -56,9 +56,9 @@ public class ClayFactoria extends JavaPlugin {
     ownerComponentType =
         this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
     LOGGER.atInfo().log("Registering Particle Line Component");
-    particleLinesComponentType =
+    debugBoxesComponentType =
         this.getEntityStoreRegistry()
-            .registerComponent(ParticleLinesComponent.class, ParticleLinesComponent::new);
+            .registerComponent(DebugBoxesComponent.class, DebugBoxesComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
@@ -103,7 +103,7 @@ public class ClayFactoria extends JavaPlugin {
     this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
 
     LOGGER.atInfo().log("Registering Particle System");
-    this.getEntityStoreRegistry().registerSystem(new ParticleSystem());
+    this.getEntityStoreRegistry().registerSystem(new DebugBoxSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {
@@ -131,7 +131,7 @@ public class ClayFactoria extends JavaPlugin {
     world.execute(
         () -> {
           Store<EntityStore> worldStore = world.getEntityStore().getStore();
-          worldStore.ensureAndGetComponent(playerEntityRef, particleLinesComponentType);
+          worldStore.ensureAndGetComponent(playerEntityRef, debugBoxesComponentType);
           LOGGER.atInfo().log("Successfully ensured Particle Component on Player");
         });
   }
