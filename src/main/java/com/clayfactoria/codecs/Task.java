@@ -188,4 +188,13 @@ public class Task {
   public String toString() {
     return String.format("<Task loc=%s action=%s walkLoc=%s>", location, action, walkLocation);
   }
+
+  public Task clone() {
+    Task clone = new Task();
+    clone.action = action;
+    clone.location = location.clone();
+    clone.walkLocation = walkLocation.clone();
+    clone.locationEqualsWalkLocation = locationEqualsWalkLocation;
+    return clone;
+  }
 }
