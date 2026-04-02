@@ -98,7 +98,6 @@ public class BrushComponent implements Component<EntityStore> {
     }
   }
 
-  // TODO: Switch this to Action.TAKE || Action.DEPOSIT and use for switching between task types
   public PathType togglePathType() {
     if (pathType == PathType.ONCE) {
       pathType = PathType.LOOP;
