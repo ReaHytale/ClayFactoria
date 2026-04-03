@@ -55,15 +55,15 @@ public class ClayFactoria extends JavaPlugin {
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
 
     LOGGER.atInfo().log("Registering Task Component");
-    ownerComponentType =
-        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
+    ownerComponentType = this.getEntityStoreRegistry()
+        .registerComponent(TaskComponent.class, "ClayFactoriaTaskComponent",
+            TaskComponent.CODEC);
+
     LOGGER.atInfo().log("Registering Particle Line Component");
     debugBoxesComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
     LOGGER.atInfo().log("Registering on Player Ready Event");
-        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, "ClayFactoriaTaskComponent",
-                TaskComponent.CODEC);
 
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
