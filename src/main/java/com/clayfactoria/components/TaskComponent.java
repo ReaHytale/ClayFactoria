@@ -23,6 +23,7 @@ import lombok.Setter;
  * Keeps track of a circular queue of {@link Task Tasks} for an entity.
  */
 public class TaskComponent implements Component<EntityStore> {
+
   @Nonnull
   public static final BuilderCodec<TaskComponent> CODEC =
       BuilderCodec.builder(TaskComponent.class, TaskComponent::new)
@@ -58,11 +59,23 @@ public class TaskComponent implements Component<EntityStore> {
           .add()
           .build();
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-  @Getter @Setter @Nullable private UUID playerId;
-  @Getter @Setter private List<Task> tasks = new ArrayList<>();
-  @Getter @Setter @Nullable private Task currentTask;
-  @Getter @Setter private int currentTargetIndex;
-  @Getter @Setter private boolean isComplete = false;
+  @Getter
+  @Setter
+  @Nullable
+  private UUID playerId;
+  @Getter
+  @Setter
+  private List<Task> tasks = new ArrayList<>();
+  @Getter
+  @Setter
+  @Nullable
+  private Task currentTask;
+  @Getter
+  @Setter
+  private int currentTargetIndex;
+  @Getter
+  @Setter
+  private boolean isComplete = false;
 
   public static ComponentType<EntityStore, TaskComponent> getComponentType() {
     return ClayFactoria.ownerComponentType;
@@ -70,6 +83,7 @@ public class TaskComponent implements Component<EntityStore> {
 
   /**
    * Move on to the next task in the queue
+   *
    * @return The next task in the queue
    */
   @Nullable

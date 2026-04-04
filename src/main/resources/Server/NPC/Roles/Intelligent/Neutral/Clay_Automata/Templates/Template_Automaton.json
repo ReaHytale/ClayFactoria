@@ -90,6 +90,9 @@
         },
         {
           "Type": "DropInventory"
+        },
+        {
+          "Type": "ClearTasks"
         }
       ]
     },
@@ -97,7 +100,7 @@
       "States": [
         {
           "From": [ ],
-          "To": [ "Path" ]
+          "To": [ "Automated" ]
         }
       ],
       "Actions": [
@@ -180,7 +183,7 @@
               "Actions": [
                 {
                   "Type": "State",
-                  "State": "Path"
+                  "State": "Automated"
                 }
               ]
             },
@@ -286,254 +289,224 @@
           ]
         },
         {
-          "$Comment": "Interaction state - look at player while Interacting. Timeout at 15 seconds to go back to Idle",
+          "$Comment": "Automaton is performing actions automatically",
           "Sensor": {
             "Type": "State",
-            "State": "$Interaction"
+            "State": "Automated"
           },
           "Instructions": [
             {
-              "$Comment": "Return to idle when item in hand is not brush",
-              "Sensor": {
-                "Type": "Not",
-                "Sensor": {
-                  "Type": "Player",
-                  "Range": { "Compute": "ViewRange" },
-                  "Filters": [
+              "Instructions": [
+                {
+                  "$Comment": "Pathing state - Path to a single point or line path",
+                  "Sensor": {
+                    "Type": "State",
+                    "State": ".Default"
+                  },
+                  "Instructions": [
                     {
-                      "Type": "ItemInHand",
-                      "Items": [ "Tool_Brush" ]
+                      "Continue": true,
+                      "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
+                      "Sensor": {
+                        "Type": "LeashTarget"
+                      },
+                      "BodyMotion": {
+                        "Type": "Seek",
+                        "SlowDownDistance": 1,
+                        "StopDistance": 0.1,
+                        "RelativeSpeed": 0.55
+                      }
+                    },
+                    {
+                      "Sensor": {
+                        "$Comment": "If not leashing target, then switch to action state",
+                        "Type": "Not",
+                        "Sensor": {
+                          "Type": "LeashTarget"
+                        }
+                      },
+                      "Actions": [
+                        {
+                          "Type": "State",
+                          "State": "Automated.Action"
+                        }
+                      ]
                     }
                   ]
-                }
-              },
-              "Actions": [
+                },
                 {
-                  "Type": "State",
-                  "State": "Idle"
-                }
-              ]
-            },
-            {
-              "Sensor": {
-                "$Comment": "Initially gets us into the pathing state",
-                "Type": "LeashTarget"
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Path"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "$Comment": "Pathing state - Path to a single point or line path",
-          "Sensor": {
-            "Type": "State",
-            "State": "Path"
-          },
-          "Instructions": [
-            {
-              "Continue": true,
-              "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
-              "Sensor": {
-                "Type": "LeashTarget"
-              },
-              "BodyMotion": {
-                "Type": "Seek",
-                "SlowDownDistance": 1,
-                "StopDistance": 0.1,
-                "RelativeSpeed": 0.55
-              }
-            },
-            {
-              "Sensor": {
-                "$Comment": "If not leashing target, then switch to action state",
-                "Type": "Not",
-                "Sensor": {
-                  "Type": "LeashTarget"
-                }
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Action"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "$Comment": "Action state - Complete an action for a given location",
-          "Sensor": {
-            "Type": "State",
-            "State": "Action"
-          },
-          "Instructions": [
-            {
-              "$Comment": "Play Idle Animation while waiting to run action",
-              "Continue": true,
-              "Sensor": {
-                "Type": "Any"
-              },
-              "Actions": [
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Idle",
-                  "Once": true
-                }
-              ]
-            },
-            {
-              "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
-              "Sensor": {
-                "Type": "And",
-                "Sensors": [
-                  {
-                    "Type": "Switch",
-                    "Switch": { "Compute": "CanDoDeposit" }
+                  "$Comment": "Action state - Complete an action for a given location",
+                  "Sensor": {
+                    "Type": "State",
+                    "State": ".Action"
                   },
-                  {
-                    "Type": "CanDoAction",
-                    "Action": "Deposit"
-                  }
-                ]
-              },
-              "ActionsBlocking": true,
-              "Actions": [
-                {
-                  "Type": "SetFlag",
-                  "Name": "HoldingItem",
-                  "SetTo": false
-                },
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Deposit",
-                  "Once": true
-                },
-                {
-                  "Type": "Timeout",
-                  "Delay": [ 0.4, 0.4 ]
-                },
-                {
-                  "Type": "Deposit"
-                },
-                {
-                  "Type": "Timeout",
-                  "Delay": [ 0.4, 0.4 ]
-                },
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": ""
-                }
-              ]
-            },
-            {
-              "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
-              "Sensor": {
-                "Type": "And",
-                "Sensors": [
-                  {
-                    "Type": "Switch",
-                    "Switch": { "Compute": "CanDoTake" }
-                  },
-                  {
-                    "Type": "CanDoAction",
-                    "Action": "Take"
-                  }
-                ]
-              },
-              "ActionsBlocking": true,
-              "Actions": [
-                {
-                  "Type": "SetFlag",
-                  "Name": "HoldingItem",
-                  "SetTo": true
-                },
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Take",
-                  "Once": true
-                },
-                {
-                  "Type": "Timeout",
-                  "Delay": [ 0.4, 0.4 ]
-                },
-                {
-                  "Type": "Take"
-                },
-                {
-                  "Type": "Timeout",
-                  "Delay": [ 0.4, 0.4 ]
-                },
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": ""
-                }
-              ]
-            },
-            {
-              "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
-              "Sensor": {
-                "Type": "And",
-                "Sensors": [
-                  {
-                    "Type": "Switch",
-                    "Switch": { "Compute": "CanDoPosition" }
-                  },
-                  {
-                    "Type": "CanDoAction",
-                    "Action": "Position"
-                  }
-                ]
-              },
-              "Actions": [
-                {
-                  "Type": "Position"
-                }
-              ]
-            },
-            {
-              "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'WORK'",
-              "Sensor": {
-                "Type": "And",
-                "Sensors": [
-                  {
-                    "Type": "Switch",
-                    "Switch": { "Compute": "CanDoWork" }
-                  },
-                  {
-                    "Type": "CanDoAction",
-                    "Action": "Work"
-                  }
-                ]
-              },
-              "Actions": [
-                {
-                  "Type": "Work"
-                }
-              ]
-            },
-            {
-              "$Comment": "Switch to Pathing state when there is NOT an action for the current target location",
-              "Sensor": {
-                "Type": "LeashTarget"
-              },
-              "Actions": [
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status"
-                },
-                {
-                  "Type": "State",
-                  "State": "Path"
+                  "Instructions": [
+                    {
+                      "$Comment": "Play Idle Animation while waiting to run action",
+                      "Continue": true,
+                      "Sensor": {
+                        "Type": "Any"
+                      },
+                      "Actions": [
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": "Idle",
+                          "Once": true
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
+                      "Sensor": {
+                        "Type": "And",
+                        "Sensors": [
+                          {
+                            "Type": "Switch",
+                            "Switch": { "Compute": "CanDoDeposit" }
+                          },
+                          {
+                            "Type": "CanDoAction",
+                            "Action": "Deposit"
+                          }
+                        ]
+                      },
+                      "ActionsBlocking": true,
+                      "Actions": [
+                        {
+                          "Type": "SetFlag",
+                          "Name": "HoldingItem",
+                          "SetTo": false
+                        },
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": "Deposit",
+                          "Once": true
+                        },
+                        {
+                          "Type": "Timeout",
+                          "Delay": [ 0.4, 0.4 ]
+                        },
+                        {
+                          "Type": "Deposit"
+                        },
+                        {
+                          "Type": "Timeout",
+                          "Delay": [ 0.4, 0.4 ]
+                        },
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": ""
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
+                      "Sensor": {
+                        "Type": "And",
+                        "Sensors": [
+                          {
+                            "Type": "Switch",
+                            "Switch": { "Compute": "CanDoTake" }
+                          },
+                          {
+                            "Type": "CanDoAction",
+                            "Action": "Take"
+                          }
+                        ]
+                      },
+                      "ActionsBlocking": true,
+                      "Actions": [
+                        {
+                          "Type": "SetFlag",
+                          "Name": "HoldingItem",
+                          "SetTo": true
+                        },
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": "Take",
+                          "Once": true
+                        },
+                        {
+                          "Type": "Timeout",
+                          "Delay": [ 0.4, 0.4 ]
+                        },
+                        {
+                          "Type": "Take"
+                        },
+                        {
+                          "Type": "Timeout",
+                          "Delay": [ 0.4, 0.4 ]
+                        },
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": ""
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
+                      "Sensor": {
+                        "Type": "And",
+                        "Sensors": [
+                          {
+                            "Type": "Switch",
+                            "Switch": { "Compute": "CanDoPosition" }
+                          },
+                          {
+                            "Type": "CanDoAction",
+                            "Action": "Position"
+                          }
+                        ]
+                      },
+                      "Actions": [
+                        {
+                          "Type": "Position"
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'WORK'",
+                      "Sensor": {
+                        "Type": "And",
+                        "Sensors": [
+                          {
+                            "Type": "Switch",
+                            "Switch": { "Compute": "CanDoWork" }
+                          },
+                          {
+                            "Type": "CanDoAction",
+                            "Action": "Work"
+                          }
+                        ]
+                      },
+                      "Actions": [
+                        {
+                          "Type": "Work"
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Switch to default (pathing) state when there is NOT an action for the current target location",
+                      "Sensor": {
+                        "Type": "LeashTarget"
+                      },
+                      "Actions": [
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status"
+                        },
+                        {
+                          "Type": "State",
+                          "State": "Automated.Default"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -545,153 +518,178 @@
   "InteractionInstruction": {
     "Instructions": [
       {
+        "$Comment": "Interactable when holding brush",
+        "Sensor": {
+          "Type": "Player",
+          "Range": { "Compute": "ViewRange" },
+          "Filters": [
+            {
+              "Type": "ItemInHand",
+              "Items": [ "Tool_Brush" ]
+            }
+          ]
+        },
         "Instructions": [
           {
-            "Sensor": {
-              "Type": "Or",
-              "Sensors": [
-                {
-                  "Type": "And",
+            "Instructions": [
+              {
+                "$Comment": "Alert",
+                "Continue": true,
+                "Sensor": {
+                  "Type": "State",
+                  "State": "Idle"
+                },
+                "Actions": [
+                  {
+                    "Type": "State",
+                    "State": "Alerted"
+                  }
+                ]
+              },
+              {
+                "$Comment": "Show \"Command\" as interaction hint while idle or alerted",
+                "Continue": true,
+                "Sensor": {
+                  "Type": "Or",
                   "Sensors": [
                     {
-                      "Type": "Not",
-                      "Sensor": {
-                        "Type": "Player",
-                        "Range": { "Compute": "ViewRange" },
-                        "Filters": [
+                      "Type": "State",
+                      "State": "Idle"
+                    },
+                    {
+                      "Type": "State",
+                      "State": "Alerted"
+                    }
+                  ]
+                },
+                "Actions": [
+                  {
+                    "Type": "SetInteractable",
+                    "Hint": "server.interactionHints.begin_command"
+                  }
+                ]
+              },
+              {
+                "$Comment": "Show \"Finish Command\" as interaction hint while programming",
+                "Continue": true,
+                "Sensor": {
+                  "Type": "State",
+                  "State": "Programming"
+                },
+                "Actions": [
+                  {
+                    "Type": "SetInteractable",
+                    "Hint": "server.interactionHints.finish_command"
+                  }
+                ]
+              },
+              {
+                "$Comment": "Show \"Stop\" as interaction hint while automating",
+                "Continue": true,
+                "Sensor": {
+                  "Type": "State",
+                  "State": "Automated"
+                },
+                "Actions": [
+                  {
+                    "Type": "SetInteractable",
+                    "Hint": "server.interactionHints.stop_command"
+                  }
+                ]
+              },
+              {
+                "$Comment": "Handle interaction behaviour",
+                "Sensor": {
+                  "Type": "HasInteracted"
+                },
+                "Instructions": [
+                  {
+                    "Instructions": [
+                      {
+                        "$Comment": "Stop automation",
+                        "Sensor": {
+                          "Type": "State",
+                          "State": "Automated"
+                        },
+                        "Actions": [
                           {
-                            "Type": "ItemInHand",
-                            "Items": [ "Tool_Brush" ]
+                            "Type": "State",
+                            "State": "Idle"
+                          },
+                          {
+                            "Type": "SetInteractable",
+                            "Hint": "server.interactionHints.begin_command"
+                          }
+                        ]
+                      },
+                      {
+                        "$Comment": "Finish programming and start automation",
+                        "Sensor": {
+                          "Type": "State",
+                          "State": "Programming"
+                        },
+                        "Actions": [
+                          {
+                            "Type": "SetPath"
+                          },
+                          {
+                            "Type": "State",
+                            "State": "Automated"
+                          }
+                        ]
+                      },
+                      {
+                        "$Comment": "Start programming",
+                        "Sensor": {
+                          "Type": "Or",
+                          "Sensors": [
+                            {
+                              "Type": "State",
+                              "State": "Idle"
+                            },
+                            {
+                              "Type": "State",
+                              "State": "Alerted"
+                            }
+                          ]
+                        },
+                        "Actions": [
+                          {
+                            "Type": "State",
+                            "State": "Programming"
+                          },
+                          {
+                            "Type": "StartProgramming"
                           }
                         ]
                       }
-                    },
-                    {
-                      "Type": "Not",
-                      "Sensor": {
-                        "Type": "State",
-                        "State": "Path"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "Type": "Not",
-                  "Sensor": {
-                    "Type": "CanInteract",
-                    "ViewSector": 360
+                    ]
                   }
-                }
-              ]
-            },
-            "Actions": [
-              {
-                "Type": "SetInteractable",
-                "Interactable": false
+                ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "$Comment": "Not interactable when not holding brush",
+        "Sensor": {
+          "Type": "Not",
+          "Sensor": {
+            "Type": "Player",
+            "Range": { "Compute": "ViewRange" },
+            "Filters": [
+              {
+                "Type": "ItemInHand",
+                "Items": [ "Tool_Brush" ]
+              }
+            ]
+          }
+        },
+        "Actions": [
           {
-            "Continue": true,
-            "Sensor": {
-              "$Comment": "Switch to Alerted if player has Brush",
-              "Type": "Or",
-              "Sensors": [
-                {
-                  "$Comment": "Set Interactable to true when Item in Hand is Brush",
-                  "Type": "Player",
-                  "Range": { "Compute": "ViewRange" },
-                  "Filters": [
-                    {
-                      "Type": "ItemInHand",
-                      "Items": [ "Tool_Brush" ]
-                    }
-                  ]
-                },
-                {
-                  "$Comment": "Set Interactable to true when in Path state",
-                  "Type": "State",
-                  "State": "Path"
-                }
-              ]
-            },
-            "Actions": [
-              {
-                "Type": "SetInteractable",
-                "Interactable": true,
-                "Hint": "server.interactionHints.command"
-              }
-            ]
-          },
-          {
-            "Sensor": {
-              "$Comment": "TODO: When Interacting, Play Particle Effects, Change Attachment to match State",
-              "Type": "And",
-              "Sensors": [
-                {
-                  "Type": "Player",
-                  "Range": { "Compute": "ViewRange" },
-                  "Filters": [
-                    {
-                      "Type": "ItemInHand",
-                      "Items": [ "Tool_Brush" ]
-                    }
-                  ]
-                },
-                {
-                  "Type": "HasInteracted"
-                },
-                {
-                  "Type": "Not",
-                  "Sensor": {
-                    "Type": "State",
-                    "State": "Path"
-                  }
-                }
-              ]
-            },
-            "Actions": [
-              {
-                "Type": "LockOnInteractionTarget"
-              },
-              {
-                "Type": "State",
-                "State": "$Interaction"
-              },
-              {
-                "$Comment": "Temporarily disable interactable",
-                "Type": "SetInteractable",
-                "Interactable": false
-              },
-              {
-                "Type": "SetPath"
-              }
-            ]
-          },
-          {
-            "Sensor": {
-              "$Comment": "When interacting in the Path state, switch to Idle",
-              "Type": "And",
-              "Sensors": [
-                {
-                  "Type": "HasInteracted"
-                },
-                {
-                  "Type": "State",
-                  "State": "Path"
-                }
-              ]
-            },
-            "Actions": [
-              {
-                "Type": "State",
-                "State": "Idle"
-              },
-              {
-                "Type": "SetInteractable",
-                "Interactable": false
-              }
-            ]
+            "Type": "SetInteractable",
+            "Interactable": false
           }
         ]
       }

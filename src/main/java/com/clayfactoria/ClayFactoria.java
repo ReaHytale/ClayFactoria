@@ -4,9 +4,11 @@ import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
+import com.clayfactoria.actions.builders.BuilderActionClearTasks;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
-import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionPutItemInHand;
+import com.clayfactoria.actions.builders.BuilderActionSetPath;
+import com.clayfactoria.actions.builders.BuilderActionStartProgramming;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.components.TaskComponent;
@@ -50,25 +52,17 @@ public class ClayFactoria extends JavaPlugin {
 
     Interaction.CODEC.register("OpenWandMenu", OpenWandMenu.class, OpenWandMenu.CODEC);
 
-    LOGGER.atInfo().log("Registering Brush Component");
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
-
-    LOGGER.atInfo().log("Registering Task Component");
     ownerComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(
                 TaskComponent.class, "ClayFactoriaTaskComponent", TaskComponent.CODEC);
-
-    LOGGER.atInfo().log("Registering Particle Line Component");
     debugBoxesComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
-    LOGGER.atInfo().log("Registering on Player Ready Event");
-
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
-    NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
     NPCPlugin.get().registerCoreComponentType("CanDoAction", BuilderSensorCanDoAction::new);
     NPCPlugin.get().registerCoreComponentType("HasAnyTasks", BuilderSensorHasAnyTasks::new);
@@ -79,6 +73,10 @@ public class ClayFactoria extends JavaPlugin {
     NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
     NPCPlugin.get().registerCoreComponentType("Work", BuilderActionWork::new);
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
+    NPCPlugin.get().registerCoreComponentType("ClearTasks", BuilderActionClearTasks::new);
+    NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
+    NPCPlugin.get()
+        .registerCoreComponentType("StartProgramming", BuilderActionStartProgramming::new);
   }
 
   @Override
@@ -89,11 +87,7 @@ public class ClayFactoria extends JavaPlugin {
           "Failed to Register Target Block Event System. NPC Entity ComponentType was null");
       return;
     }
-
-    LOGGER.atInfo().log("Registering Target Block Event System");
     this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
-
-    LOGGER.atInfo().log("Registering Particle System");
     this.getEntityStoreRegistry().registerSystem(new TaskBoxSystem());
   }
 

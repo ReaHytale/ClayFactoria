@@ -118,14 +118,19 @@ public class BrushComponent implements Component<EntityStore> {
 
   public void resetTasks(ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> playerRef) {
-    Player player = Objects.requireNonNull(
-        componentAccessor.getComponent(playerRef, Player.getComponentType()));
-    player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
     this.tasks = new ArrayList<>();
     TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
         TaskBoxesComponent.getComponentType());
     if (taskBoxesComponent != null) {
       taskBoxesComponent.boxes.clear();
     }
+  }
+
+  public void resetTasksWithMessage(ComponentAccessor<EntityStore> componentAccessor,
+      Ref<EntityStore> playerRef) {
+    Player player = Objects.requireNonNull(
+        componentAccessor.getComponent(playerRef, Player.getComponentType()));
+    player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
+    resetTasks(componentAccessor, playerRef);
   }
 }

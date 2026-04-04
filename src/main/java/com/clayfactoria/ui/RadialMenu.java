@@ -80,7 +80,7 @@ public final class RadialMenu
       brushComponent.setAction(data.task);
     } else if (data.reset != null) {
       LOGGER.atInfo().log("Resetting tasks");
-      brushComponent.resetTasks(store, ref);
+      brushComponent.resetTasksWithMessage(store, ref);
     }
     close();
   }
