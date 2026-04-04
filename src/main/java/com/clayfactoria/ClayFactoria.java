@@ -55,14 +55,12 @@ public class ClayFactoria extends JavaPlugin {
     brushComponentType =
         this.getEntityStoreRegistry().registerComponent(BrushComponent.class, BrushComponent::new);
     ownerComponentType =
-        this.getEntityStoreRegistry().registerComponent(TaskComponent.class, TaskComponent::new);
+        this.getEntityStoreRegistry()
+            .registerComponent(
+                TaskComponent.class, "ClayFactoriaTaskComponent", TaskComponent.CODEC);
     debugBoxesComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
-    this.getEntityStoreRegistry()
-        .registerComponent(TaskComponent.class, "ClayFactoriaTaskComponent",
-            TaskComponent.CODEC);
-
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
