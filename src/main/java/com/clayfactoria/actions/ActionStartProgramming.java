@@ -1,5 +1,7 @@
 package com.clayfactoria.actions;
 
+import static com.clayfactoria.utils.TaskHelper.idleAutomaton;
+
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -52,7 +54,7 @@ public class ActionStartProgramming extends ActionBaseLogger {
     UUID entityUUID = brushComponent.getEntityId();
     if (entityUUID != null) {
       World world = Objects.requireNonNull(player.getWorld());
-      idleOldAutomata(world.getEntityRef(entityUUID), store);
+      idleAutomaton(world.getEntityRef(entityUUID), store);
     }
     LOGGER.atInfo().log("Reset brush component for Player " + player.getDisplayName());
     brushComponent.setEntityId(npcComponent.getUuid());
@@ -64,16 +66,5 @@ public class ActionStartProgramming extends ActionBaseLogger {
             .color(Color.YELLOW));
 
     return true;
-  }
-
-  private void idleOldAutomata(Ref<EntityStore> npcRef, Store<EntityStore> store) {
-    NPCEntity npcEntity = store.getComponent(npcRef,
-        Objects.requireNonNull(NPCEntity.getComponentType()));
-    if (npcEntity == null) {
-      return;
-    }
-    Objects.requireNonNull(npcEntity.getRole())
-        .getStateSupport()
-        .setState(npcRef, "Idle", null, store);
   }
 }

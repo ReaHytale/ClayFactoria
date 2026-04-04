@@ -200,4 +200,15 @@ public final class TaskHelper {
     return InventoryComponent.getCombined(store, npcEntity.getReference(),
         InventoryComponent.Hotbar.getComponentType());
   }
+
+  public static void idleAutomaton(Ref<EntityStore> npcRef, Store<EntityStore> store) {
+    NPCEntity npcEntity = store.getComponent(npcRef,
+        Objects.requireNonNull(NPCEntity.getComponentType()));
+    if (npcEntity == null) {
+      return;
+    }
+    Objects.requireNonNull(npcEntity.getRole())
+        .getStateSupport()
+        .setState(npcRef, "Idle", null, store);
+  }
 }

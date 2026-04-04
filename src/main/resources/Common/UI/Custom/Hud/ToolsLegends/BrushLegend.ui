@@ -1,0 +1,62 @@
+$LegendCommon = "CustomToolsLegendsCommon.ui";
+
+
+$LegendCommon.@Legend {
+  #Pages {
+    $LegendCommon.@Page #Page1Basics {
+      @Title = "Brush of Life";
+
+      $LegendCommon.@RowLabel {
+        Text: "Bend the power of life essence to define sequences of tasks for your clay automata to complete.";
+      }
+
+      $LegendCommon.@Separator {}
+
+      $LegendCommon.@RowLabel #SelectToBegin {
+        Text: "In adventure mode, select an automaton to begin.";
+      }
+
+      $LegendCommon.@RowLabel #Description {
+        Text: "";
+      }
+
+      $LegendCommon.@Separator {}
+
+      $LegendCommon.@Row #LeftClick {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
+
+          Group {
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+            Background: "SmallInputIconMouseLeftClick.png";
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: Center;
+          $LegendCommon.@RowLabel #LeftClickLabel {
+            Text: "Add task at this position";
+          }
+        }
+      }
+
+      $LegendCommon.@Row #RightClick {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
+
+          Group {
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+            Background: "SmallInputIconMouseRightClick.png";
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: Center;
+          $LegendCommon.@RowLabel #RightClickLabel {
+            Text: "Open task selection menu";
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -16,7 +17,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DamageBlockEvent;
-import com.hypixel.hytale.server.core.inventory.Inventory;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
@@ -41,26 +42,13 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     super(DamageBlockEvent.class);
   }
 
-  /**
-   * Checks if the specified player is holding the wand item.
-   *
-   * @param player The player to check the condition in relation to.
-   * @return <code>true</code> if the player is holding the wand, <code>false</code> otherwise.
-   */
-  public static boolean isWandEquipped(Player player) {
-    // Get player inventory.
-    try {
-      Inventory inventory = player.getInventory();
-
-      // Get item in active hotbar slot.
-      byte slot = inventory.getActiveHotbarSlot();
-      ItemStack itemStack = Objects.requireNonNull(inventory.getHotbar().getItemStack(slot));
-
-      // Check if held item is the wand.
-      return itemStack.getItemId().equals(WAND_ITEM_ID);
-    } catch (NullPointerException e) {
-      return false;
-    }
+  public static boolean isWandEquipped(ComponentAccessor<EntityStore> componentAccessor,
+      Ref<EntityStore> ref) {
+    InventoryComponent.Hotbar hotbarComponent = componentAccessor.getComponent(ref,
+        InventoryComponent.Hotbar.getComponentType());
+    Objects.requireNonNull(hotbarComponent);
+    ItemStack itemStack = hotbarComponent.getActiveItem();
+    return itemStack != null && itemStack.getItemId().equals(WAND_ITEM_ID);
   }
 
   @Override
@@ -79,7 +67,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         "playerRef was null");
 
     // Check that the player has the wand equipped
-    if (!isWandEquipped(player)) {
+    if (!isWandEquipped(store, playerRef)) {
       return;
     }
 
