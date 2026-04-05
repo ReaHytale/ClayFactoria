@@ -101,7 +101,9 @@ public class TaskComponent implements Component<EntityStore> {
     taskComponent.playerId = this.playerId;
     taskComponent.tasks = new ArrayList<>(this.tasks.stream().map(Task::clone).toList());
     taskComponent.currentTargetIndex = this.currentTargetIndex;
-    taskComponent.currentTask = taskComponent.tasks.get(taskComponent.currentTargetIndex);
+    if (taskComponent.currentTargetIndex < taskComponent.tasks.size()) {
+      taskComponent.currentTask = taskComponent.tasks.get(taskComponent.currentTargetIndex);
+    }
     taskComponent.isComplete = this.isComplete;
     return taskComponent;
   }

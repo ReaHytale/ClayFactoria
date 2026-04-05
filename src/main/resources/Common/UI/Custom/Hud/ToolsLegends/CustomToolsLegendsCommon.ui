@@ -37,6 +37,15 @@
   );
 };
 
+@RowLabelCenter = Label {
+  Style: (
+    Alignment: Center,
+    FontSize: 14,
+    TextColor: #96a9be,
+    Wrap: true
+  );
+};
+
 @RowHintIconSize = 24;
 
 @RowHintIconMouseLeftClick = PatchStyle(TexturePath: "../../Common/SmallInputIconMouseLeftClick.png");

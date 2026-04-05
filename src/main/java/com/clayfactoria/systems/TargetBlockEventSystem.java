@@ -89,7 +89,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     Action action = brushComponent.getAction();
-    boolean success = true;
     try {
       boolean locationEqualsWalkLocation = action == Action.POSITION;
       brushComponent.addTask(targetBlockLoc, player.getWorld(), locationEqualsWalkLocation, store,
@@ -97,13 +96,6 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     } catch (IllegalStateException e) {
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
-      success = false;
-    }
-
-    if (success) {
-      String message = String.format("Set Task at location: %s <- %s", targetBlockLoc, action);
-      LOGGER.atInfo().log(message);
-      player.sendMessage(Message.raw(message).color(Color.GREEN));
     }
 
     damageBlockEvent.setDamage(0);

@@ -3,7 +3,7 @@ $LegendCommon = "CustomToolsLegendsCommon.ui";
 
 $LegendCommon.@Legend {
   #Pages {
-    $LegendCommon.@Page #Page1Basics {
+    $LegendCommon.@Page #Page1 {
       @Title = "Brush of Life";
 
       $LegendCommon.@RowLabel {
@@ -12,15 +12,29 @@ $LegendCommon.@Legend {
 
       $LegendCommon.@Separator {}
 
-      $LegendCommon.@RowLabel #SelectToBegin {
-        Text: "In adventure mode, select an automaton to begin.";
-      }
+      $LegendCommon.@Row {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
 
-      $LegendCommon.@RowLabel #Description {
-        Text: "";
+          Group #SelectedIcon {
+            Background: "../../Common/UnknownItemIcon.png";
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: CenterMiddle;
+          $LegendCommon.@RowLabelCenter #SelectToBegin {
+            Text: "In adventure mode, select an automaton to begin.";
+          }
+        }
       }
 
       $LegendCommon.@Separator {}
+
+      $LegendCommon.@RowLabelCenter #Description {
+        Text: "";
+      }
 
       $LegendCommon.@Row #LeftClick {
         $LegendCommon.@RowHintContainer {
@@ -33,8 +47,8 @@ $LegendCommon.@Legend {
         }
 
         $LegendCommon.@RowLabelContainer {
-          LayoutMode: Center;
-          $LegendCommon.@RowLabel #LeftClickLabel {
+          LayoutMode: CenterMiddle;
+          $LegendCommon.@RowLabelCenter #LeftClickLabel {
             Text: "Add task at this position";
           }
         }

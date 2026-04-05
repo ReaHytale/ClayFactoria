@@ -5,8 +5,11 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 public enum Automaton {
-  CLAY_TRORK("Clay Trork", "Trork_Clay", ""),
-  CLAY_KWEEBEC("Clay Kweebec", "Kweebec_Clay", "");
+  CLAY_TRORK("Clay Trork", "Trork_Clay",
+      "Clay Trorks can be programmed to carry items from place to place."
+  ),
+  CLAY_KWEEBEC("Clay Kweebec", "Kweebec_Clay",
+      "Clay Kweebecs can be programmed to work at various stations to perform tasks like enabling furnaces.");
 
   public String name;
   public String role_name;

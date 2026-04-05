@@ -69,13 +69,12 @@ public class BrushLegendSystem extends UIComponentSystems.Update {
     if (brushComponent == null) {
       return;
     }
-    String taskName = brushComponent.getAction().name;
     Player player = archetypeChunk.getComponent(index, Player.getComponentType());
     Objects.requireNonNull(player);
     Automaton automaton = getAutomaton(commandBuffer, player, brushComponent);
     player.getHudManager()
         .setCustomHud(player.getPlayerRef(),
-            new BrushLegend(player.getPlayerRef(), taskName, automaton));
+            new BrushLegend(player.getPlayerRef(), brushComponent, automaton));
   }
 
   private @Nullable Automaton getAutomaton(CommandBuffer<EntityStore> commandBuffer,

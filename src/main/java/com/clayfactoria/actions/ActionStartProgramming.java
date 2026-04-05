@@ -6,7 +6,6 @@ import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -14,7 +13,6 @@ import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderActionBase;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
-import java.awt.Color;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -59,12 +57,8 @@ public class ActionStartProgramming extends ActionBaseLogger {
     LOGGER.atInfo().log("Reset brush component for Player " + player.getDisplayName());
     brushComponent.setEntityId(npcComponent.getUuid());
     if (brushComponent.getTasks() != null) {
-      brushComponent.getTasks().clear();
+      brushComponent.resetTasks(store, playerRef);
     }
-    player.sendMessage(
-        Message.raw("Starting new Path...")
-            .color(Color.YELLOW));
-
     return true;
   }
 }

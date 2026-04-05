@@ -44,24 +44,24 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   private static final long LINKED_PANEL_REFRESH_INTERVAL_MS = 1000L;
 
   private static final int[][][] IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT = {
-    {{504, 504}},
-    {{252, 505}, {252, 505}},
-    {{252, 377}, {437, 192}, {252, 377}},
-    {{252, 252}, {252, 252}, {252, 252}, {252, 252}}
+      {{504, 504}},
+      {{252, 505}, {252, 505}},
+      {{252, 377}, {437, 192}, {252, 377}},
+      {{252, 252}, {252, 252}, {252, 252}, {252, 252}}
   };
 
   private static final int[][][] IMAGE_SEGMENT_ANCHORS_TOP_LEFT = {
-    {{128, 208}},
-    {{128, 460}, {128, 208}},
-    {{128, 460}, {440, 241}, {128, 208}},
-    {{128, 460}, {380, 460}, {380, 208}, {128, 208}}
+      {{128, 208}},
+      {{128, 460}, {128, 208}},
+      {{128, 460}, {440, 241}, {128, 208}},
+      {{128, 460}, {380, 460}, {380, 208}, {128, 208}}
   };
 
   private static final int[][][] ICON_ANCHORS_TOP_LEFT = {
-    {{27, 215}},
-    {{205, 140}, {205, 30}},
-    {{120, 120}, {80, 179}, {120, 60}},
-    {{80, 80}, {80, 80}, {80, 80}, {80, 80}}
+      {{27, 215}},
+      {{205, 140}, {205, 30}},
+      {{120, 120}, {80, 179}, {120, 60}},
+      {{80, 80}, {80, 80}, {80, 80}, {80, 80}}
   };
 
   private final BrushComponent brushComponent;
@@ -90,6 +90,17 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
     this.menuActions = menuActions;
   }
 
+  private static String getSliceButtonLabelStyle() {
+    return "LabelStyle("
+        + "FontSize: 14, "
+        + "RenderBold: true, "
+        + "RenderUppercase: true, "
+        + "TextColor: #00000000, "
+        + "HorizontalAlignment: Center, "
+        + "VerticalAlignment: Center "
+        + ")";
+  }
+
   @Override
   public void build(
       @Nonnull Ref<EntityStore> ref,
@@ -115,7 +126,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       brushComponent.setAction(data.task);
     } else if (data.reset == IsReset.Yes) {
       LOGGER.atInfo().log("Resetting tasks");
-      brushComponent.resetTasksWithMessage(store, ref);
+      brushComponent.resetTasks(store, ref);
     }
     close();
   }
@@ -207,17 +218,6 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
         + "} ";
   }
 
-  private static String getSliceButtonLabelStyle() {
-    return "LabelStyle("
-        + "FontSize: 14, "
-        + "RenderBold: true, "
-        + "RenderUppercase: true, "
-        + "TextColor: #00000000, "
-        + "HorizontalAlignment: Center, "
-        + "VerticalAlignment: Center "
-        + ")";
-  }
-
   private String generateButtonStyle(int i) {
     String buttonStyle =
         "TextButtonStyle("
@@ -287,7 +287,9 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
     }
   }
 
-  /** Event payload emitted by command-button clicks in the command selection page. */
+  /**
+   * Event payload emitted by command-button clicks in the command selection page.
+   */
   public static final class RadialMenuEventData {
 
     public static final BuilderCodec<RadialMenuEventData> CODEC =
@@ -305,13 +307,12 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
             .build();
 
     private Action task;
+    private IsReset reset;
 
     public enum IsReset {
       Yes,
       No;
       public static final Codec<IsReset> CODEC = new EnumCodec<>(IsReset.class);
     }
-
-    private IsReset reset;
   }
 }
