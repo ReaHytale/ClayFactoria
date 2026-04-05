@@ -1,0 +1,76 @@
+$LegendCommon = "CustomToolsLegendsCommon.ui";
+
+
+$LegendCommon.@Legend {
+  #Pages {
+    $LegendCommon.@Page #Page1 {
+      @Title = "Brush of Life";
+
+      $LegendCommon.@RowLabel {
+        Text: "Bend the power of life essence to define sequences of tasks for your clay automata to complete.";
+      }
+
+      $LegendCommon.@Separator {}
+
+      $LegendCommon.@Row {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
+
+          Group #SelectedIcon {
+            Background: "../../Common/UnknownItemIcon.png";
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: CenterMiddle;
+          $LegendCommon.@RowLabelCenter #SelectToBegin {
+            Text: "In adventure mode, select an automaton to begin.";
+          }
+        }
+      }
+
+      $LegendCommon.@Separator {}
+
+      $LegendCommon.@RowLabelCenter #Description {
+        Text: "";
+      }
+
+      $LegendCommon.@Row #LeftClick {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
+
+          Group {
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+            Background: "SmallInputIconMouseLeftClick.png";
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: CenterMiddle;
+          $LegendCommon.@RowLabelCenter #LeftClickLabel {
+            Text: "Add task at this position";
+          }
+        }
+      }
+
+      $LegendCommon.@Row #RightClick {
+        $LegendCommon.@RowHintContainer {
+          LayoutMode: CenterMiddle;
+
+          Group {
+            Anchor: (Width: @RowHintIconSize, Height: @RowHintIconSize);
+            Background: "SmallInputIconMouseRightClick.png";
+          }
+        }
+
+        $LegendCommon.@RowLabelContainer {
+          LayoutMode: Center;
+          $LegendCommon.@RowLabel #RightClickLabel {
+            Text: "Open task selection menu";
+          }
+        }
+      }
+    }
+  }
+}

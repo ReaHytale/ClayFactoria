@@ -16,6 +16,7 @@ import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
 import com.clayfactoria.sensors.builders.BuilderSensorHasAnyTasks;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
+import com.clayfactoria.systems.BrushLegendSystem;
 import com.clayfactoria.systems.TargetBlockEventSystem;
 import com.clayfactoria.systems.TaskBoxSystem;
 import com.hypixel.hytale.component.ComponentType;
@@ -89,6 +90,7 @@ public class ClayFactoria extends JavaPlugin {
     }
     this.getEntityStoreRegistry().registerSystem(new TargetBlockEventSystem());
     this.getEntityStoreRegistry().registerSystem(new TaskBoxSystem());
+    this.getEntityStoreRegistry().registerSystem(new BrushLegendSystem());
   }
 
   private void onPlayerReady(@Nonnull PlayerReadyEvent event) {

@@ -103,7 +103,7 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
     if (taskBoxesComponent == null
         || taskBoxesComponent.boxes.isEmpty()
         || player == null
-        || !TargetBlockEventSystem.isWandEquipped(player)
+        || !TargetBlockEventSystem.isWandEquipped(commandBuffer, player.getReference())
     ) {
       return;
     }

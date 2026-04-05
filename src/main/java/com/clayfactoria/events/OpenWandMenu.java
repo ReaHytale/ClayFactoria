@@ -1,5 +1,6 @@
 package com.clayfactoria.events;
 
+import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.ui.RadialMenu;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -15,20 +16,22 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Sim
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import it.unimi.dsi.fastutil.Pair;
 import java.awt.Color;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 public class OpenWandMenu extends SimpleInstantInteraction {
 
-  public static final BuilderCodec<OpenWandMenu> CODEC = BuilderCodec.builder(
-          OpenWandMenu.class, OpenWandMenu::new, SimpleInstantInteraction.CODEC
-      )
-      .documentation("Opens the Wand radial menu")
-      .build();
+  public static final BuilderCodec<OpenWandMenu> CODEC =
+      BuilderCodec.builder(OpenWandMenu.class, OpenWandMenu::new, SimpleInstantInteraction.CODEC)
+          .documentation("Opens the Wand radial menu")
+          .build();
 
   @Override
-  protected void firstRun(@NotNull InteractionType interactionType,
+  protected void firstRun(
+      @NotNull InteractionType interactionType,
       @NotNull InteractionContext interactionContext,
       @NotNull CooldownHandler cooldownHandler) {
     Ref<EntityStore> ref = interactionContext.getEntity();
@@ -46,17 +49,26 @@ public class OpenWandMenu extends SimpleInstantInteraction {
 
     if (brushComponent.getEntityId() == null
         || world.getEntityRef(brushComponent.getEntityId()) == null) {
-      player.sendMessage(Message.raw("You must first select the automaton you want to command!")
-          .color(Color.RED));
+      player.sendMessage(
+          Message.raw("You must first select the automaton you want to command!").color(Color.RED));
       return;
     }
 
-    CompletableFuture.runAsync(() -> {
-      CustomUIPage page = player.getPageManager().getCustomPage();
-      if (page == null) {
-        page = new RadialMenu(playerRef, brushComponent);
-        player.getPageManager().openCustomPage(ref, store, page);
-      }
-    });
+    CompletableFuture.runAsync(
+        () -> {
+          CustomUIPage page = player.getPageManager().getCustomPage();
+          if (page == null) {
+            page =
+                new RadialMenu(
+                    playerRef,
+                    brushComponent,
+                    List.of(
+                        Pair.of("ImageAssets/Take.png", Action.TAKE),
+                        Pair.of("ImageAssets/Deposit.png", Action.DEPOSIT),
+                        Pair.of("ImageAssets/Work.png", Action.WORK),
+                        Pair.of("ImageAssets/Position.png", Action.POSITION)));
+            player.getPageManager().openCustomPage(ref, store, page);
+          }
+        });
   }
 }
