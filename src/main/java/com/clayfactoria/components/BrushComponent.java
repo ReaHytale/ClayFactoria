@@ -18,15 +18,11 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.Getter;
@@ -124,13 +120,5 @@ public class BrushComponent implements Component<EntityStore> {
     if (taskBoxesComponent != null) {
       taskBoxesComponent.boxes.clear();
     }
-  }
-
-  public void resetTasksWithMessage(ComponentAccessor<EntityStore> componentAccessor,
-      Ref<EntityStore> playerRef) {
-    Player player = Objects.requireNonNull(
-        componentAccessor.getComponent(playerRef, Player.getComponentType()));
-    player.sendMessage(Message.raw("Resetting path...").color(Color.RED));
-    resetTasks(componentAccessor, playerRef);
   }
 }
