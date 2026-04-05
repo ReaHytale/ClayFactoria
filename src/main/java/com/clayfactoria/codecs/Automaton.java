@@ -12,12 +12,12 @@ public enum Automaton {
       "Clay Kweebecs can be programmed to work at various stations to perform tasks like enabling furnaces.");
 
   public String name;
-  public String role_name;
+  public String roleName;
   public String description;
 
-  Automaton(String name, String role_name, String description) {
+  Automaton(String name, String roleName, String description) {
     this.name = name;
-    this.role_name = role_name;
+    this.roleName = roleName;
     this.description = description;
   }
 
@@ -28,7 +28,7 @@ public enum Automaton {
     }
     String roleName = role.getRoleName();
     for (Automaton automaton : Automaton.values()) {
-      if (Objects.equals(automaton.role_name, roleName)) {
+      if (Objects.equals(automaton.roleName, roleName)) {
         return automaton;
       }
     }

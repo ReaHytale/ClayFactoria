@@ -37,7 +37,7 @@ public class BrushLegend extends CustomUIHud {
 
     uiCommandBuilder.set("#Description.Text", selectedAutomaton.description);
     uiCommandBuilder.set("#SelectedIcon.Background",
-        "Hud/ToolsLegends/" + selectedAutomaton.role_name + ".png");
+        "Hud/ToolsLegends/" + selectedAutomaton.roleName + ".png");
     uiCommandBuilder.set("#SelectToBegin.Text",
         "You have selected a " + selectedAutomaton.name + "!");
     uiCommandBuilder.set("#LeftClickLabel.Text",
