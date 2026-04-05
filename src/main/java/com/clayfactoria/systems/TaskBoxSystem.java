@@ -2,8 +2,8 @@ package com.clayfactoria.systems;
 
 import static com.clayfactoria.ClayFactoria.debugBoxesComponentType;
 
-import com.clayfactoria.components.TaskBoxComponent;
-import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
+import com.clayfactoria.components.JobBoxComponent;
+import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentType;
@@ -32,7 +32,7 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
     super(0.5F);
   }
 
-  private static void drawBox(TaskBoxComponent boxComponent, World world) {
+  private static void drawBox(JobBoxComponent boxComponent, World world) {
     Vector3d min = boxComponent.getBox().min;
     Vector3d max = boxComponent.getBox().max;
     // Bottom
@@ -103,17 +103,17 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
     if (taskBoxesComponent == null
         || taskBoxesComponent.boxes.isEmpty()
         || player == null
-        || !TargetBlockEventSystem.isWandEquipped(commandBuffer, player.getReference())
+        || TargetBlockEventSystem.wandIsNotEquipped(commandBuffer, player.getReference())
     ) {
       return;
     }
     World world = commandBuffer.getExternalData().getWorld();
 
-    List<TaskBoxComponent> boxes = taskBoxesComponent.boxes;
-    TaskBoxComponent prev = boxes.getFirst();
+    List<JobBoxComponent> boxes = taskBoxesComponent.boxes;
+    JobBoxComponent prev = boxes.getFirst();
     drawBox(prev, world);
     for (int i = 1; i < boxes.size(); i++) {
-      TaskBoxComponent box = boxes.get(i);
+      JobBoxComponent box = boxes.get(i);
       drawBox(box, world);
 
       Vector3d boxMid = box.getBox().min.clone().add(box.getBox().max).scale(0.5);

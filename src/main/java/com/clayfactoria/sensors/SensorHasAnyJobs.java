@@ -1,6 +1,6 @@
 package com.clayfactoria.sensors;
 
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.components.JobComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -12,9 +12,9 @@ import org.jspecify.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class SensorHasAnyTasks extends SensorBaseLogger {
+public class SensorHasAnyJobs extends SensorBaseLogger {
 
-    public SensorHasAnyTasks(@NotNull BuilderSensorBase builderSensorBase) {
+    public SensorHasAnyJobs(@NotNull BuilderSensorBase builderSensorBase) {
         super(builderSensorBase);
     }
 
@@ -28,8 +28,8 @@ public class SensorHasAnyTasks extends SensorBaseLogger {
             @Nonnull Role role,
             double dt,
             @Nonnull Store<EntityStore> store) {
-        TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-        return taskComponent != null && taskComponent.getTasks() != null && !taskComponent.getTasks().isEmpty();
+        JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+        return jobComponent != null && jobComponent.getJobs() != null && !jobComponent.getJobs().isEmpty();
     }
 
 }

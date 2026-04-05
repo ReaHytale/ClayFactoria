@@ -48,7 +48,7 @@ $C.@PageOverlay {
 
     Label #CommandMenuSubtitle {
       Anchor: (Top: 62, Width: 620, Height: 26, Left: 150);
-      Text: "Click an action to set your brush mode.";
+      Text: "Click an task to set your brush mode.";
       Style: (
         FontSize: 16,
         TextColor: #dbe4e7,
@@ -79,7 +79,7 @@ $C.@PageOverlay {
     $C.@TextButton #ResetButton {
       Anchor: (Top: 660, Left: 380, Width: 160, Height: 64);
       Text: "Clear Path";
-      TooltipText: "Reset the task list";
+      TooltipText: "Reset the job list";
     }
 
   }

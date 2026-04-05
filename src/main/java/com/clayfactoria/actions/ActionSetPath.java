@@ -1,9 +1,9 @@
 package com.clayfactoria.actions;
 
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
-import com.clayfactoria.codecs.Task;
+import com.clayfactoria.codecs.Job;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
-/**
- * Action triggered to finalise a created path and set it on the target entity.
- */
 public class ActionSetPath extends ActionBaseLogger {
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -57,14 +54,14 @@ public class ActionSetPath extends ActionBaseLogger {
     UUIDComponent playerIdComp = store.getComponent(playerRef, UUIDComponent.getComponentType());
     Objects.requireNonNull(playerIdComp, "playerIdComp was null");
 
-    TaskComponent taskComponent =
-        store.ensureAndGetComponent(ref, TaskComponent.getComponentType());
-    taskComponent.setPlayerId(playerIdComp.getUuid());
+    JobComponent jobComponent =
+        store.ensureAndGetComponent(ref, JobComponent.getComponentType());
+    jobComponent.setPlayerId(playerIdComp.getUuid());
     LOGGER.atInfo().log(
         "Action Set Path: execute -> Player Id Set for Owner Component on the Entity you just interacted with");
 
-    List<Task> tasks = brushComponent.getTasks();
-    if (tasks == null || tasks.isEmpty()) {
+    List<Job> jobs = brushComponent.getJobs();
+    if (jobs == null || jobs.isEmpty()) {
       player.sendMessage(
           Message.raw("You must set at least one target task with the Brush")
               .color(Color.YELLOW));
@@ -74,10 +71,10 @@ public class ActionSetPath extends ActionBaseLogger {
     }
 
     // Transfer paths from brush to entity
-    taskComponent.setTasks(new ArrayList<>(tasks));
+    jobComponent.setJobs(new ArrayList<>(jobs));
     brushComponent.setEntityId(null);
     brushComponent.resetTasks(store, playerRef);
-    taskComponent.setCurrentTask(tasks.getFirst());
+    jobComponent.setCurrentJob(jobs.getFirst());
 
     String message = "Set Pathing";
     player.sendMessage(Message.raw(message));

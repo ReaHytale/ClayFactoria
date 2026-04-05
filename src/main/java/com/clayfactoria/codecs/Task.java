@@ -1,196 +1,155 @@
 package com.clayfactoria.codecs;
 
-import com.clayfactoria.utils.BlockUtils;
+import com.clayfactoria.utils.ContainerSlot;
+import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.codec.Codec;
-import com.hypixel.hytale.codec.KeyedCodec;
-import com.hypixel.hytale.codec.builder.BuilderCodec;
-import com.hypixel.hytale.math.vector.Vector3d;
-import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.BlockMaterial;
-import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes;
-import com.hypixel.hytale.server.core.asset.type.blockhitbox.BlockBoundingBoxes.RotatedVariantBoxes;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.universe.world.World;
-import java.util.ArrayList;
-import java.util.List;
-import lombok.Getter;
+import com.hypixel.hytale.codec.codecs.EnumCodec;
+import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.ComponentType;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-/**
- * A task which is performable by an NPC. It is split into two parts
- *
- * <ul>
- *   <li>A location to navigate to
- *   <li>An NPC {@link Action} to perform at that location.
- * </ul>
- */
-public class Task {
+public enum Task implements Supplier<String> {
+  DEPOSIT(
+      "Deposit",
+      "Deposit held item in an adjacent container",
+      new Vector3f(0.59F, 0.29F, 0.89F), // Purple
+      "ImageAssets/Deposit.png",
+      Task::canDoDepositTask),
+  TAKE(
+      "Take",
+      "Take an item from an adjacent container",
+      new Vector3f(0.92F, 0.27F, 0.84F), // Pink
+      "ImageAssets/Take.png",
+      Task::canDoTakeTask),
+  POSITION(
+      "Position",
+      "Do nothing (After moving to a position)",
+      new Vector3f(0.93F, 0.22F, 0.35F), // Red
+      "ImageAssets/Position.png",
+      Task::canDoPositionTask),
+  WORK(
+      "Work",
+      "Work at an adjacent workstation",
+      new Vector3f(0.33F, 0.45F, 0.9F), // Blue
+      "ImageAssets/Work.png",
+      Task::canDoWorkTask);
 
-  public static final BuilderCodec<Task> CODEC =
-      BuilderCodec.builder(Task.class, Task::new)
-          .append(
-              new KeyedCodec<>("Location", Vector3i.CODEC),
-              (comp, position) -> comp.location = position,
-              (comp) -> comp.location)
-          .documentation(
-              "The Vector3i location of the block on which the action should be performed")
-          .add()
-          .append(
-              new KeyedCodec<>("Action", Action.CODEC),
-              (comp, action) -> comp.action = action,
-              (comp) -> comp.action)
-          .documentation("The action to take place for this task")
-          .add()
-          .append(
-              new KeyedCodec<>("Walk Location", Vector3d.CODEC),
-              (comp, position) -> comp.walkLocation = position,
-              (comp) -> comp.walkLocation)
-          .documentation("The Vector3d location for where the automaton should walk to")
-          .add()
-          .append(
-              new KeyedCodec<>("Location equals Walk Location", Codec.BOOLEAN),
-              (comp, locationEqualsWalkLocation) ->
-                  comp.locationEqualsWalkLocation = locationEqualsWalkLocation,
-              (comp) -> comp.locationEqualsWalkLocation)
-          .documentation("Whether the walk location should instead be the Location")
-          .add()
-          .build();
-  @Getter
-  private Vector3i location;
-  @Getter
-  private Vector3d walkLocation;
-  @Getter
-  private Action action;
-  @Getter
-  private boolean locationEqualsWalkLocation;
+  public static final Codec<Task> CODEC = new EnumCodec<>(Task.class);
+  public final String name;
+  public final String description;
+  public final Vector3f color;
+  public final String iconAssetPath;
+  public final Function<Ref<EntityStore>, Boolean> canDoTask;
 
-  private Task() {
+  Task(
+      String name,
+      String description,
+      Vector3f color,
+      String iconAssetPath,
+      Function<Ref<EntityStore>, Boolean> canDoTask) {
+    this.name = name;
+    this.description = description;
+    this.color = color;
+    this.iconAssetPath = iconAssetPath;
+    this.canDoTask = canDoTask;
   }
 
-  public Task(Vector3i location, Action action, World world, boolean locationEqualsWalkLocation)
-      throws IllegalStateException {
-    this.location = location;
-    this.action = action;
-    this.locationEqualsWalkLocation = locationEqualsWalkLocation;
-    if (!locationEqualsWalkLocation) {
-      findValidWalkLocation(world, location.toVector3d());
-    } else {
-      walkLocation = location.toVector3d().add(new Vector3d(0.5, 1, 0.5));
-    }
-  }
-
-  public void findValidWalkLocation(World world, Vector3d from) throws IllegalStateException {
-
-    BlockType blockType = world.getBlockType(location);
-    if (blockType == null) {
-      throw new IllegalStateException("Block Type is null at location " + location + "!");
-    }
-
-    BlockBoundingBoxes boundingBoxes = BlockBoundingBoxes.getAssetMap()
-        .getAsset(blockType.getHitboxTypeIndex());
-
-    if (boundingBoxes == null) {
-      throw new IllegalStateException("Bounding boxes are null at location " + location + "!");
-    }
-
-    Vector3i roundedLocation = location;
-    int rotationIndex = world.getBlockRotationIndex(roundedLocation.x, roundedLocation.y,
-        roundedLocation.z);
-    RotatedVariantBoxes rotatedVariantBoxes = boundingBoxes.get(rotationIndex);
-
-    Vector3i start = BlockUtils.roundToNearestIntegerLocation(
-            roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().min))
-        .add(new Vector3i(0, -1, 0));
-    Vector3i end = BlockUtils.roundToNearestIntegerLocation(
-            roundedLocation.toVector3d().add(rotatedVariantBoxes.getBoundingBox().max))
-        .add(new Vector3i(-1, 0, -1));
-    end.y = start.y;
-
-    List<Vector3d> foundLocations = new ArrayList<>();
-    foundLocations.addAll(tryLookingForLocationInXAxis(start, end, world));
-    foundLocations.addAll(tryLookingForLocationInZAxis(start, end, world));
-
-    Vector3d foundLocation = findNearestWalkLocation(foundLocations, from);
-
-    if (foundLocation != null) {
-      this.walkLocation = foundLocation;
-      return;
-    }
-
-    // not found!
-    throw new IllegalStateException(
-        "Could not find neighbouring valid location for target location " + location + "!");
-  }
-
-  private List<Vector3d> tryLookingForLocationInXAxis(Vector3i start, Vector3i end, World world) {
-    List<Vector3d> result = new ArrayList<>();
-    for (int x = start.x; x <= end.x; x++) {
-      Vector3i topLineLocation = new Vector3i(x, start.y, start.z - 1);
-      if (isValidLocation(world, topLineLocation)) {
-        result.add(finalValidLocation(topLineLocation));
-      }
-      Vector3i bottomLineLocation = new Vector3i(x, start.y, end.z + 1);
-      if (isValidLocation(world, bottomLineLocation)) {
-        result.add(finalValidLocation(bottomLineLocation));
-      }
-    }
-    return result;
-  }
-
-  private List<Vector3d> tryLookingForLocationInZAxis(Vector3i start, Vector3i end, World world) {
-    List<Vector3d> result = new ArrayList<>();
-    for (int z = start.z; z <= end.z; z++) {
-      Vector3i leftLineLocation = new Vector3i(start.x - 1, start.y, z);
-      if (isValidLocation(world, leftLineLocation)) {
-        result.add(finalValidLocation(leftLineLocation));
-      }
-      Vector3i rightLineLocation = new Vector3i(end.x + 1, start.y, z);
-      if (isValidLocation(world, rightLineLocation)) {
-        result.add(finalValidLocation(rightLineLocation));
-      }
-    }
-    return result;
-  }
-
-  private Vector3d finalValidLocation(Vector3i location) {
-    return location.toVector3d().add(new Vector3d(0.5, 1, 0.5));
-  }
-
-  private boolean isValidLocation(World world, Vector3i location) {
-    BlockType blockType = world.getBlockType(location);
-    BlockType blockTypeAbove = world.getBlockType(location.clone().add(new Vector3i(0, 1, 0)));
-    return blockType != null
-        && blockType.isFullySupportive()
-        && (blockTypeAbove == null || blockTypeAbove.getMaterial().equals(BlockMaterial.Empty));
-  }
-
-  private Vector3d findNearestWalkLocation(List<Vector3d> foundLocations, Vector3d from) {
-    if (foundLocations.isEmpty()) {
-      return null;
-    }
-    Vector3d nearest = foundLocations.getFirst();
-    double nearestDistance = nearest.distanceSquaredTo(from);
-    for (int i = 1; i < foundLocations.size(); i++) {
-      Vector3d location = foundLocations.get(i);
-      double distance = location.distanceSquaredTo(from);
-      if (distance < nearestDistance) {
-        nearest = location;
-        nearestDistance = distance;
-      }
-    }
-    return nearest;
+  public String get() {
+    return this.description;
   }
 
   @Override
   public String toString() {
-    return String.format("<Task loc=%s action=%s walkLoc=%s>", location, action, walkLocation);
+    return this.name;
   }
 
-  public Task clone() {
-    Task clone = new Task();
-    clone.action = action;
-    clone.location = location.clone();
-    clone.walkLocation = walkLocation.clone();
-    clone.locationEqualsWalkLocation = locationEqualsWalkLocation;
-    return clone;
+  private static ItemStack getHeldItemstack(Store<EntityStore> store, Ref<EntityStore> entityRef) {
+    Hotbar hotbar = store.getComponent(entityRef, Hotbar.getComponentType());
+    assert hotbar != null;
+    return hotbar.getActiveItem();
+  }
+
+  private static boolean canDoDepositTask(Ref<EntityStore> entityRef) {
+    Store<EntityStore> store = entityRef.getStore();
+
+    ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
+    Objects.requireNonNull(component, "NPC Entity Component Type was null");
+
+    NPCEntity npcEntity = store.getComponent(entityRef, component);
+    Objects.requireNonNull(npcEntity, "NPC Entity was null");
+
+    Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, Task.DEPOSIT);
+    if (nearbyPOI == null) {
+      return false;
+    }
+
+    ItemStack heldItemStack = getHeldItemstack(store, entityRef);
+
+    ItemContainer inputContainer =
+        TaskHelper.getItemContainerFromComponent(nearbyPOI, ContainerSlot.Input);
+    Objects.requireNonNull(inputContainer, "Unexpected null input ItemContainer");
+
+    ItemContainer fuelContainer =
+        TaskHelper.getItemContainerFromComponent(nearbyPOI, ContainerSlot.Fuel);
+    Objects.requireNonNull(fuelContainer, "Unexpected null fuel ItemContainer");
+
+    // There must be space in the container for the item stack, and there must be space in hands
+    return heldItemStack == null
+        || fuelContainer.canAddItemStack(heldItemStack)
+        || inputContainer.canAddItemStack(heldItemStack);
+  }
+
+  private static boolean canDoWorkTask(Ref<EntityStore> entityRef) {
+    Store<EntityStore> store = entityRef.getStore();
+
+    ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
+    Objects.requireNonNull(component, "NPC Entity Component Type was null");
+
+    NPCEntity npcEntity = store.getComponent(entityRef, component);
+    Objects.requireNonNull(npcEntity, "NPC Entity was null");
+
+    Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, Task.DEPOSIT);
+    return nearbyPOI != null;
+  }
+
+  private static boolean canDoPositionTask(Ref<EntityStore> entityRef) {
+    // Can always do Position task...
+    return true;
+  }
+
+  private static boolean canDoTakeTask(Ref<EntityStore> entityRef) {
+    Store<EntityStore> store = entityRef.getStore();
+
+    ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
+    Objects.requireNonNull(component, "NPC Entity Component Type was null");
+
+    NPCEntity npcEntity = store.getComponent(entityRef, component);
+    Objects.requireNonNull(npcEntity, "NPC Entity was null");
+
+    Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, Task.DEPOSIT);
+    if (nearbyPOI == null) {
+      return false;
+    }
+
+    ItemStack heldItemStack = getHeldItemstack(store, entityRef);
+
+    ItemContainer container =
+        TaskHelper.getItemContainerFromComponent(nearbyPOI, ContainerSlot.Output);
+    Objects.requireNonNull(container, "Unexpected null ItemContainer");
+
+    // There must be items available to be taken, and there must be space in hands
+    return heldItemStack == null && !container.isEmpty();
   }
 }

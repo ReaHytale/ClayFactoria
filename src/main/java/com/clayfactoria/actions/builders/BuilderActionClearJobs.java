@@ -8,18 +8,18 @@ import com.hypixel.hytale.server.npc.instructions.Action;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
-public class BuilderActionClearTasks extends BuilderActionBase {
+public class BuilderActionClearJobs extends BuilderActionBase {
 
   @Nonnull
   @Override
   public String getShortDescription() {
-    return "Clear automaton tasks component.";
+    return "Clears automaton jobs.";
   }
 
   @Nonnull
   @Override
   public String getLongDescription() {
-    return "Remove the Task component from the entity, resulting in the automaton having its task list wiped.";
+    return "Remove the Job component from the entity, resulting in the automaton having its job list wiped.";
   }
 
   @Nonnull

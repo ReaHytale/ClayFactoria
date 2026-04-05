@@ -27,22 +27,22 @@
       "Description": "Translation key for NPC name display"
     },
     "CanDoTake": {
-      "Description": "Whether this automaton can perform the TAKE action",
+      "Description": "Whether this automaton can perform the TAKE Task",
       "TypeHint": "Boolean",
       "Value": false
     },
     "CanDoDeposit": {
-      "Description": "Whether this automaton can perform the DEPOSIT action",
+      "Description": "Whether this automaton can perform the DEPOSIT Task",
       "TypeHint": "Boolean",
       "Value": false
     },
     "CanDoPosition": {
-      "Description": "Whether this automaton can perform the POSITION action",
+      "Description": "Whether this automaton can perform the POSITION Task",
       "TypeHint": "Boolean",
       "Value": true
     },
     "CanDoWork": {
-      "Description": "Whether this automaton can perform the WORK action",
+      "Description": "Whether this automaton can perform the WORK Task",
       "TypeHint": "Boolean",
       "Value": false
     }
@@ -92,7 +92,7 @@
           "Type": "DropInventory"
         },
         {
-          "Type": "ClearTasks"
+          "Type": "ClearJobs"
         }
       ]
     },
@@ -178,7 +178,7 @@
           "Instructions": [
             {
               "Sensor": {
-                "Type": "HasAnyTasks"
+                "Type": "HasAnyJobs"
               },
               "Actions": [
                 {
@@ -289,7 +289,7 @@
           ]
         },
         {
-          "$Comment": "Automaton is performing actions automatically",
+          "$Comment": "Automaton is performing Tasks automatically",
           "Sensor": {
             "Type": "State",
             "State": "Automated"
@@ -306,7 +306,7 @@
                   "Instructions": [
                     {
                       "Continue": true,
-                      "$Comment": "Loops through each point stored in TaskComponent and sets leash target so seek can navigate there",
+                      "$Comment": "Loops through each point stored in JobComponent and sets leash target so seek can navigate there",
                       "Sensor": {
                         "Type": "LeashTarget"
                       },
@@ -319,7 +319,7 @@
                     },
                     {
                       "Sensor": {
-                        "$Comment": "If not leashing target, then switch to action state",
+                        "$Comment": "If not leashing target, then switch to Task state",
                         "Type": "Not",
                         "Sensor": {
                           "Type": "LeashTarget"
@@ -328,21 +328,21 @@
                       "Actions": [
                         {
                           "Type": "State",
-                          "State": "Automated.Action"
+                          "State": "Automated.Task"
                         }
                       ]
                     }
                   ]
                 },
                 {
-                  "$Comment": "Action state - Complete an action for a given location",
+                  "$Comment": "Task state - Complete an Task for a given location",
                   "Sensor": {
                     "Type": "State",
-                    "State": ".Action"
+                    "State": ".Task"
                   },
                   "Instructions": [
                     {
-                      "$Comment": "Play Idle Animation while waiting to run action",
+                      "$Comment": "Play Idle Animation while waiting to run Task",
                       "Continue": true,
                       "Sensor": {
                         "Type": "Any"
@@ -357,7 +357,7 @@
                       ]
                     },
                     {
-                      "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'DEPOSIT'",
+                      "$Comment": "Sense nearby containers and run the Task if the Job's Task is equal to 'DEPOSIT'",
                       "Sensor": {
                         "Type": "And",
                         "Sensors": [
@@ -366,8 +366,8 @@
                             "Switch": { "Compute": "CanDoDeposit" }
                           },
                           {
-                            "Type": "CanDoAction",
-                            "Action": "Deposit"
+                            "Type": "CanDoTask",
+                            "Task": "Deposit"
                           }
                         ]
                       },
@@ -403,7 +403,7 @@
                       ]
                     },
                     {
-                      "$Comment": "Sense nearby containers and run the action if the Task's Action is equal to 'TAKE'",
+                      "$Comment": "Sense nearby containers and run the Task if the Job's Task is equal to 'TAKE'",
                       "Sensor": {
                         "Type": "And",
                         "Sensors": [
@@ -412,8 +412,8 @@
                             "Switch": { "Compute": "CanDoTake" }
                           },
                           {
-                            "Type": "CanDoAction",
-                            "Action": "Take"
+                            "Type": "CanDoTask",
+                            "Task": "Take"
                           }
                         ]
                       },
@@ -449,7 +449,7 @@
                       ]
                     },
                     {
-                      "$Comment": "Mark the action as done without doing anything if the Task's Action is equal to 'POSITION'",
+                      "$Comment": "Mark the Task as done without doing anything if the Job's Task is equal to 'POSITION'",
                       "Sensor": {
                         "Type": "And",
                         "Sensors": [
@@ -458,8 +458,8 @@
                             "Switch": { "Compute": "CanDoPosition" }
                           },
                           {
-                            "Type": "CanDoAction",
-                            "Action": "Position"
+                            "Type": "CanDoTask",
+                            "Task": "Position"
                           }
                         ]
                       },
@@ -470,7 +470,7 @@
                       ]
                     },
                     {
-                      "$Comment": "Sense nearby locations and run the action if the Task's Action is equal to 'WORK'",
+                      "$Comment": "Sense nearby locations and run the Task if the Job's Task is equal to 'WORK'",
                       "Sensor": {
                         "Type": "And",
                         "Sensors": [
@@ -479,8 +479,8 @@
                             "Switch": { "Compute": "CanDoWork" }
                           },
                           {
-                            "Type": "CanDoAction",
-                            "Action": "Work"
+                            "Type": "CanDoTask",
+                            "Task": "Work"
                           }
                         ]
                       },
@@ -491,7 +491,7 @@
                       ]
                     },
                     {
-                      "$Comment": "Switch to default (pathing) state when there is NOT an action for the current target location",
+                      "$Comment": "Switch to default (pathing) state when there is NOT a Task for the current target location",
                       "Sensor": {
                         "Type": "LeashTarget"
                       },
