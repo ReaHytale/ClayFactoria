@@ -1,24 +1,32 @@
 package com.clayfactoria.codecs;
 
 import com.hypixel.hytale.server.npc.role.Role;
+import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 public enum Automaton {
-  CLAY_TRORK("Clay Trork", "Trork_Clay",
-      "Clay Trorks can be programmed to carry items from place to place."
-  ),
-  CLAY_KWEEBEC("Clay Kweebec", "Kweebec_Clay",
-      "Clay Kweebecs can be programmed to work at various stations to perform tasks like enabling furnaces.");
+  CLAY_TRORK(
+      "Clay Trork",
+      "Trork_Clay",
+      "Clay Trorks can be programmed to carry items from place to place.",
+      List.of(Task.TAKE, Task.DEPOSIT, Task.POSITION)),
+  CLAY_KWEEBEC(
+      "Clay Kweebec",
+      "Kweebec_Clay",
+      "Clay Kweebecs can be programmed to work at various stations to perform tasks like enabling furnaces.",
+      List.of(Task.WORK, Task.POSITION));
 
-  public String name;
-  public String roleName;
-  public String description;
+  public final String name;
+  public final String roleName;
+  public final String description;
+  public final List<Task> tasks;
 
-  Automaton(String name, String roleName, String description) {
+  Automaton(String name, String roleName, String description, List<Task> tasks) {
     this.name = name;
     this.roleName = roleName;
     this.description = description;
+    this.tasks = tasks;
   }
 
   @Nullable

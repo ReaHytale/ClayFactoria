@@ -2,7 +2,7 @@ package com.clayfactoria.actions.automataactions;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.components.JobComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -23,9 +23,9 @@ public class ActionPosition extends ActionBaseLogger {
       InfoProvider sensorInfo,
       double dt,
       @Nonnull Store<EntityStore> store) {
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent, "Task Component was null");
-    taskComponent.setComplete(true);
+    JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+    Objects.requireNonNull(jobComponent, "Task Component was null");
+    jobComponent.setComplete(true);
     return true;
   }
 }

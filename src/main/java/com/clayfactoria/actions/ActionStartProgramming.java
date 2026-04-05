@@ -2,6 +2,7 @@ package com.clayfactoria.actions;
 
 import static com.clayfactoria.utils.TaskHelper.idleAutomaton;
 
+import com.clayfactoria.codecs.Automaton;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -55,8 +56,13 @@ public class ActionStartProgramming extends ActionBaseLogger {
       idleAutomaton(world.getEntityRef(entityUUID), store);
     }
     LOGGER.atInfo().log("Reset brush component for Player " + player.getDisplayName());
+
+    Automaton automaton = Automaton.getFromRole(role);
+    assert automaton != null;
+
     brushComponent.setEntityId(npcComponent.getUuid());
-    if (brushComponent.getTasks() != null) {
+    brushComponent.setTask(automaton.tasks.getFirst());
+    if (brushComponent.getJobs() != null) {
       brushComponent.resetTasks(store, playerRef);
     }
     return true;

@@ -1,7 +1,7 @@
 package com.clayfactoria.components;
 
 import com.clayfactoria.ClayFactoria;
-import com.clayfactoria.codecs.Task;
+import com.clayfactoria.codecs.Job;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -19,14 +19,11 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Keeps track of a circular queue of {@link Task Tasks} for an entity.
- */
-public class TaskComponent implements Component<EntityStore> {
+public class JobComponent implements Component<EntityStore> {
 
   @Nonnull
-  public static final BuilderCodec<TaskComponent> CODEC =
-      BuilderCodec.builder(TaskComponent.class, TaskComponent::new)
+  public static final BuilderCodec<JobComponent> CODEC =
+      BuilderCodec.builder(JobComponent.class, JobComponent::new)
           .append(
               new KeyedCodec<>("PlayerId", Codec.UUID_BINARY),
               (comp, id) -> comp.playerId = id,
@@ -34,16 +31,16 @@ public class TaskComponent implements Component<EntityStore> {
           .documentation("The player id")
           .add()
           .append(
-              new KeyedCodec<>("Tasks", new ArrayCodec<>(Task.CODEC, Task[]::new)),
-              (comp, tasks) -> comp.tasks = new ArrayList<>(Arrays.asList(tasks)),
-              (comp) -> comp.tasks.toArray(new Task[0]))
-          .documentation("The tasks for pathing and actions for each location")
+              new KeyedCodec<>("Jobs", new ArrayCodec<>(Job.CODEC, Job[]::new)),
+              (comp, jobs) -> comp.jobs = new ArrayList<>(Arrays.asList(jobs)),
+              (comp) -> comp.jobs.toArray(new Job[0]))
+          .documentation("The jobs for pathing and actions for each location")
           .add()
           .append(
-              new KeyedCodec<>("CurrentTask", Task.CODEC),
-              (comp, task) -> comp.currentTask = task,
-              (comp) -> comp.currentTask)
-          .documentation("The current task with location and action")
+              new KeyedCodec<>("CurrentJob", Job.CODEC),
+              (comp, job) -> comp.currentJob = job,
+              (comp) -> comp.currentJob)
+          .documentation("The current job with location and action")
           .add()
           .append(
               new KeyedCodec<>("CurrentTargetIndex", Codec.INTEGER),
@@ -65,11 +62,11 @@ public class TaskComponent implements Component<EntityStore> {
   private UUID playerId;
   @Getter
   @Setter
-  private List<Task> tasks = new ArrayList<>();
+  private List<Job> jobs = new ArrayList<>();
   @Getter
   @Setter
   @Nullable
-  private Task currentTask;
+  private Job currentJob;
   @Getter
   @Setter
   private int currentTargetIndex;
@@ -77,34 +74,29 @@ public class TaskComponent implements Component<EntityStore> {
   @Setter
   private boolean isComplete = false;
 
-  public static ComponentType<EntityStore, TaskComponent> getComponentType() {
+  public static ComponentType<EntityStore, JobComponent> getComponentType() {
     return ClayFactoria.ownerComponentType;
   }
 
-  /**
-   * Move on to the next task in the queue
-   *
-   * @return The next task in the queue
-   */
   @Nullable
-  public Task nextTask() {
+  public Job nextJob() {
     isComplete = false;
-    currentTargetIndex = (currentTargetIndex + 1) % tasks.size(); // Loop
-    currentTask = tasks.get(currentTargetIndex);
-    LOGGER.atInfo().log("Next task is: %s", currentTask);
-    return currentTask;
+    currentTargetIndex = (currentTargetIndex + 1) % jobs.size(); // Loop
+    currentJob = jobs.get(currentTargetIndex);
+    LOGGER.atInfo().log("Next job is: %s", currentJob);
+    return currentJob;
   }
 
   @Override
   public Component<EntityStore> clone() {
-    TaskComponent taskComponent = new TaskComponent();
-    taskComponent.playerId = this.playerId;
-    taskComponent.tasks = new ArrayList<>(this.tasks.stream().map(Task::clone).toList());
-    taskComponent.currentTargetIndex = this.currentTargetIndex;
-    if (taskComponent.currentTargetIndex < taskComponent.tasks.size()) {
-      taskComponent.currentTask = taskComponent.tasks.get(taskComponent.currentTargetIndex);
+    JobComponent jobComponent = new JobComponent();
+    jobComponent.playerId = this.playerId;
+    jobComponent.jobs = new ArrayList<>(this.jobs.stream().map(Job::clone).toList());
+    jobComponent.currentTargetIndex = this.currentTargetIndex;
+    if (jobComponent.currentTargetIndex < jobComponent.jobs.size()) {
+      jobComponent.currentJob = jobComponent.jobs.get(jobComponent.currentTargetIndex);
     }
-    taskComponent.isComplete = this.isComplete;
-    return taskComponent;
+    jobComponent.isComplete = this.isComplete;
+    return jobComponent;
   }
 }

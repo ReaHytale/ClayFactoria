@@ -1,7 +1,7 @@
 package com.clayfactoria.sensors.builders;
 
-import com.clayfactoria.codecs.Action;
-import com.clayfactoria.sensors.SensorCanDoAction;
+import com.clayfactoria.codecs.Task;
+import com.clayfactoria.sensors.SensorCanDoTask;
 import com.google.gson.JsonElement;
 import com.hypixel.hytale.server.npc.asset.builder.Builder;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
@@ -12,16 +12,16 @@ import com.hypixel.hytale.server.npc.instructions.Sensor;
 import javax.annotation.Nonnull;
 import org.jspecify.annotations.Nullable;
 
-public class BuilderSensorCanDoAction extends BuilderSensorBase {
-  protected final EnumHolder<Action> action = new EnumHolder<>();
+public class BuilderSensorCanDoTask extends BuilderSensorBase {
+  protected final EnumHolder<Task> task = new EnumHolder<>();
 
-  public Action getAction(@Nonnull BuilderSupport builderSupport) {
-    return this.action.get(builderSupport.getExecutionContext());
+  public Task getAction(@Nonnull BuilderSupport builderSupport) {
+    return this.task.get(builderSupport.getExecutionContext());
   }
 
   @Override
   public @Nullable String getShortDescription() {
-    return "Sensor to path type for Brush Component.";
+    return "Checks if the automaton can perform its current task";
   }
 
   @Override
@@ -31,7 +31,7 @@ public class BuilderSensorCanDoAction extends BuilderSensorBase {
 
   @Override
   public @Nullable Sensor build(BuilderSupport builderSupport) {
-    return new SensorCanDoAction(this, builderSupport);
+    return new SensorCanDoTask(this, builderSupport);
   }
 
   @Override
@@ -43,12 +43,12 @@ public class BuilderSensorCanDoAction extends BuilderSensorBase {
   public Builder<Sensor> readConfig(@Nonnull JsonElement data) {
     this.getEnum(
         data,
-        "Action",
-        this.action,
-        Action.class,
-        Action.TAKE,
+        "Task",
+        this.task,
+        Task.class,
+        Task.TAKE,
         BuilderDescriptorState.Stable,
-        "Action to take place at the location",
+        "Task to take place at the location",
         null
     );
     return this;
