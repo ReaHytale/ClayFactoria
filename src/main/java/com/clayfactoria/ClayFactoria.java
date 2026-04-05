@@ -13,6 +13,7 @@ import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.events.OpenWandMenu;
+import com.clayfactoria.interactions.ConsumeItemInteraction;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
 import com.clayfactoria.sensors.builders.BuilderSensorHasAnyJobs;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
@@ -63,6 +64,9 @@ public class ClayFactoria extends JavaPlugin {
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
+
+    Interaction.CODEC.register("ConsumeItem", ConsumeItemInteraction.class,
+        ConsumeItemInteraction.CODEC);
 
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
     NPCPlugin.get().registerCoreComponentType("CanDoTask", BuilderSensorCanDoTask::new);
