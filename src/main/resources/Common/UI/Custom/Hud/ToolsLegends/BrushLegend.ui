@@ -7,7 +7,7 @@ $LegendCommon.@Legend {
       @Title = "Brush of Life";
 
       $LegendCommon.@RowLabel {
-        Text: "Bend the power of life essence to define sequences of tasks for your clay automata to complete.";
+        Text: "Bend the power of life essence to define sequences of jobs for your clay automata to complete.";
       }
 
       $LegendCommon.@Separator {}
@@ -49,7 +49,7 @@ $LegendCommon.@Legend {
         $LegendCommon.@RowLabelContainer {
           LayoutMode: CenterMiddle;
           $LegendCommon.@RowLabelCenter #LeftClickLabel {
-            Text: "Add task at this position";
+            Text: "Add job at this position";
           }
         }
       }
@@ -67,7 +67,7 @@ $LegendCommon.@Legend {
         $LegendCommon.@RowLabelContainer {
           LayoutMode: Center;
           $LegendCommon.@RowLabel #RightClickLabel {
-            Text: "Open task selection menu";
+            Text: "Open job selection menu";
           }
         }
       }

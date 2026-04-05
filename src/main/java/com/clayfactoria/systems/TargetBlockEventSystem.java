@@ -1,6 +1,6 @@
 package com.clayfactoria.systems;
 
-import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -29,9 +29,6 @@ import org.jspecify.annotations.NonNull;
 
 public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, DamageBlockEvent> {
 
-  /**
-   * ID of the item to use as a wand for setting Automaton paths.
-   */
   private static final String WAND_ITEM_ID = "Tool_Brush";
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -42,13 +39,13 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     super(DamageBlockEvent.class);
   }
 
-  public static boolean isWandEquipped(ComponentAccessor<EntityStore> componentAccessor,
+  public static boolean wandIsNotEquipped(ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> ref) {
     InventoryComponent.Hotbar hotbarComponent = componentAccessor.getComponent(ref,
         InventoryComponent.Hotbar.getComponentType());
     Objects.requireNonNull(hotbarComponent);
     ItemStack itemStack = hotbarComponent.getActiveItem();
-    return itemStack != null && itemStack.getItemId().equals(WAND_ITEM_ID);
+    return itemStack == null || !itemStack.getItemId().equals(WAND_ITEM_ID);
   }
 
   @Override
@@ -67,7 +64,7 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         "playerRef was null");
 
     // Check that the player has the wand equipped
-    if (!isWandEquipped(store, playerRef)) {
+    if (wandIsNotEquipped(store, playerRef)) {
       return;
     }
 
@@ -88,9 +85,9 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
-    Action action = brushComponent.getAction();
+    Task task = brushComponent.getTask();
     try {
-      boolean locationEqualsWalkLocation = action == Action.POSITION;
+      boolean locationEqualsWalkLocation = task == Task.POSITION;
       brushComponent.addTask(targetBlockLoc, player.getWorld(), locationEqualsWalkLocation, store,
           playerRef);
     } catch (IllegalStateException e) {

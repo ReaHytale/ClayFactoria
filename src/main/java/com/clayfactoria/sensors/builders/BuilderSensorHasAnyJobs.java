@@ -1,16 +1,16 @@
 package com.clayfactoria.sensors.builders;
 
-import com.clayfactoria.sensors.SensorHasAnyTasks;
+import com.clayfactoria.sensors.SensorHasAnyJobs;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderDescriptorState;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.corecomponents.builders.BuilderSensorBase;
 import com.hypixel.hytale.server.npc.instructions.Sensor;
 import org.jspecify.annotations.Nullable;
 
-public class BuilderSensorHasAnyTasks extends BuilderSensorBase {
+public class BuilderSensorHasAnyJobs extends BuilderSensorBase {
     @Override
     public @Nullable String getShortDescription() {
-        return "Checks if the automaton has any tasks to do";
+        return "Checks if the automaton has any jobs to do";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class BuilderSensorHasAnyTasks extends BuilderSensorBase {
 
     @Override
     public @Nullable Sensor build(BuilderSupport builderSupport) {
-        return new SensorHasAnyTasks(this);
+        return new SensorHasAnyJobs(this);
     }
 
     @Override

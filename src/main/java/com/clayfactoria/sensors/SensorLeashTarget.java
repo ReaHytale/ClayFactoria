@@ -1,7 +1,7 @@
 package com.clayfactoria.sensors;
 
-import com.clayfactoria.codecs.Task;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.codecs.Job;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
@@ -19,7 +19,10 @@ import javax.annotation.Nonnull;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Sense whether the NPC should continue to path or should move to action state.
+ * Senses whether the NPC should continue to path or should move to action state.
+ * <br><br>
+ * TODO: make comment more descriptive; is left here because name "SensorLeashTarget"
+ *       is not too clear
  */
 public class SensorLeashTarget extends SensorBaseLogger {
 
@@ -37,13 +40,13 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
   private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref,
       @NonNull Store<EntityStore> store,
-      Task currentTask) {
-    if (currentTask.isLocationEqualsWalkLocation()) {
+      Job currentJob) {
+    if (currentJob.isLocationEqualsWalkLocation()) {
       return;
     }
     try {
       NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
-      currentTask.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
+      currentJob.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
           entity.getOldPosition());
     } catch (IllegalStateException exception) {
       // All fine, none was found
@@ -61,11 +64,11 @@ public class SensorLeashTarget extends SensorBaseLogger {
         store.getComponent(ref, TransformComponent.getComponentType());
     Objects.requireNonNull(transformComponent);
 
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent);
+    JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+    Objects.requireNonNull(jobComponent);
 
-    Task currentTask = taskComponent.getCurrentTask();
-    if (currentTask == null) {
+    Job currentJob = jobComponent.getCurrentJob();
+    if (currentJob == null) {
       LOGGER.atInfo().log(
           "Current Task was null. Clearing Position Provider");
       this.positionProvider.clear();
@@ -73,11 +76,11 @@ public class SensorLeashTarget extends SensorBaseLogger {
     }
 
     if (recomputeFirstWalkDistance) {
-      recomputeWalkLocation(ref, store, currentTask);
+      recomputeWalkLocation(ref, store, currentJob);
       recomputeFirstWalkDistance = false;
     }
 
-    Vector3d currentTarget = currentTask.getWalkLocation();
+    Vector3d currentTarget = currentJob.getWalkLocation();
     if (currentTarget == null) {
       LOGGER.atInfo().log(
           "Current Target was null. Clearing Position Provider");
@@ -88,7 +91,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
     double distanceSquared = transformComponent.getPosition().distanceSquaredTo(currentTarget);
 
     if (Math.abs(distanceSquared - lastDistanceSquared) <= EQUAL_DISTANCE_EPSILON) {
-      if (hasUpdatedWalkLocation(ref, store, currentTask)) {
+      if (hasUpdatedWalkLocation(ref, store, currentJob)) {
         return false;
       }
     } else {
@@ -115,33 +118,33 @@ public class SensorLeashTarget extends SensorBaseLogger {
         return true;
       }
     } else {  // reached destination
-      if (!taskComponent.isComplete()) {
+      if (!jobComponent.isComplete()) {
         return false;
       }
 
-      Task nextTask = taskComponent.nextTask();
+      Job nextJob = jobComponent.nextJob();
 
-      if (nextTask == null) {
+      if (nextJob == null) {
         this.positionProvider.clear();
-        LOGGER.atInfo().log("nextTask was null. Clearing Position Provider");
+        LOGGER.atInfo().log("nextJob was null. Clearing Position Provider");
         return false;
       }
 
-      recomputeWalkLocation(ref, store, nextTask);
+      recomputeWalkLocation(ref, store, nextJob);
 
-      Vector3d nextTaskLocation = nextTask.getWalkLocation();
-      if (nextTaskLocation == null) {
+      Vector3d nextJobLocation = nextJob.getWalkLocation();
+      if (nextJobLocation == null) {
         this.positionProvider.clear();
         LOGGER.atInfo().log(
-            "nextTaskLocation was null. Clearing Position Provider");
+            "nextJobLocation was null. Clearing Position Provider");
         return false;
       }
 
-      this.positionProvider.setTarget(nextTaskLocation);
+      this.positionProvider.setTarget(nextJobLocation);
       LOGGER.atInfo().log(String.format(
           "Sensor Leash Target: Setting Next Target from %s to %s",
           currentTarget,
-          nextTaskLocation
+          nextJobLocation
       ));
       return true;
     }
@@ -149,9 +152,9 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
   private boolean hasUpdatedWalkLocation(@NonNull Ref<EntityStore> ref,
       @NonNull Store<EntityStore> store,
-      Task currentTask) {
+      Job currentJob) {
     if (hasNotChangedLocationInSomeTime()) {
-      recomputeWalkLocation(ref, store, currentTask);
+      recomputeWalkLocation(ref, store, currentJob);
       lastDistanceUpdateTime = System.currentTimeMillis();
       return true;  // yes, the npc "has updated its walk location"
     } else {

@@ -14,10 +14,10 @@ import java.util.List;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-public class TaskBoxComponent implements Component<EntityStore> {
+public class JobBoxComponent implements Component<EntityStore> {
 
-  public static final BuilderCodec<TaskBoxComponent> CODEC = BuilderCodec.builder(
-          TaskBoxComponent.class, TaskBoxComponent::new)
+  public static final BuilderCodec<JobBoxComponent> CODEC = BuilderCodec.builder(
+          JobBoxComponent.class, JobBoxComponent::new)
       .append(
           new KeyedCodec<>("Colour", Vector3f.CODEC),
           (comp, colour) -> comp.colour = colour,
@@ -39,31 +39,31 @@ public class TaskBoxComponent implements Component<EntityStore> {
   @Getter
   private Box box;
 
-  private TaskBoxComponent() {
+  private JobBoxComponent() {
   }
 
-  public TaskBoxComponent(Vector3f colour, Box box) {
+  public JobBoxComponent(Vector3f colour, Box box) {
     this.colour = colour;
     this.box = box;
   }
 
   @Override
   public @Nullable Component<EntityStore> clone() {
-    return new TaskBoxComponent(colour, box);
+    return new JobBoxComponent(colour, box);
   }
 
   public static class TaskBoxesComponent implements Component<EntityStore> {
 
-    public static final ArrayCodec<TaskBoxComponent> CODEC = new ArrayCodec<>(
-        TaskBoxComponent.CODEC, TaskBoxComponent[]::new);
-    public List<TaskBoxComponent> boxes = new ArrayList<>();
+    public static final ArrayCodec<JobBoxComponent> CODEC = new ArrayCodec<>(
+        JobBoxComponent.CODEC, JobBoxComponent[]::new);
+    public List<JobBoxComponent> boxes = new ArrayList<>();
 
     public static ComponentType<EntityStore, TaskBoxesComponent> getComponentType() {
       return ClayFactoria.debugBoxesComponentType;
     }
 
     @Override
-    public @Nullable TaskBoxComponent.TaskBoxesComponent clone() {
+    public @Nullable JobBoxComponent.TaskBoxesComponent clone() {
       TaskBoxesComponent taskBoxesComponent = new TaskBoxesComponent();
       taskBoxesComponent.boxes = new ArrayList<>(boxes);
       return taskBoxesComponent;

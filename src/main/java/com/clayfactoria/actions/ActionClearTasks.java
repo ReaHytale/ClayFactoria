@@ -1,7 +1,7 @@
 package com.clayfactoria.actions;
 
-import com.clayfactoria.actions.builders.BuilderActionClearTasks;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.actions.builders.BuilderActionClearJobs;
+import com.clayfactoria.components.JobComponent;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -16,7 +16,7 @@ public class ActionClearTasks extends ActionBaseLogger {
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-  public ActionClearTasks(@NotNull BuilderActionClearTasks builder) {
+  public ActionClearTasks(@NotNull BuilderActionClearJobs builder) {
     super(builder);
   }
 
@@ -30,7 +30,7 @@ public class ActionClearTasks extends ActionBaseLogger {
   @Override
   public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo,
       double dt, @Nonnull Store<EntityStore> store) {
-    ComponentType<EntityStore, TaskComponent> componentType = TaskComponent.getComponentType();
+    ComponentType<EntityStore, JobComponent> componentType = JobComponent.getComponentType();
     if (store.getComponent(ref, componentType) != null) {
       store.removeComponent(ref, componentType);
       return true;
