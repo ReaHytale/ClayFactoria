@@ -3,9 +3,11 @@ package com.clayfactoria.ui;
 import com.clayfactoria.codecs.Action;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.ui.RadialMenu.RadialMenuEventData;
+import com.clayfactoria.ui.RadialMenu.RadialMenuEventData.IsReset;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.EnumCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -18,6 +20,7 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -28,9 +31,9 @@ import javax.annotation.Nonnull;
  *
  * @author Alechilles
  * @author Lordimass
+ * @author bqkitcat
  */
-public final class RadialMenu
-    extends InteractiveCustomUIPage<RadialMenuEventData> {
+public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventData> {
 
   public static final String UI_PATH = "RadialMenu.ui";
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -39,20 +42,51 @@ public final class RadialMenu
   private static final int MAX_COMMAND_BUTTONS = 4;
   private static final long LINKED_PANEL_REFRESH_INTERVAL_MS = 1000L;
 
-  private final Action[] options;
+  private static final int[][][] IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT = {
+    {{504, 504}},
+    {{252, 505}, {252, 505}},
+    {{252, 377}, {437, 192}, {252, 377}},
+    {{252, 252}, {252, 252}, {252, 252}, {252, 252}}
+  };
+
+  private static final int[][][] IMAGE_SEGMENT_ANCHORS_TOP_LEFT = {
+    {{128, 208}},
+    {{128, 460}, {128, 208}},
+    {{128, 460}, {440, 241}, {128, 208}},
+    {{128, 460}, {380, 460}, {380, 208}, {128, 208}}
+  };
+
+  private static final int[][][] ICON_ANCHORS_TOP_LEFT = {
+    {{27, 215}},
+    {{205, 140}, {205, 30}},
+    {{120, 120}, {80, 179}, {120, 60}},
+    {{80, 80}, {80, 80}, {80, 80}, {80, 80}}
+  };
+
   private final BrushComponent brushComponent;
+  private final List<Action> menuActions;
   private volatile boolean refreshLoopStarted;
   private volatile boolean dismissed;
 
-  public RadialMenu(@Nonnull PlayerRef playerRef, @Nonnull BrushComponent brushComponent) {
+  public RadialMenu(
+      @Nonnull PlayerRef playerRef,
+      @Nonnull BrushComponent brushComponent,
+      @Nonnull List<Action> menuActions) {
+    if (menuActions.isEmpty() || menuActions.size() > MAX_COMMAND_BUTTONS) {
+      throw new IllegalArgumentException(
+          "menuActions must supports at most "
+              + MAX_COMMAND_BUTTONS
+              + " actions only and "
+              + "must not be empty!");
+    }
     super(
         playerRef,
         CustomPageLifetime.CanDismissOrCloseThroughInteraction,
         RadialMenuEventData.CODEC);
-    this.options = new Action[]{Action.TAKE, Action.DEPOSIT, Action.WORK, Action.POSITION};
     this.refreshLoopStarted = false;
     this.dismissed = false;
     this.brushComponent = brushComponent;
+    this.menuActions = menuActions;
   }
 
   @Override
@@ -78,7 +112,7 @@ public final class RadialMenu
     if (data.task != null) {
       LOGGER.atInfo().log("Set Brush command to: " + data.task);
       brushComponent.setAction(data.task);
-    } else if (data.reset != null) {
+    } else if (data.reset == IsReset.Yes) {
       LOGGER.atInfo().log("Resetting tasks");
       brushComponent.resetTasksWithMessage(store, ref);
     }
@@ -92,31 +126,130 @@ public final class RadialMenu
 
   private void buildCommandButtons(
       @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
-    for (int i = 0; i < MAX_COMMAND_BUTTONS; i++) {
-      String selector = "#CommandButton" + i;
-      if (i >= options.length) {
-        commandBuilder.set(selector + ".Visible", false);
-        continue;
-      }
-      Action option = options[i];
-      commandBuilder.set(selector + ".Visible", true);
-      commandBuilder.set(selector + ".Text", "");
+
+    for (int i = 0; i < menuActions.size(); i++) {
+      Action action = menuActions.get(i);
+      String actionImageName = action.iconAssetPath;
+
+      String commandButtonName = "#CommandButton" + i;
+      String commandButtonIcon = "#CommandButton" + i + "Icon";
+      String commandButtonGroup = commandButtonName + "Group";
+
+      String groupContent =
+          "Group "
+              + commandButtonGroup
+              + " { "
+              + generateAnchor(i)
+              + generateTextButton(i, commandButtonName)
+              + generateImage(i, commandButtonIcon, actionImageName)
+              + "}";
+
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
-          selector,
-          EventData.of(EVENT_COMMAND_ID, String.valueOf(option)),
+          commandButtonName,
+          EventData.of(EVENT_COMMAND_ID, action.toString()),
           false);
+
+      commandBuilder.appendInline("#CommandMenuWheel", groupContent);
     }
   }
 
-  private void buildResetButton(@Nonnull UICommandBuilder commandBuilder,
-      @Nonnull UIEventBuilder eventBuilder) {
+  private String generateAnchor(int i) {
+    int[] anchors = IMAGE_SEGMENT_ANCHORS_TOP_LEFT[menuActions.size() - 1][i];
+    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuActions.size() - 1][i];
+    return "Anchor: (Top: "
+        + anchors[0]
+        + ", Left: "
+        + anchors[1]
+        + ", Width: "
+        + sizes[0]
+        + ", Height: "
+        + sizes[1]
+        + "); ";
+  }
+
+  private String generateTextButton(int i, String commandButtonName) {
+    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuActions.size() - 1][i];
+    return "TextButton "
+        + commandButtonName
+        + " { "
+        + "Anchor: (Top: 0, Left: 0, Width: "
+        + sizes[0]
+        + ", Height: "
+        + sizes[1]
+        + "); "
+        + "Text: \"\"; "
+        + "Style: "
+        + generateButtonStyle(i)
+        + "; "
+        + "TooltipText: \""
+        + menuActions.get(i).name
+        + "\"; "
+        + "} ";
+  }
+
+  private String generateImage(int i, String commandButtonIcon, String actionImageName) {
+    int[] iconAnchors = ICON_ANCHORS_TOP_LEFT[menuActions.size() - 1][i];
+    return "Group "
+        + commandButtonIcon
+        + " { "
+        + "Anchor: (Top: "
+        + iconAnchors[0]
+        + ", Left:"
+        + iconAnchors[1]
+        + " , Width: 80, Height: 80); "
+        + "Background: (TexturePath: \""
+        + actionImageName
+        + "\"); "
+        + "HitTestVisible: false; "
+        + "} ";
+  }
+
+  private static String getSliceButtonLabelStyle() {
+    return "LabelStyle("
+        + "FontSize: 14, "
+        + "RenderBold: true, "
+        + "RenderUppercase: true, "
+        + "TextColor: #00000000, "
+        + "HorizontalAlignment: Center, "
+        + "VerticalAlignment: Center "
+        + ")";
+  }
+
+  private String generateButtonStyle(int i) {
+    String buttonStyle =
+        "TextButtonStyle("
+            + "Default: (Background: (TexturePath: \"ImageAssets/{$n}Radial{$i}_Default.png\"), "
+            + "LabelStyle: "
+            + getSliceButtonLabelStyle()
+            + "), "
+            + "Hovered: (Background: (TexturePath: \"ImageAssets/{$n}Radial{$i}_Hover.png\"), "
+            + "LabelStyle: "
+            + getSliceButtonLabelStyle()
+            + "), "
+            + "Pressed: (Background: (TexturePath: \"ImageAssets/{$n}Radial{$i}_Click.png\"), "
+            + "LabelStyle: "
+            + getSliceButtonLabelStyle()
+            + "), "
+            + "Disabled: (Background: (TexturePath: \"ImageAssets/{$n}Radial{$i}_Default.png\", "
+            + "Color: #ffffff(0.5)), "
+            + "LabelStyle: "
+            + getSliceButtonLabelStyle()
+            + "), "
+            //            + "Sounds: $C.@ButtonSounds"
+            + ")";
+    buttonStyle = buttonStyle.replace("{$n}", "" + menuActions.size());
+    buttonStyle = buttonStyle.replace("{$i}", "" + i);
+    return buttonStyle;
+  }
+
+  private void buildResetButton(
+      @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
         "#ResetButton",
-        EventData.of(RESET_COMMAND_ID, ""),
-        false
-    );
+        EventData.of(RESET_COMMAND_ID, IsReset.Yes.toString()),
+        false);
   }
 
   private void startRefreshLoop() {
@@ -152,9 +285,7 @@ public final class RadialMenu
     }
   }
 
-  /**
-   * Event payload emitted by command-button clicks in the command selection page.
-   */
+  /** Event payload emitted by command-button clicks in the command selection page. */
   public static final class RadialMenuEventData {
 
     public static final BuilderCodec<RadialMenuEventData> CODEC =
@@ -164,20 +295,21 @@ public final class RadialMenu
                 (event, value) -> event.task = value,
                 event -> event.task)
             .add()
-            .append(new KeyedCodec<>(RESET_COMMAND_ID, Codec.STRING),
+            .append(
+                new KeyedCodec<>(RESET_COMMAND_ID, IsReset.CODEC),
                 (event, value) -> event.reset = value,
                 event -> event.reset)
             .add()
             .build();
 
     private Action task;
-    // Using a String here for ease, but it just means that if it's not null, we should reset, regardless of the value
-    private String reset;
-  }
 
-  public static class ResetEventData {
+    public enum IsReset {
+      Yes,
+      No;
+      public static final Codec<IsReset> CODEC = new EnumCodec<>(IsReset.class);
+    }
 
-    public static final BuilderCodec<ResetEventData> CODEC =
-        BuilderCodec.builder(ResetEventData.class, ResetEventData::new).build();
+    private IsReset reset;
   }
 }
