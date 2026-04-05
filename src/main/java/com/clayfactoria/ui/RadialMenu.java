@@ -20,7 +20,6 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -65,14 +64,14 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   };
 
   private final BrushComponent brushComponent;
-  private final List<Pair<String, Action>> menuActions;
+  private final List<Action> menuActions;
   private volatile boolean refreshLoopStarted;
   private volatile boolean dismissed;
 
   public RadialMenu(
       @Nonnull PlayerRef playerRef,
       @Nonnull BrushComponent brushComponent,
-      @Nonnull List<Pair<String, Action>> menuActions) {
+      @Nonnull List<Action> menuActions) {
     if (menuActions.isEmpty() || menuActions.size() > MAX_COMMAND_BUTTONS) {
       throw new IllegalArgumentException(
           "menuActions must supports at most "
@@ -140,9 +139,8 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
 
     for (int i = 0; i < menuActions.size(); i++) {
-      Pair<String, Action> menuAction = menuActions.get(i);
-      String actionImageName = menuAction.left();
-      Action action = menuAction.right();
+      Action action = menuActions.get(i);
+      String actionImageName = action.iconAssetPath;
 
       String commandButtonName = "#CommandButton" + i;
       String commandButtonIcon = "#CommandButton" + i + "Icon";
@@ -196,7 +194,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
         + generateButtonStyle(i)
         + "; "
         + "TooltipText: \""
-        + menuActions.get(i).right()
+        + menuActions.get(i).name
         + "\"; "
         + "} ";
   }
