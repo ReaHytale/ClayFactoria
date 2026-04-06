@@ -1,0 +1,20 @@
+{
+  "Type": "Variant",
+  "Reference": "Template_Automaton",
+  "Modify": {
+    "Appearance": "Feran_Clay",
+    "DropList": "Drop_Feran_Clay",
+    "MaxHealth": 20,
+    "NameTranslationKey": {
+      "Compute": "NameTranslationKey"
+    },
+    "CanDoTake": true,
+    "CanDoDeposit": true
+  },
+  "Parameters": {
+    "NameTranslationKey": {
+      "Value": "server.npcRoles.Feran_Clay.name",
+      "Description": "Translation key for NPC name display"
+    }
+  }
+}

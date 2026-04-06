@@ -26,7 +26,7 @@
           "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
           "shape": {
             "type": "quad",
-            "offset": {"x": 0, "y": 0.5, "z": 0},
+            "offset": {"x": 0, "y": 0, "z": 0},
             "stretch": {"x": 0.99, "y": 1, "z": 1},
             "settings": {
               "isPiece": false,
@@ -49,11 +49,11 @@
             {
               "id": "3",
               "name": "R-Eye",
-              "position": {"x": 0, "y": -1, "z": 0.1},
+              "position": {"x": 0, "y": -0.5, "z": 0.1},
               "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
               "shape": {
                 "type": "quad",
-                "offset": {"x": 0, "y": 0.5, "z": 0},
+                "offset": {"x": 0, "y": 0, "z": 0},
                 "stretch": {"x": 0.8, "y": 0.8, "z": 1.2},
                 "settings": {
                   "isPiece": false,
@@ -103,7 +103,7 @@
           "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
           "shape": {
             "type": "quad",
-            "offset": {"x": 0, "y": 0.5, "z": 0},
+            "offset": {"x": 0, "y": 0, "z": 0},
             "stretch": {"x": -0.99, "y": 1, "z": 1},
             "settings": {
               "isPiece": false,
@@ -126,11 +126,11 @@
             {
               "id": "6",
               "name": "L-Eye",
-              "position": {"x": 0, "y": -1, "z": 0.1},
+              "position": {"x": 0, "y": -0.5, "z": 0.1},
               "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
               "shape": {
                 "type": "quad",
-                "offset": {"x": 0, "y": 0.5, "z": 0},
+                "offset": {"x": 0, "y": 0, "z": 0},
                 "stretch": {"x": 0.8, "y": 0.8, "z": 1.2},
                 "settings": {
                   "isPiece": false,

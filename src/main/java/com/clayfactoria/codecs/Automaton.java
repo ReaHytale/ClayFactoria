@@ -15,7 +15,13 @@ public enum Automaton {
       "Clay Kweebec",
       "Kweebec_Clay",
       "Clay Kweebecs can be programmed to work at various stations to perform tasks like enabling furnaces.",
-      List.of(Task.WORK, Task.POSITION));
+      List.of(Task.WORK, Task.POSITION)),
+  CLAY_FERAN(
+      "Clay Feran",
+      "Feran_Clay",
+      "Clay Ferans can be programmed to harvest crops in an area.",
+      List.of(Task.TAKE, Task.DEPOSIT, Task.POSITION)
+  );
 
   public final String name;
   public final String roleName;

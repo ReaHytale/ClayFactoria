@@ -12,7 +12,10 @@ items.Tool_Brush.description=Bend the power of Life Essence to design sequences 
 # === Automata ===
 npcRoles.Kweebec_Clay.name=Clay Kweebec
 npcRoles.Trork_Clay.name=Clay Trork
+npcRoles.Feran_Clay.name=Clay Feran
 items.Egg_Spawner_Clay_Kweebec.name=Clay Kweebec
 items.Egg_Spawner_Clay_Kweebec.description=A work automaton. Can be programmed to work at various stations to perform jobs like enabling furnaces.\n\n<i>Gaia's Essence of Life courses through this clay model, moulded from raw materials with love.</i>
 items.Egg_Spawner_Clay_Trork.name=Clay Trork
 items.Egg_Spawner_Clay_Trork.description=A hauling automaton. Can be programmed to carry items from place to place.\n\n<i>Gaia's Essence of Life courses through this clay model, moulded from raw materials with love.</i>
+items.Egg_Spawner_Clay_Feran.name=Clay Feran
+items.Egg_Spawner_Clay_Feran.description=A farming automaton. Can be programmed to harvest crops in an area.\n\n<i>Gaia's Essence of Life courses through this clay model, moulded from raw materials with love.</i>
