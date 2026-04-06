@@ -4,8 +4,8 @@ import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
-import com.clayfactoria.codecs.Task;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.codecs.Job;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
@@ -40,24 +40,24 @@ public class ActionDeposit extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent, "Task Component was null");
+    JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+    Objects.requireNonNull(jobComponent, "Task Component was null");
 
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
-    if (deposit(ContainerSlot.Fuel, npcEntity, taskComponent, store)) {
+    if (deposit(ContainerSlot.Fuel, npcEntity, jobComponent, store)) {
       return true;
     }
-    return deposit(ContainerSlot.Input, npcEntity, taskComponent, store);
+    return deposit(ContainerSlot.Input, npcEntity, jobComponent, store);
   }
 
   private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity,
-      TaskComponent taskComponent, Store<EntityStore> store) {
-    Task currentTask = taskComponent.getCurrentTask();
-    Objects.requireNonNull(currentTask, "No task when trying to deposit");
+      JobComponent jobComponent, Store<EntityStore> store) {
+    Job currentJob = jobComponent.getCurrentJob();
+    Objects.requireNonNull(currentJob, "No task when trying to deposit");
 
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
         Objects.requireNonNull(npcEntity.getWorld()),
-        currentTask.getLocation(),
+        currentJob.getLocation(),
         containerSlot);
     Objects.requireNonNull(itemContainer);
 
@@ -66,7 +66,7 @@ public class ActionDeposit extends ActionBaseLogger {
 
     if (result) {
       LOGGER.atInfo().log("Deposit action complete\n");
-      taskComponent.setComplete(true);
+      jobComponent.setComplete(true);
     }
     return result;
   }

@@ -1,6 +1,6 @@
 package com.clayfactoria.utils;
 
-import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
@@ -46,7 +46,7 @@ public final class TaskHelper {
   }
 
   @Nullable
-  public static Holder<ChunkStore> findNearbyPOIHolder(NPCEntity npcEntity, Action action) {
+  public static Holder<ChunkStore> findNearbyPOIHolder(NPCEntity npcEntity, Task task) {
     World world = Objects.requireNonNull(npcEntity.getWorld());
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
     List<Vector3i> shuffled = getAdjacentDirections();
@@ -64,7 +64,7 @@ public final class TaskHelper {
   }
 
   @Nullable
-  public static Component<ChunkStore> findNearbyPOI(NPCEntity npcEntity, Action action) {
+  public static Component<ChunkStore> findNearbyPOI(NPCEntity npcEntity, Task task) {
     World world = Objects.requireNonNull(npcEntity.getWorld());
     Vector3i pos = npcEntity.getOldPosition().toVector3i();
     List<Vector3i> shuffled = getAdjacentDirections();
@@ -80,7 +80,7 @@ public final class TaskHelper {
       ProcessingBenchBlock processingBenchBlock = holder.getComponent(
           ProcessingBenchBlock.getComponentType());
 
-      switch (action) {
+      switch (task) {
         case POSITION:
           return null;
         case TAKE, DEPOSIT: // Find a container

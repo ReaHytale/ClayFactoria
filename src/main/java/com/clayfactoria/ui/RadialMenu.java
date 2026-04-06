@@ -1,6 +1,6 @@
 package com.clayfactoria.ui;
 
-import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.ui.RadialMenu.RadialMenuEventData;
 import com.clayfactoria.ui.RadialMenu.RadialMenuEventData.IsReset;
@@ -64,15 +64,15 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   };
 
   private final BrushComponent brushComponent;
-  private final List<Action> menuActions;
+  private final List<Task> menuTasks;
   private volatile boolean refreshLoopStarted;
   private volatile boolean dismissed;
 
   public RadialMenu(
       @Nonnull PlayerRef playerRef,
       @Nonnull BrushComponent brushComponent,
-      @Nonnull List<Action> menuActions) {
-    if (menuActions.isEmpty() || menuActions.size() > MAX_COMMAND_BUTTONS) {
+      @Nonnull List<Task> menuTasks) {
+    if (menuTasks.isEmpty() || menuTasks.size() > MAX_COMMAND_BUTTONS) {
       throw new IllegalArgumentException(
           "menuActions must supports at most "
               + MAX_COMMAND_BUTTONS
@@ -86,7 +86,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
     this.refreshLoopStarted = false;
     this.dismissed = false;
     this.brushComponent = brushComponent;
-    this.menuActions = menuActions;
+    this.menuTasks = menuTasks;
   }
 
   private static String getSliceButtonLabelStyle() {
@@ -108,7 +108,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       @Nonnull Store<EntityStore> store) {
     commandBuilder.append(UI_PATH);
     commandBuilder.set("#CommandMenuWheel.Visible", true);
-    commandBuilder.set("#CommandMenuCurrent.Text", "Current: " + brushComponent.getAction());
+    commandBuilder.set("#CommandMenuCurrent.Text", "Current: " + brushComponent.getTask());
 
     buildCommandButtons(commandBuilder, eventBuilder);
     buildResetButton(commandBuilder, eventBuilder);
@@ -122,7 +122,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       @Nonnull RadialMenuEventData data) {
     if (data.task != null) {
       LOGGER.atInfo().log("Set Brush command to: " + data.task);
-      brushComponent.setAction(data.task);
+      brushComponent.setTask(data.task);
     } else if (data.reset == IsReset.Yes) {
       LOGGER.atInfo().log("Resetting tasks");
       brushComponent.resetTasks(store, ref);
@@ -138,9 +138,9 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   private void buildCommandButtons(
       @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
 
-    for (int i = 0; i < menuActions.size(); i++) {
-      Action action = menuActions.get(i);
-      String actionImageName = action.iconAssetPath;
+    for (int i = 0; i < menuTasks.size(); i++) {
+      Task task = menuTasks.get(i);
+      String actionImageName = task.iconAssetPath;
 
       String commandButtonName = "#CommandButton" + i;
       String commandButtonIcon = "#CommandButton" + i + "Icon";
@@ -158,7 +158,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           commandButtonName,
-          EventData.of(EVENT_COMMAND_ID, action.toString()),
+          EventData.of(EVENT_COMMAND_ID, task.toString()),
           false);
 
       commandBuilder.appendInline("#CommandMenuWheel", groupContent);
@@ -166,8 +166,8 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   }
 
   private String generateAnchor(int i) {
-    int[] anchors = IMAGE_SEGMENT_ANCHORS_TOP_LEFT[menuActions.size() - 1][i];
-    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuActions.size() - 1][i];
+    int[] anchors = IMAGE_SEGMENT_ANCHORS_TOP_LEFT[menuTasks.size() - 1][i];
+    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuTasks.size() - 1][i];
     return "Anchor: (Top: "
         + anchors[0]
         + ", Left: "
@@ -180,7 +180,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
   }
 
   private String generateTextButton(int i, String commandButtonName) {
-    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuActions.size() - 1][i];
+    int[] sizes = IMAGE_SEGMENT_SIZES_WIDTH_HEIGHT[menuTasks.size() - 1][i];
     return "TextButton "
         + commandButtonName
         + " { "
@@ -194,13 +194,13 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
         + generateButtonStyle(i)
         + "; "
         + "TooltipText: \""
-        + menuActions.get(i).name
+        + menuTasks.get(i).name
         + "\"; "
         + "} ";
   }
 
   private String generateImage(int i, String commandButtonIcon, String actionImageName) {
-    int[] iconAnchors = ICON_ANCHORS_TOP_LEFT[menuActions.size() - 1][i];
+    int[] iconAnchors = ICON_ANCHORS_TOP_LEFT[menuTasks.size() - 1][i];
     return "Group "
         + commandButtonIcon
         + " { "
@@ -238,7 +238,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
             + "), "
             //            + "Sounds: $C.@ButtonSounds"
             + ")";
-    buttonStyle = buttonStyle.replace("{$n}", "" + menuActions.size());
+    buttonStyle = buttonStyle.replace("{$n}", "" + menuTasks.size());
     buttonStyle = buttonStyle.replace("{$i}", "" + i);
     return buttonStyle;
   }
@@ -293,7 +293,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
     public static final BuilderCodec<RadialMenuEventData> CODEC =
         BuilderCodec.builder(RadialMenuEventData.class, RadialMenuEventData::new)
             .append(
-                new KeyedCodec<>(EVENT_COMMAND_ID, Action.CODEC),
+                new KeyedCodec<>(EVENT_COMMAND_ID, Task.CODEC),
                 (event, value) -> event.task = value,
                 event -> event.task)
             .add()
@@ -304,7 +304,7 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
             .add()
             .build();
 
-    private Action task;
+    private Task task;
     private IsReset reset;
 
     public enum IsReset {

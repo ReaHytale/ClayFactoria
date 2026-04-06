@@ -4,8 +4,8 @@ import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
-import com.clayfactoria.codecs.Task;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.codecs.Job;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
@@ -38,14 +38,14 @@ public class ActionTake extends ActionBaseLogger {
       double dt,
       @Nonnull Store<EntityStore> store) {
     NPCEntity npcEntity = getNPCEntity(ref, store);
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent);
-    Task currentTask = taskComponent.getCurrentTask();
-    Objects.requireNonNull(currentTask);
+    JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+    Objects.requireNonNull(jobComponent);
+    Job currentJob = jobComponent.getCurrentJob();
+    Objects.requireNonNull(currentJob);
 
     ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
         Objects.requireNonNull(npcEntity.getWorld()),
-        currentTask.getLocation(), ContainerSlot.Output);
+        currentJob.getLocation(), ContainerSlot.Output);
     Objects.requireNonNull(itemContainer);
 
     ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
@@ -53,7 +53,7 @@ public class ActionTake extends ActionBaseLogger {
 
     if (result) {
       LOGGER.atInfo().log("Action Take: Set Complete to true\n");
-      taskComponent.setComplete(true);
+      jobComponent.setComplete(true);
     }
 
     return result;

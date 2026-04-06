@@ -1,6 +1,7 @@
 package com.clayfactoria.events;
 
-import com.clayfactoria.codecs.Action;
+import com.clayfactoria.codecs.Task;
+import com.clayfactoria.codecs.Automaton;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.ui.RadialMenu;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -18,11 +19,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import it.unimi.dsi.fastutil.Pair;
 import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class OpenWandMenu extends SimpleInstantInteraction {
@@ -69,27 +68,22 @@ public class OpenWandMenu extends SimpleInstantInteraction {
         () -> {
           CustomUIPage page = player.getPageManager().getCustomPage();
           if (page == null) {
-            List<Action> actions = getActionsForEntity(entity);
+            List<Task> tasks = getActionsForEntity(entity);
             page =
                 new RadialMenu(
                     playerRef,
                     brushComponent,
-                    actions);
+                    tasks);
             player.getPageManager().openCustomPage(ref, store, page);
           }
         });
   }
 
-  private List<Action> getActionsForEntity(NPCEntity entity) {
-    // FIXME: this should use the Automaton enum/something else!
+  private List<Task> getActionsForEntity(NPCEntity entity) {
     assert entity.getRole() != null;
-    String roleName = entity.getRole().getRoleName();
-    if (roleName.equals("Trork_Clay")) {
-      return List.of(Action.TAKE, Action.DEPOSIT, Action.POSITION);
-    } else if (roleName.equals("Kweebec_Clay")) {
-      return List.of(Action.WORK, Action.POSITION);
-    }
-    return List.of();
+    Automaton automaton = Automaton.getFromRole(entity.getRole());
+    assert automaton != null;
+    return automaton.tasks;
   }
 
 }

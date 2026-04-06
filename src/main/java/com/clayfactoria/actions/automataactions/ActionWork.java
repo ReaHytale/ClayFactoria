@@ -2,7 +2,7 @@ package com.clayfactoria.actions.automataactions;
 
 import com.clayfactoria.actions.ActionBaseLogger;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
@@ -33,13 +33,13 @@ public class ActionWork extends ActionBaseLogger {
       @Nonnull Store<EntityStore> store) {
     NPCEntity npc = TaskHelper.getNPCEntity(ref, store);
 
-    TaskComponent taskComponent = store.getComponent(ref, TaskComponent.getComponentType());
-    Objects.requireNonNull(taskComponent, "Task Component was null");
+    JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+    Objects.requireNonNull(jobComponent, "Task Component was null");
 
     World world = npc.getWorld();
     assert world != null;
-    assert taskComponent.getCurrentTask() != null;
-    Vector3i pos = taskComponent.getCurrentTask().getLocation();
+    assert jobComponent.getCurrentJob() != null;
+    Vector3i pos = jobComponent.getCurrentJob().getLocation();
     Ref<ChunkStore> blockRef = TaskHelper.getBlockComponentHolderDirectReference(world, pos.x,
         pos.y, pos.z);
     assert blockRef != null;
@@ -52,7 +52,7 @@ public class ActionWork extends ActionBaseLogger {
       return false;
     }
     processingBenchBlock.setActive(true, benchBlock, null);
-    taskComponent.setComplete(true);
+    jobComponent.setComplete(true);
     return true;
   }
 }

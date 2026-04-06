@@ -1,10 +1,10 @@
 package com.clayfactoria.components;
 
 import com.clayfactoria.ClayFactoria;
-import com.clayfactoria.codecs.Action;
-import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.codecs.Task;
-import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
+import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.PathType;
+import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.systems.TaskBoxSystem;
 import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.codec.Codec;
@@ -34,9 +34,9 @@ public class BrushComponent implements Component<EntityStore> {
   public static final BuilderCodec<BrushComponent> CODEC =
       BuilderCodec.builder(BrushComponent.class, BrushComponent::new)
           .append(
-              new KeyedCodec<>("Tasks", new ArrayCodec<>(Task.CODEC, Task[]::new)),
-              (comp, tasks) -> comp.tasks = new ArrayList<>(Arrays.asList(tasks)),
-              (comp) -> comp.tasks.toArray(new Task[0]))
+              new KeyedCodec<>("Tasks", new ArrayCodec<>(Job.CODEC, Job[]::new)),
+              (comp, tasks) -> comp.jobs = new ArrayList<>(Arrays.asList(tasks)),
+              (comp) -> comp.jobs.toArray(new Job[0]))
           .documentation("The tasks for pathing and actions for each location")
           .add()
 
@@ -48,9 +48,9 @@ public class BrushComponent implements Component<EntityStore> {
           .add()
 
           .append(
-              new KeyedCodec<>("TaskType", Action.CODEC),
-              (comp, value) -> comp.action = value,
-              (comp) -> comp.action)
+              new KeyedCodec<>("TaskType", Task.CODEC),
+              (comp, value) -> comp.task = value,
+              (comp) -> comp.task)
           .documentation("Type of task to be added to the tasks list on next brush paint.")
           .add()
 
@@ -64,14 +64,14 @@ public class BrushComponent implements Component<EntityStore> {
           .build();
 
   @Getter
-  private List<Task> tasks = new ArrayList<>();
+  private List<Job> jobs = new ArrayList<>();
   @Getter
   @Setter
   private PathType pathType = PathType.LOOP;
   @Getter
   @Setter
   @Nonnull
-  private Action action = Action.TAKE;
+  private Task task = Task.TAKE;
   @Getter
   @Setter
   private UUID entityId;
@@ -83,14 +83,14 @@ public class BrushComponent implements Component<EntityStore> {
   public void addTask(Vector3i location, World world,
       boolean locationEqualsWalkLocation, ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> playerRef) {
-    this.tasks.add(new Task(location, action, world, locationEqualsWalkLocation));
+    this.jobs.add(new Job(location, task, world, locationEqualsWalkLocation));
     TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
         TaskBoxesComponent.getComponentType());
     if (taskBoxesComponent != null) {
       Box box = BlockUtils.getBlockBox(location, world);
       Vector3d min = box.min.subtract(TaskBoxSystem.BOX_PADDING);
       Vector3d max = box.max.add(TaskBoxSystem.BOX_PADDING);
-      taskBoxesComponent.boxes.add(new TaskBoxComponent(action.color, new Box(min, max)));
+      taskBoxesComponent.boxes.add(new JobBoxComponent(task.color, new Box(min, max)));
     }
   }
 
@@ -106,15 +106,15 @@ public class BrushComponent implements Component<EntityStore> {
 
   public Component<EntityStore> clone() {
     BrushComponent brushComponent = new BrushComponent();
-    brushComponent.tasks = this.tasks;
+    brushComponent.jobs = this.jobs;
     brushComponent.pathType = this.pathType;
-    brushComponent.action = this.action;
+    brushComponent.task = this.task;
     return brushComponent;
   }
 
   public void resetTasks(ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> playerRef) {
-    this.tasks = new ArrayList<>();
+    this.jobs = new ArrayList<>();
     TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
         TaskBoxesComponent.getComponentType());
     if (taskBoxesComponent != null) {

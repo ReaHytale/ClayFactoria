@@ -4,17 +4,18 @@ import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
 import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
-import com.clayfactoria.actions.builders.BuilderActionClearTasks;
+import com.clayfactoria.actions.builders.BuilderActionClearJobs;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionPutItemInHand;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionStartProgramming;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.TaskBoxComponent.TaskBoxesComponent;
-import com.clayfactoria.components.TaskComponent;
+import com.clayfactoria.components.JobComponent;
+import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.events.OpenWandMenu;
-import com.clayfactoria.sensors.builders.BuilderSensorCanDoAction;
-import com.clayfactoria.sensors.builders.BuilderSensorHasAnyTasks;
+import com.clayfactoria.interactions.ConsumeItemInteraction;
+import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
+import com.clayfactoria.sensors.builders.BuilderSensorHasAnyJobs;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.systems.BrushLegendSystem;
 import com.clayfactoria.systems.TargetBlockEventSystem;
@@ -38,7 +39,7 @@ public class ClayFactoria extends JavaPlugin {
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
   public static ComponentType<EntityStore, BrushComponent> brushComponentType;
-  public static ComponentType<EntityStore, TaskComponent> ownerComponentType;
+  public static ComponentType<EntityStore, JobComponent> ownerComponentType;
   public static ComponentType<EntityStore, TaskBoxesComponent> debugBoxesComponentType;
 
   public ClayFactoria(JavaPluginInit init) {
@@ -58,15 +59,18 @@ public class ClayFactoria extends JavaPlugin {
     ownerComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(
-                TaskComponent.class, "ClayFactoriaTaskComponent", TaskComponent.CODEC);
+                JobComponent.class, "ClayFactoriaJobComponent", JobComponent.CODEC);
     debugBoxesComponentType =
         this.getEntityStoreRegistry()
             .registerComponent(TaskBoxesComponent.class, TaskBoxesComponent::new);
     this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, this::onPlayerReady);
 
+    Interaction.CODEC.register("ConsumeItem", ConsumeItemInteraction.class,
+        ConsumeItemInteraction.CODEC);
+
     NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
-    NPCPlugin.get().registerCoreComponentType("CanDoAction", BuilderSensorCanDoAction::new);
-    NPCPlugin.get().registerCoreComponentType("HasAnyTasks", BuilderSensorHasAnyTasks::new);
+    NPCPlugin.get().registerCoreComponentType("CanDoTask", BuilderSensorCanDoTask::new);
+    NPCPlugin.get().registerCoreComponentType("HasAnyJobs", BuilderSensorHasAnyJobs::new);
 
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderActionPutItemInHand::new);
     NPCPlugin.get().registerCoreComponentType("Take", BuilderActionTake::new);
@@ -74,7 +78,7 @@ public class ClayFactoria extends JavaPlugin {
     NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
     NPCPlugin.get().registerCoreComponentType("Work", BuilderActionWork::new);
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
-    NPCPlugin.get().registerCoreComponentType("ClearTasks", BuilderActionClearTasks::new);
+    NPCPlugin.get().registerCoreComponentType("ClearJobs", BuilderActionClearJobs::new);
     NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
     NPCPlugin.get()
         .registerCoreComponentType("StartProgramming", BuilderActionStartProgramming::new);
