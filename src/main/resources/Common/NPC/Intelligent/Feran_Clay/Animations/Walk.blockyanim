@@ -301,30 +301,17 @@
       "shapeVisible": [],
       "shapeUvOffset": []
     },
-    "R-Attachment": {
-      "position": [
-        {
-          "time": 0,
-          "delta": {"x": 5, "y": 0, "z": 0},
-          "interpolationType": "linear"
-        }
-      ],
-      "orientation": [],
-      "shapeStretch": [],
-      "shapeVisible": [],
-      "shapeUvOffset": []
-    },
     "Tail": {
       "position": [],
       "orientation": [
         {
           "time": 0,
-          "delta": {"x": 0.01415, "y": -0.1739, "z": -0.01415, "w": 0.98456},
+          "delta": {"x": 0.01744, "y": -0.0003, "z": -0.01744, "w": 0.9997},
           "interpolationType": "smooth"
         },
         {
           "time": 30,
-          "delta": {"x": -0.02021, "y": 0.1733, "z": 0.02021, "w": 0.98445},
+          "delta": {"x": -0.01745, "y": -0.0003, "z": 0.01745, "w": 0.9997},
           "interpolationType": "smooth"
         }
       ],

@@ -1,54 +1,44 @@
 {
   "nodes": [
     {
-      "id": "128",
+      "id": "1",
       "name": "R-Eye-Attachment",
+      "position": {"x": -7, "y": 104.5, "z": 14.5},
+      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+      "shape": {
+        "type": "none",
+        "offset": {"x": 0, "y": 0, "z": 0},
+        "stretch": {"x": 1, "y": 1, "z": 1},
+        "settings": {
+          "isPiece": true
+        },
+        "textureLayout": {},
+        "unwrapMode": "custom",
+        "visible": true,
+        "doubleSided": false,
+        "shadingMode": "flat"
+      },
       "children": [
         {
-          "id": "74",
+          "id": "2",
           "name": "R-Eye-Background",
-          "position": {
-            "x": 0,
-            "y": 0.5,
-            "z": 0
-          },
-          "orientation": {
-            "w": 1,
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
+          "position": {"x": 0, "y": 0.5, "z": 0},
+          "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
           "shape": {
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "stretch": {
-              "x": 0.99,
-              "y": 1,
-              "z": 1
+            "type": "quad",
+            "offset": {"x": 0, "y": 0.5, "z": 0},
+            "stretch": {"x": 0.99, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false,
+              "size": {"x": 10, "y": 10},
+              "normal": "+Z"
             },
             "textureLayout": {
               "front": {
-                "offset": {
-                  "x": 3,
-                  "y": 2
-                },
-                "mirror": {
-                  "x": false,
-                  "y": false
-                },
+                "offset": {"x": 3, "y": 2},
+                "mirror": {"x": false, "y": false},
                 "angle": 0
               }
-            },
-            "type": "quad",
-            "settings": {
-              "size": {
-                "x": 10,
-                "y": 10
-              },
-              "normal": "+Z"
             },
             "unwrapMode": "custom",
             "visible": true,
@@ -57,239 +47,114 @@
           },
           "children": [
             {
-              "id": "125",
+              "id": "3",
               "name": "R-Eye",
-              "position": {
-                "x": 0,
-                "y": -0.5,
-                "z": 0.1
-              },
-              "orientation": {
-                "w": 1,
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
+              "position": {"x": 0, "y": -1, "z": 0.1},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
               "shape": {
-                "offset": {
-                  "x": 0,
-                  "y": 0,
-                  "z": 0
-                },
-                "stretch": {
-                  "x": 0.8,
-                  "y": 0.8,
-                  "z": 1.2
+                "type": "quad",
+                "offset": {"x": 0, "y": 0.5, "z": 0},
+                "stretch": {"x": 0.8, "y": 0.8, "z": 1.2},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 10, "y": 10},
+                  "normal": "+Z"
                 },
                 "textureLayout": {
                   "front": {
-                    "offset": {
-                      "x": 3,
-                      "y": 19
-                    },
-                    "mirror": {
-                      "x": false,
-                      "y": false
-                    },
+                    "offset": {"x": 3, "y": 19},
+                    "mirror": {"x": false, "y": false},
                     "angle": 0
                   }
-                },
-                "type": "quad",
-                "settings": {
-                  "size": {
-                    "x": 10,
-                    "y": 10
-                  },
-                  "normal": "+Z"
                 },
                 "unwrapMode": "custom",
                 "visible": true,
                 "doubleSided": false,
                 "shadingMode": "flat"
-              },
-              "children": []
+              }
             }
           ]
         }
-      ],
-      "position": {
-        "x": -7,
-        "y": 104.5,
-        "z": 14.5
-      },
-      "orientation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
+      ]
+    },
+    {
+      "id": "4",
+      "name": "L-Eye-Attachment",
+      "position": {"x": 7, "y": 104.5, "z": 14.5},
+      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
       "shape": {
         "type": "none",
-        "offset": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "stretch": {
-          "x": 1,
-          "y": 1,
-          "z": 1
-        },
+        "offset": {"x": 0, "y": 0, "z": 0},
+        "stretch": {"x": 1, "y": 1, "z": 1},
         "settings": {
           "isPiece": true
         },
-        "visible": true,
-        "unwrapMode": "custom",
         "textureLayout": {},
+        "unwrapMode": "custom",
+        "visible": true,
         "doubleSided": false,
         "shadingMode": "flat"
-      }
-    },
-    {
-      "id": "130",
-      "name": "L-Eye-Attachment",
+      },
       "children": [
         {
-          "id": "129",
+          "id": "5",
           "name": "L-Eye-Background",
-          "children": [
-            {
-              "id": "127",
-              "name": "L-Eye",
-              "position": {
-                "x": 0,
-                "y": -0.5,
-                "z": 0.1
-              },
-              "orientation": {
-                "w": 1,
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "shape": {
-                "offset": {
-                  "x": 0,
-                  "y": 0,
-                  "z": 0
-                },
-                "stretch": {
-                  "x": 0.8,
-                  "y": 0.8,
-                  "z": 1.2
-                },
-                "textureLayout": {
-                  "front": {
-                    "offset": {
-                      "x": 19,
-                      "y": 19
-                    },
-                    "mirror": {
-                      "x": false,
-                      "y": false
-                    },
-                    "angle": 0
-                  }
-                },
-                "type": "quad",
-                "settings": {
-                  "size": {
-                    "x": 10,
-                    "y": 10
-                  },
-                  "normal": "+Z"
-                },
-                "unwrapMode": "custom",
-                "visible": true,
-                "doubleSided": false,
-                "shadingMode": "flat"
-              },
-              "children": []
-            }
-          ],
-          "position": {
-            "x": 0,
-            "y": 0.5,
-            "z": 0
-          },
-          "orientation": {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "w": 1
-          },
+          "position": {"x": 0, "y": 0.5, "z": 0},
+          "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
           "shape": {
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "stretch": {
-              "x": -0.99,
-              "y": 1,
-              "z": 1
+            "type": "quad",
+            "offset": {"x": 0, "y": 0.5, "z": 0},
+            "stretch": {"x": -0.99, "y": 1, "z": 1},
+            "settings": {
+              "isPiece": false,
+              "size": {"x": 10, "y": 10},
+              "normal": "+Z"
             },
             "textureLayout": {
               "front": {
-                "offset": {
-                  "x": 18,
-                  "y": 3
-                },
-                "mirror": {
-                  "x": false,
-                  "y": false
-                },
+                "offset": {"x": 18, "y": 3},
+                "mirror": {"x": false, "y": false},
                 "angle": 0
               }
-            },
-            "type": "quad",
-            "settings": {
-              "size": {
-                "x": 10,
-                "y": 10
-              },
-              "normal": "+Z"
             },
             "unwrapMode": "custom",
             "visible": true,
             "doubleSided": false,
             "shadingMode": "flat"
-          }
+          },
+          "children": [
+            {
+              "id": "6",
+              "name": "L-Eye",
+              "position": {"x": 0, "y": -1, "z": 0.1},
+              "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+              "shape": {
+                "type": "quad",
+                "offset": {"x": 0, "y": 0.5, "z": 0},
+                "stretch": {"x": 0.8, "y": 0.8, "z": 1.2},
+                "settings": {
+                  "isPiece": false,
+                  "size": {"x": 10, "y": 10},
+                  "normal": "+Z"
+                },
+                "textureLayout": {
+                  "front": {
+                    "offset": {"x": 19, "y": 19},
+                    "mirror": {"x": false, "y": false},
+                    "angle": 0
+                  }
+                },
+                "unwrapMode": "custom",
+                "visible": true,
+                "doubleSided": false,
+                "shadingMode": "flat"
+              }
+            }
+          ]
         }
-      ],
-      "position": {
-        "x": 7,
-        "y": 104.5,
-        "z": 14.5
-      },
-      "orientation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "shape": {
-        "type": "none",
-        "offset": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "stretch": {
-          "x": -1,
-          "y": 1,
-          "z": 1
-        },
-        "settings": {
-          "isPiece": true
-        },
-        "visible": true,
-        "unwrapMode": "custom",
-        "textureLayout": {},
-        "doubleSided": false,
-        "shadingMode": "flat"
-      }
+      ]
     }
   ],
+  "format": "character",
   "lod": "auto"
 }

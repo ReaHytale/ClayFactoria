@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "duration": 187,
+  "duration": 120,
   "holdLastKeyframe": true,
   "nodeAnimations": {
     "Origin": {
@@ -330,7 +330,7 @@
         },
         {
           "time": 38,
-          "delta": {"x": 0, "y": 0, "z": -0.83147, "w": -0.55557},
+          "delta": {"x": 0, "y": 0, "z": 0.83147, "w": 0.55557},
           "interpolationType": "smooth"
         },
         {
@@ -340,7 +340,7 @@
         },
         {
           "time": 68,
-          "delta": {"x": 0, "y": 0, "z": -0.80644, "w": -0.59131},
+          "delta": {"x": 0, "y": 0, "z": 0.80644, "w": 0.59131},
           "interpolationType": "smooth"
         },
         {

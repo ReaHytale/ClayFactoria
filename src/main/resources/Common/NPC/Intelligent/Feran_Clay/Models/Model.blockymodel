@@ -276,7 +276,7 @@
                       "id": "9",
                       "name": "R-Eyebrow-Attachment",
                       "position": {"x": -9, "y": 3.5, "z": 14},
-                      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+                      "orientation": {"x": 0, "y": 0, "z": 0.04363, "w": 0.99905},
                       "shape": {
                         "type": "none",
                         "offset": {"x": 0, "y": 0, "z": 0},
@@ -295,7 +295,7 @@
                       "id": "10",
                       "name": "L-Eyebrow-Attachment",
                       "position": {"x": 9, "y": 3.5, "z": 14},
-                      "orientation": {"x": 0, "y": 0, "z": 0, "w": 1},
+                      "orientation": {"x": 0, "y": 0, "z": -0.04363, "w": 0.99905},
                       "shape": {
                         "type": "none",
                         "offset": {"x": 0, "y": 0, "z": 0},
@@ -519,7 +519,7 @@
                       "id": "18",
                       "name": "R-Arm",
                       "position": {"x": 0, "y": 0, "z": 0},
-                      "orientation": {"x": 0.00266, "y": -0.06099, "z": -0.04354, "w": 0.99719},
+                      "orientation": {"x": 0.00266, "y": -0.06099, "z": -0.04354, "w": 0.99718},
                       "shape": {
                         "type": "box",
                         "offset": {"x": -0.5, "y": -4.5, "z": 0},
@@ -686,7 +686,7 @@
                       "id": "23",
                       "name": "L-Arm",
                       "position": {"x": 0, "y": 0, "z": 0},
-                      "orientation": {"x": 0.00266, "y": 0.06099, "z": 0.04354, "w": 0.99719},
+                      "orientation": {"x": 0.00266, "y": 0.06099, "z": 0.04354, "w": 0.99718},
                       "shape": {
                         "type": "box",
                         "offset": {"x": 0.5, "y": -4.5, "z": 0},
