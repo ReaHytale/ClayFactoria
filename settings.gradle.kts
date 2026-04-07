@@ -2,8 +2,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.hytale-mods.dev/releases") {
-            name = "HytaleModdingReleases"
+        maven {
+            name = "AzureDoom Maven"
+            url = uri("https://maven.azuredoom.com/mods")
         }
     }
 }
@@ -12,4 +13,4 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "ClayFactoria"
+rootProject.name = "Clay Factoria"

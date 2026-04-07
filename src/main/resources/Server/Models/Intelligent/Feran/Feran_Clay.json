@@ -16,8 +16,8 @@
       "Z": -0.3
     }
   },
-  "MinScale": 1,
-  "MaxScale": 1,
+  "MinScale": 0.75,
+  "MaxScale": 0.75,
   "DefaultAttachments": [
     {
       "Model": "NPC/Intelligent/Feran_Clay/Models/Attachments/Eyes.blockymodel",
