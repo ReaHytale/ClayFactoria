@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.clayfactoria"
-version = "0.2.1"
+version = "0.2.1" // Also update this value in manifest.json
 val javaVersion = 25
 
 repositories {
@@ -34,9 +34,16 @@ hytale {
 
     addAssetsDependency = true
 
-    // uncomment if you want to develop your mod against the pre-release version of the game.
+    // Uncomment if you want to develop your mod against the pre-release version of the game.
     //
     // updateChannel = "pre-release"
+
+    programArgs.add(
+        "--mods=" +
+                layout.projectDirectory
+                    .dir("src/main/")
+                    .asFile.absolutePath,
+    )
 }
 
 java {
@@ -45,28 +52,6 @@ java {
     }
 
     withSourcesJar()
-}
-
-tasks.named<ProcessResources>("processResources") {
-    var replaceProperties = mapOf(
-        "plugin_group" to findProperty("plugin_group"),
-        "plugin_maven_group" to project.group,
-        "plugin_name" to project.name,
-        "plugin_version" to project.version,
-        "server_version" to findProperty("server_version"),
-
-        "plugin_description" to findProperty("plugin_description"),
-        "plugin_website" to findProperty("plugin_website"),
-
-        "plugin_main_entrypoint" to findProperty("plugin_main_entrypoint"),
-        "plugin_author" to findProperty("plugin_author")
-    )
-
-    filesMatching("manifest.json") {
-        expand(replaceProperties)
-    }
-
-    inputs.properties(replaceProperties)
 }
 
 tasks.withType<Jar> {
