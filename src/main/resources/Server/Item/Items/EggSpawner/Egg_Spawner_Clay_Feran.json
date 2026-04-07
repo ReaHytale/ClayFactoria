@@ -54,17 +54,17 @@
   },
   "Model": "Items/Egg_Spawner/Egg_Spawner_Clay_Feran.blockymodel",
   "Texture": "Items/Egg_Spawner/Egg_Spawner_Clay_Feran_Texture.png",
-  "Icon": "Icons/ItemsGenerated/Trork_Clay.png",
+  "Icon": "Icons/ItemsGenerated/Egg_Spawner_Clay_Feran.png",
   "IconProperties": {
+    "Scale": 0.4,
     "Rotation": [
       22.5,
       45,
       22.5
     ],
-    "Scale": 0.55,
     "Translation": [
       0,
-      -25.4
+      -28
     ]
   },
   "Tags": {}

@@ -50,17 +50,17 @@
   },
   "Model": "Items/Egg_Spawner/Egg_Spawner_Clay_Trork.blockymodel",
   "Texture": "Items/Egg_Spawner/Egg_Spawner_Clay_Trork_Texture.png",
-  "Icon": "Icons/ItemsGenerated/Trork_Clay.png",
+  "Icon": "Icons/ItemsGenerated/Egg_Spawner_Clay_Trork.png",
   "IconProperties": {
+    "Scale": 0.45,
     "Rotation": [
       -22.5,
       225,
       -22.5
     ],
-    "Scale": 0.6,
     "Translation": [
       0,
-      -27.4
+      -30
     ]
   },
   "Tags": {}
