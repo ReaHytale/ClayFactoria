@@ -12,6 +12,7 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
@@ -37,7 +38,8 @@ public final class TaskHelper {
 
   @Nonnull
   public static NPCEntity getNPCEntity(
-      @Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {
+      @Nonnull Ref<EntityStore> ref) {
+    Store<EntityStore> store = ref.getStore();
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
     Objects.requireNonNull(component, "NPCEntity Component Type was null");
     NPCEntity npcEntity = store.getComponent(ref, component);
@@ -210,5 +212,11 @@ public final class TaskHelper {
     Objects.requireNonNull(npcEntity.getRole())
         .getStateSupport()
         .setState(npcRef, "Idle", null, store);
+  }
+
+  public static ItemStack getHeldItemstack(Store<EntityStore> store, Ref<EntityStore> entityRef) {
+    Hotbar hotbar = store.getComponent(entityRef, Hotbar.getComponentType());
+    assert hotbar != null;
+    return hotbar.getActiveItem();
   }
 }

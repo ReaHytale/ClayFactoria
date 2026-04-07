@@ -47,16 +47,24 @@
       "Value": false
     }
   },
-  "Appearance": { "Compute": "Appearance" },
-  "DropList": { "Compute": "DropList" },
-  "DisableDamageGroups": [ "Self" ],
+  "Appearance": {
+    "Compute": "Appearance"
+  },
+  "DropList": {
+    "Compute": "DropList"
+  },
+  "DisableDamageGroups": [
+    "Self"
+  ],
   "DefaultNPCAttitude": "Ignore",
   "DefaultPlayerAttitude": "Neutral",
   "KnockbackScale": 0.5,
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": { "Compute": "MaxSpeed" },
+      "MaxWalkSpeed": {
+        "Compute": "MaxSpeed"
+      },
       "Gravity": 10,
       "RunThreshold": 0.3,
       "MaxFallSpeed": 15,
@@ -64,7 +72,9 @@
       "Acceleration": 10
     }
   ],
-  "MaxHealth": { "Compute": "MaxHealth" },
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
   "CombatConfig": {
     "EntityEffect": "Immunity_Environmental"
   },
@@ -73,8 +83,10 @@
       "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
         {
-          "To": [ "Idle" ],
-          "From": [ ]
+          "To": [
+            "Idle"
+          ],
+          "From": []
         }
       ],
       "Actions": [
@@ -99,8 +111,10 @@
     {
       "States": [
         {
-          "From": [ ],
-          "To": [ "Automated" ]
+          "From": [],
+          "To": [
+            "Automated"
+          ]
         }
       ],
       "Actions": [
@@ -140,7 +154,10 @@
           "Actions": [
             {
               "Type": "Timeout",
-              "Delay": [ 0.5, 2 ],
+              "Delay": [
+                0.5,
+                2
+              ],
               "Action": {
                 "Type": "SetLeashPosition",
                 "ToTarget": true
@@ -194,7 +211,9 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [ "Tool_Brush" ]
+                    "Items": [
+                      "Tool_Brush"
+                    ]
                   }
                 ]
               },
@@ -242,7 +261,11 @@
                 },
                 {
                   "Type": "SpawnParticles",
-                  "Offset": [ 0, 1, 0 ],
+                  "Offset": [
+                    0,
+                    1,
+                    0
+                  ],
                   "ParticleSystem": "Alerted"
                 }
               ]
@@ -255,7 +278,9 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [ "Tool_Brush" ]
+                    "Items": [
+                      "Tool_Brush"
+                    ]
                   }
                 ]
               },
@@ -274,7 +299,9 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [ "Tool_Brush" ]
+                      "Items": [
+                        "Tool_Brush"
+                      ]
                     }
                   ]
                 }
@@ -363,7 +390,9 @@
                         "Sensors": [
                           {
                             "Type": "Switch",
-                            "Switch": { "Compute": "CanDoDeposit" }
+                            "Switch": {
+                              "Compute": "CanDoDeposit"
+                            }
                           },
                           {
                             "Type": "CanDoTask",
@@ -386,14 +415,20 @@
                         },
                         {
                           "Type": "Timeout",
-                          "Delay": [ 0.4, 0.4 ]
+                          "Delay": [
+                            0.4,
+                            0.4
+                          ]
                         },
                         {
-                          "Type": "Deposit"
+                          "Type": "DoTask"
                         },
                         {
                           "Type": "Timeout",
-                          "Delay": [ 0.4, 0.4 ]
+                          "Delay": [
+                            0.4,
+                            0.4
+                          ]
                         },
                         {
                           "Type": "PlayAnimation",
@@ -409,7 +444,9 @@
                         "Sensors": [
                           {
                             "Type": "Switch",
-                            "Switch": { "Compute": "CanDoTake" }
+                            "Switch": {
+                              "Compute": "CanDoTake"
+                            }
                           },
                           {
                             "Type": "CanDoTask",
@@ -432,14 +469,20 @@
                         },
                         {
                           "Type": "Timeout",
-                          "Delay": [ 0.4, 0.4 ]
+                          "Delay": [
+                            0.4,
+                            0.4
+                          ]
                         },
                         {
-                          "Type": "Take"
+                          "Type": "DoTask"
                         },
                         {
                           "Type": "Timeout",
-                          "Delay": [ 0.4, 0.4 ]
+                          "Delay": [
+                            0.4,
+                            0.4
+                          ]
                         },
                         {
                           "Type": "PlayAnimation",
@@ -455,7 +498,9 @@
                         "Sensors": [
                           {
                             "Type": "Switch",
-                            "Switch": { "Compute": "CanDoPosition" }
+                            "Switch": {
+                              "Compute": "CanDoPosition"
+                            }
                           },
                           {
                             "Type": "CanDoTask",
@@ -465,7 +510,7 @@
                       },
                       "Actions": [
                         {
-                          "Type": "Position"
+                          "Type": "DoTask"
                         }
                       ]
                     },
@@ -476,7 +521,9 @@
                         "Sensors": [
                           {
                             "Type": "Switch",
-                            "Switch": { "Compute": "CanDoWork" }
+                            "Switch": {
+                              "Compute": "CanDoWork"
+                            }
                           },
                           {
                             "Type": "CanDoTask",
@@ -486,7 +533,7 @@
                       },
                       "Actions": [
                         {
-                          "Type": "Work"
+                          "Type": "DoTask"
                         }
                       ]
                     },
@@ -521,11 +568,15 @@
         "$Comment": "Interactable when holding brush",
         "Sensor": {
           "Type": "Player",
-          "Range": { "Compute": "ViewRange" },
+          "Range": {
+            "Compute": "ViewRange"
+          },
           "Filters": [
             {
               "Type": "ItemInHand",
-              "Items": [ "Tool_Brush" ]
+              "Items": [
+                "Tool_Brush"
+              ]
             }
           ]
         },
@@ -677,11 +728,15 @@
           "Type": "Not",
           "Sensor": {
             "Type": "Player",
-            "Range": { "Compute": "ViewRange" },
+            "Range": {
+              "Compute": "ViewRange"
+            },
             "Filters": [
               {
                 "Type": "ItemInHand",
-                "Items": [ "Tool_Brush" ]
+                "Items": [
+                  "Tool_Brush"
+                ]
               }
             ]
           }
@@ -695,7 +750,9 @@
       }
     ]
   },
-  "NameTranslationKey": { "Compute": "NameTranslationKey" },
+  "NameTranslationKey": {
+    "Compute": "NameTranslationKey"
+  },
   "DeathInstruction": {
     "$Comment": "Drop inventory on death",
     "Sensor": {

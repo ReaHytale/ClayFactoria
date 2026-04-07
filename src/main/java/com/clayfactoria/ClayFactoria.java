@@ -1,17 +1,14 @@
 package com.clayfactoria;
 
-import com.clayfactoria.actions.automataactions.builders.BuilderActionDeposit;
-import com.clayfactoria.actions.automataactions.builders.BuilderActionPosition;
-import com.clayfactoria.actions.automataactions.builders.BuilderActionTake;
-import com.clayfactoria.actions.automataactions.builders.BuilderActionWork;
 import com.clayfactoria.actions.builders.BuilderActionClearJobs;
+import com.clayfactoria.actions.builders.BuilderActionDoTask;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionPutItemInHand;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionStartProgramming;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
+import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.events.OpenWandMenu;
 import com.clayfactoria.interactions.ConsumeItemInteraction;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
@@ -73,10 +70,7 @@ public class ClayFactoria extends JavaPlugin {
     NPCPlugin.get().registerCoreComponentType("HasAnyJobs", BuilderSensorHasAnyJobs::new);
 
     NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderActionPutItemInHand::new);
-    NPCPlugin.get().registerCoreComponentType("Take", BuilderActionTake::new);
-    NPCPlugin.get().registerCoreComponentType("Deposit", BuilderActionDeposit::new);
-    NPCPlugin.get().registerCoreComponentType("Position", BuilderActionPosition::new);
-    NPCPlugin.get().registerCoreComponentType("Work", BuilderActionWork::new);
+    NPCPlugin.get().registerCoreComponentType("DoTask", BuilderActionDoTask::new);
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
     NPCPlugin.get().registerCoreComponentType("ClearJobs", BuilderActionClearJobs::new);
     NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);

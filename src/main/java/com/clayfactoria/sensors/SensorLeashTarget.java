@@ -45,7 +45,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
       return;
     }
     try {
-      NPCEntity entity = TaskHelper.getNPCEntity(ref, store);
+      NPCEntity entity = TaskHelper.getNPCEntity(ref);
       currentJob.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
           entity.getOldPosition());
     } catch (IllegalStateException exception) {
