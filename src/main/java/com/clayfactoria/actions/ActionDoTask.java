@@ -29,6 +29,6 @@ public class ActionDoTask extends ActionBaseLogger {
     if (job == null) {
       return false;
     }
-    return job.getTask().doTask.apply(ref);
+    return job.getTask().taskExecutor.execute(ref);
   }
 }

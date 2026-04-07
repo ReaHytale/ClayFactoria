@@ -39,53 +39,43 @@ public class BrushComponent implements Component<EntityStore> {
               (comp) -> comp.jobs.toArray(new Job[0]))
           .documentation("The tasks for pathing and actions for each location")
           .add()
-
           .append(
               new KeyedCodec<>("PathType", PathType.CODEC),
               (comp, value) -> comp.pathType = value,
               (comp) -> comp.pathType)
           .documentation("Path type (LOOP or ONCE)")
           .add()
-
           .append(
               new KeyedCodec<>("TaskType", Task.CODEC),
               (comp, value) -> comp.task = value,
               (comp) -> comp.task)
           .documentation("Type of task to be added to the tasks list on next brush paint.")
           .add()
-
           .append(
               new KeyedCodec<>("SelectedEntity", Codec.UUID_STRING),
               (comp, value) -> comp.entityId = value,
               (comp) -> comp.entityId)
           .documentation("The entity's internal UUID.")
           .add()
-
           .build();
 
-  @Getter
-  private List<Job> jobs = new ArrayList<>();
-  @Getter
-  @Setter
-  private PathType pathType = PathType.LOOP;
-  @Getter
-  @Setter
-  @Nonnull
-  private Task task = Task.TAKE;
-  @Getter
-  @Setter
-  private UUID entityId;
+  @Getter private List<Job> jobs = new ArrayList<>();
+  @Getter @Setter private PathType pathType = PathType.LOOP;
+  @Getter @Setter @Nonnull private Task task = Task.TAKE;
+  @Getter @Setter private UUID entityId;
 
   public static ComponentType<EntityStore, BrushComponent> getComponentType() {
     return ClayFactoria.brushComponentType;
   }
 
-  public void addTask(Vector3i location, World world,
-      boolean locationEqualsWalkLocation, ComponentAccessor<EntityStore> componentAccessor,
+  public void addTask(
+      Vector3i location,
+      World world,
+      ComponentAccessor<EntityStore> componentAccessor,
       Ref<EntityStore> playerRef) {
-    this.jobs.add(new Job(location, task, world, locationEqualsWalkLocation));
-    TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
-        TaskBoxesComponent.getComponentType());
+    this.jobs.add(new Job(location, task, world));
+    TaskBoxesComponent taskBoxesComponent =
+        componentAccessor.getComponent(playerRef, TaskBoxesComponent.getComponentType());
     if (taskBoxesComponent != null) {
       Box box = BlockUtils.getBlockBox(location, world);
       Vector3d min = box.min.subtract(TaskBoxSystem.BOX_PADDING);
@@ -112,11 +102,11 @@ public class BrushComponent implements Component<EntityStore> {
     return brushComponent;
   }
 
-  public void resetTasks(ComponentAccessor<EntityStore> componentAccessor,
-      Ref<EntityStore> playerRef) {
+  public void resetTasks(
+      ComponentAccessor<EntityStore> componentAccessor, Ref<EntityStore> playerRef) {
     this.jobs = new ArrayList<>();
-    TaskBoxesComponent taskBoxesComponent = componentAccessor.getComponent(playerRef,
-        TaskBoxesComponent.getComponentType());
+    TaskBoxesComponent taskBoxesComponent =
+        componentAccessor.getComponent(playerRef, TaskBoxesComponent.getComponentType());
     if (taskBoxesComponent != null) {
       taskBoxesComponent.boxes.clear();
     }

@@ -1,6 +1,5 @@
 package com.clayfactoria.systems;
 
-import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -39,10 +38,10 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     super(DamageBlockEvent.class);
   }
 
-  public static boolean wandIsNotEquipped(ComponentAccessor<EntityStore> componentAccessor,
-      Ref<EntityStore> ref) {
-    InventoryComponent.Hotbar hotbarComponent = componentAccessor.getComponent(ref,
-        InventoryComponent.Hotbar.getComponentType());
+  public static boolean wandIsNotEquipped(
+      ComponentAccessor<EntityStore> componentAccessor, Ref<EntityStore> ref) {
+    InventoryComponent.Hotbar hotbarComponent =
+        componentAccessor.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
     Objects.requireNonNull(hotbarComponent);
     ItemStack itemStack = hotbarComponent.getActiveItem();
     return itemStack == null || !itemStack.getItemId().equals(WAND_ITEM_ID);
@@ -58,19 +57,20 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
 
     Ref<EntityStore> entityStoreRef = archetypeChunk.getReferenceTo(index);
 
-    Player player = Objects.requireNonNull(
-        store.getComponent(entityStoreRef, Player.getComponentType()));
-    Ref<EntityStore> playerRef = Objects.requireNonNull(player.getReference(),
-        "playerRef was null");
+    Player player =
+        Objects.requireNonNull(store.getComponent(entityStoreRef, Player.getComponentType()));
+    Ref<EntityStore> playerRef =
+        Objects.requireNonNull(player.getReference(), "playerRef was null");
 
     // Check that the player has the wand equipped
     if (wandIsNotEquipped(store, playerRef)) {
       return;
     }
 
-    // Add the task to the task list, with the action being set to the one currently selected by the player.
-    BrushComponent brushComponent = Objects.requireNonNull(
-        store.getComponent(playerRef, this.brushComponentType));
+    // Add the task to the task list, with the action being set to the one currently selected by the
+    // player.
+    BrushComponent brushComponent =
+        Objects.requireNonNull(store.getComponent(playerRef, this.brushComponentType));
 
     World world = player.getWorld();
     assert world != null;
@@ -78,18 +78,15 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     // If no selected entity, let the user know...
     if (brushComponent.getEntityId() == null
         || world.getEntityRef(brushComponent.getEntityId()) == null) {
-      player.sendMessage(Message.raw("You must first select the automaton you want to command!")
-          .color(Color.RED));
+      player.sendMessage(
+          Message.raw("You must first select the automaton you want to command!").color(Color.RED));
       return;
     }
 
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
-    Task task = brushComponent.getTask();
     try {
-      boolean locationEqualsWalkLocation = task == Task.POSITION;
-      brushComponent.addTask(targetBlockLoc, player.getWorld(), locationEqualsWalkLocation, store,
-          playerRef);
+      brushComponent.addTask(targetBlockLoc, player.getWorld(), store, playerRef);
     } catch (IllegalStateException e) {
       player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());

@@ -41,13 +41,12 @@ public class SensorLeashTarget extends SensorBaseLogger {
   private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref,
       @NonNull Store<EntityStore> store,
       Job currentJob) {
-    if (currentJob.isLocationEqualsWalkLocation()) {
+    if (currentJob.getTask().locationEqualsWalkLocation) {
       return;
     }
     try {
       NPCEntity entity = TaskHelper.getNPCEntity(ref);
-      currentJob.findValidWalkLocation(Objects.requireNonNull(entity.getWorld()),
-          entity.getOldPosition());
+      currentJob.updateWalkLocation(entity.getWorld(), entity.getOldPosition());
     } catch (IllegalStateException exception) {
       // All fine, none was found
     }
