@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionDropInventory extends ActionBaseLogger {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   public ActionDropInventory(@NotNull BuilderActionDropInventory builder) {
@@ -24,20 +25,20 @@ public class ActionDropInventory extends ActionBaseLogger {
   }
 
   @Override
-  public boolean canExecute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo, double dt, @Nonnull
-  Store<EntityStore> store) {
+  public boolean canExecute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role,
+      InfoProvider sensorInfo, double dt, @Nonnull
+      Store<EntityStore> store) {
     return super.canExecute(ref, role, sensorInfo, dt, store);
   }
 
   @Override
-  public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo, double dt, @Nonnull Store<EntityStore> store) {
-    NPCEntity npc = TaskHelper.getNPCEntity(ref, store);
+  public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo,
+      double dt, @Nonnull Store<EntityStore> store) {
+    NPCEntity npc = TaskHelper.getNPCEntity(ref);
     List<ItemStack> items = npc.getInventory().getCombinedStorageFirst().dropAllItemStacks();
     items.forEach(item -> {
-      ItemUtils.throwItem(ref, store, item, Vector3d.ZERO, 1.0F );
+      ItemUtils.throwItem(ref, store, item, Vector3d.ZERO, 1.0F);
     });
-
-
 
     return true;
   }
