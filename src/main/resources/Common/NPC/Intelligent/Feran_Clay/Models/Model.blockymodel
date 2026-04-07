@@ -275,7 +275,7 @@
                     {
                       "id": "9",
                       "name": "R-Eyebrow-Attachment",
-                      "position": {"x": -29, "y": -18, "z": 12},
+                      "position": {"x": -9.34381, "y": 4.65371, "z": 13.75},
                       "orientation": {"x": 0, "y": 0, "z": -0.02181, "w": 0.99976},
                       "shape": {
                         "type": "none",
@@ -294,7 +294,7 @@
                     {
                       "id": "10",
                       "name": "L-Eyebrow-Attachment",
-                      "position": {"x": 30, "y": -18, "z": 12},
+                      "position": {"x": 8.91494, "y": 4.67385, "z": 13.75},
                       "orientation": {"x": 0, "y": 0, "z": 0.02181, "w": 0.99976},
                       "shape": {
                         "type": "none",
