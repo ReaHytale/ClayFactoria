@@ -5,11 +5,13 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,22 +28,29 @@ public class ActionSelectHeldItem extends ActionBaseLogger {
   }
 
   @Override
-  public boolean executeNullChecked(@NotNull Ref<EntityStore> ref, @NotNull Role role,
-      InfoProvider sensorInfo, double dt, @NotNull Store<EntityStore> store)
+  public boolean executeNullChecked(
+      @NotNull Ref<EntityStore> ref,
+      @NotNull Role role,
+      InfoProvider sensorInfo,
+      double dt,
+      @NotNull Store<EntityStore> store)
       throws NullPointerException {
-    CombinedItemContainer combinedItemContainer = InventoryComponent.getCombined(store, ref,
-        InventoryComponent.EVERYTHING);
-    InventoryComponent.Hotbar hotbar = store.getComponent(ref,
-        InventoryComponent.Hotbar.getComponentType());
+    CombinedItemContainer combinedItemContainer =
+        InventoryComponent.getCombined(store, ref, InventoryComponent.EVERYTHING);
+    InventoryComponent.Hotbar hotbar =
+        store.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
     assert hotbar != null;
-    AtomicBoolean found = new AtomicBoolean(false);
-    combinedItemContainer.forEach((i, itemStack) -> {
-      if (itemStack.getItemId().equals(item)) {
-        combinedItemContainer.swapItems(i, hotbar.getInventory(), hotbar.getActiveSlot(),
-            (short) 1);
-        found.set(true);
+    for (short slot = 0; slot < combinedItemContainer.getCapacity(); slot++) {
+      ItemStack itemStack = combinedItemContainer.getItemStack(slot);
+      if (ItemStack.isEmpty(itemStack)) {
+        continue;
       }
-    });
-    return found.get();
+      if (itemStack.getItemId().equals(item)) {
+        combinedItemContainer.swapItems(
+            slot, hotbar.getInventory(), hotbar.getActiveSlot(), (short) 1);
+        return true;
+      }
+    }
+    return false;
   }
 }
