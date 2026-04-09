@@ -1,0 +1,55 @@
+{
+  "Type": "Component",
+  "Class": "Instruction",
+  "Parameters": {
+    "CanDoHarvest": {
+      "Description": "Parameter CanDoHarvest",
+      "TypeHint": "String",
+      "Value": false
+    }
+  },
+  "Content": {
+    "Continue": true,
+    "Instructions": [
+      {
+        "Sensor": {
+          "Type": "And",
+          "Sensors": [
+            {
+              "Type": "Switch",
+              "Switch": { "Compute": "CanDoHarvest" }
+            },
+            {
+              "Type": "CanDoTask",
+              "Task": "Harvest"
+            }
+          ]
+        },
+        "ActionsBlocking": true,
+        "Actions": [
+          {
+            "Type": "SelectHeldItem",
+            "Item": "Tool_Sickle_Iron"
+          },
+          {
+            "Type": "PlayAnimation",
+            "Slot": "Status",
+            "Animation": "Harvest"
+          },
+          {
+            "Type": "Timeout",
+            "Delay": [ 1.4, 1.4 ]
+          },
+          {
+            "Type": "SetFlag",
+            "Name": "HoldingItem",
+            "SetTo": true
+          },
+          {
+            "Type": "DoTask"
+          }
+        ]
+      }
+    ]
+  }
+}

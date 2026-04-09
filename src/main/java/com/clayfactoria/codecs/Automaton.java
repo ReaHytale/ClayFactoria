@@ -20,7 +20,7 @@ public enum Automaton {
       "Clay Feran",
       "Feran_Clay",
       "Clay Ferans can be programmed to harvest crops in an area.",
-      List.of(Task.TAKE, Task.DEPOSIT, Task.POSITION)
+      List.of(Task.HARVEST, Task.DEPOSIT, Task.POSITION)
   );
 
   public final String name;

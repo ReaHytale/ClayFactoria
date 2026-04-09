@@ -46,30 +46,27 @@
       "TypeHint": "Boolean",
       "Value": false
     },
+    "CanDoHarvest": {
+      "Description": "Whether this automaton can perform the HARVEST Task",
+      "TypeHint": "Boolean",
+      "Value": false
+    },
     "HotbarItems": {
       "Description": "Hotbar Items (e.g. primary weapon, secondary weapon, etc)",
       "TypeHint": "String",
-      "Value": []
+      "Value": [ ]
     }
   },
-  "Appearance": {
-    "Compute": "Appearance"
-  },
-  "DropList": {
-    "Compute": "DropList"
-  },
-  "DisableDamageGroups": [
-    "Self"
-  ],
+  "Appearance": { "Compute": "Appearance" },
+  "DropList": { "Compute": "DropList" },
+  "DisableDamageGroups": [ "Self" ],
   "DefaultNPCAttitude": "Ignore",
   "DefaultPlayerAttitude": "Neutral",
   "KnockbackScale": 0.5,
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": {
-        "Compute": "MaxSpeed"
-      },
+      "MaxWalkSpeed": { "Compute": "MaxSpeed" },
       "Gravity": 10,
       "RunThreshold": 0.3,
       "MaxFallSpeed": 15,
@@ -77,9 +74,7 @@
       "Acceleration": 10
     }
   ],
-  "MaxHealth": {
-    "Compute": "MaxHealth"
-  },
+  "MaxHealth": { "Compute": "MaxHealth" },
   "CombatConfig": {
     "EntityEffect": "Immunity_Environmental"
   },
@@ -88,10 +83,8 @@
       "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
         {
-          "To": [
-            "Idle"
-          ],
-          "From": []
+          "To": [ "Idle" ],
+          "From": [ ]
         }
       ],
       "Actions": [
@@ -106,7 +99,8 @@
           "Slot": "Status"
         },
         {
-          "Type": "DropInventory"
+          "Type": "DropInventory",
+          "DropHotbarItems": false
         },
         {
           "Type": "ClearJobs"
@@ -116,10 +110,8 @@
     {
       "States": [
         {
-          "From": [],
-          "To": [
-            "Automated"
-          ]
+          "From": [ ],
+          "To": [ "Automated" ]
         }
       ],
       "Actions": [
@@ -159,10 +151,7 @@
           "Actions": [
             {
               "Type": "Timeout",
-              "Delay": [
-                0.5,
-                2
-              ],
+              "Delay": [ 0.5, 2 ],
               "Action": {
                 "Type": "SetLeashPosition",
                 "ToTarget": true
@@ -216,9 +205,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [
-                      "Tool_Brush"
-                    ]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -266,11 +253,7 @@
                 },
                 {
                   "Type": "SpawnParticles",
-                  "Offset": [
-                    0,
-                    1,
-                    0
-                  ],
+                  "Offset": [ 0, 1, 0 ],
                   "ParticleSystem": "Alerted"
                 }
               ]
@@ -283,9 +266,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [
-                      "Tool_Brush"
-                    ]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -304,9 +285,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -377,18 +356,11 @@
                       "$Comment": "If there is a task that can be completed at this position, do it.",
                       "Reference": "Component_Instruction_Task",
                       "Modify": {
-                        "CanDoWork": {
-                          "Compute": "CanDoWork"
-                        },
-                        "CanDoTake": {
-                          "Compute": "CanDoTake"
-                        },
-                        "CanDoDeposit": {
-                          "Compute": "CanDoDeposit"
-                        },
-                        "CanDoPosition": {
-                          "Compute": "CanDoPosition"
-                        }
+                        "CanDoWork": { "Compute": "CanDoWork" },
+                        "CanDoTake": { "Compute": "CanDoTake" },
+                        "CanDoDeposit": { "Compute": "CanDoDeposit" },
+                        "CanDoPosition": { "Compute": "CanDoPosition" },
+                        "CanDoHarvest": { "Compute": "CanDoHarvest" }
                       }
                     },
                     {
@@ -436,15 +408,11 @@
         "$Comment": "Interactable when holding brush",
         "Sensor": {
           "Type": "Player",
-          "Range": {
-            "Compute": "ViewRange"
-          },
+          "Range": { "Compute": "ViewRange" },
           "Filters": [
             {
               "Type": "ItemInHand",
-              "Items": [
-                "Tool_Brush"
-              ]
+              "Items": [ "Tool_Brush" ]
             }
           ]
         },
@@ -596,15 +564,11 @@
           "Type": "Not",
           "Sensor": {
             "Type": "Player",
-            "Range": {
-              "Compute": "ViewRange"
-            },
+            "Range": { "Compute": "ViewRange" },
             "Filters": [
               {
                 "Type": "ItemInHand",
-                "Items": [
-                  "Tool_Brush"
-                ]
+                "Items": [ "Tool_Brush" ]
               }
             ]
           }
@@ -618,9 +582,7 @@
       }
     ]
   },
-  "NameTranslationKey": {
-    "Compute": "NameTranslationKey"
-  },
+  "NameTranslationKey": { "Compute": "NameTranslationKey" },
   "DeathInstruction": {
     "$Comment": "Drop inventory on death",
     "Sensor": {
@@ -629,13 +591,13 @@
     "Actions": [
       {
         "Type": "DropInventory",
-        "Once": true
+        "Once": true,
+        "DropHotbarItems": false
       }
     ]
   },
   "Debug": "",
   "DeathAnimationTime": 0,
-  "HotbarItems": {
-    "Compute": "HotbarItems"
-  }
+  "HotbarItems": { "Compute": "HotbarItems" },
+  "InventorySize": 9
 }

@@ -54,7 +54,15 @@ public enum Task implements Supplier<String> {
       new Vector3f(0.33F, 0.45F, 0.9F), // Blue
       "ImageAssets/Work.png",
       Task::canDoWorkTask,
-      Task::doWorkTask);
+      Task::doWorkTask),
+  HARVEST(
+      "Harvest",
+      "Harvest a crop from an area",
+      new Vector3f(0.92F, 0.86F, 0.2F), // Yellow
+      "ImageAssets/Harvest.png",
+      Task::canDoHarvestTask,
+      Task::doHarvestTask
+  );
 
   public static final Codec<Task> CODEC = new EnumCodec<>(Task.class);
   public final String name;
@@ -78,6 +86,16 @@ public enum Task implements Supplier<String> {
     this.iconAssetPath = iconAssetPath;
     this.canDoTask = canDoTask;
     this.doTask = doTask;
+  }
+
+  private static boolean doHarvestTask(Ref<EntityStore> ref) {
+    // TODO: Implement
+    return doPositionTask(ref);
+  }
+
+  private static boolean canDoHarvestTask(Ref<EntityStore> ref) {
+    // TODO: Implement
+    return canDoPositionTask(ref);
   }
 
   private static boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob) {
