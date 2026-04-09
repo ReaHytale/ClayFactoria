@@ -4,6 +4,7 @@ import com.clayfactoria.actions.builders.BuilderActionClearJobs;
 import com.clayfactoria.actions.builders.BuilderActionDoTask;
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.actions.builders.BuilderActionPutItemInHand;
+import com.clayfactoria.actions.builders.BuilderActionSelectHeldItem;
 import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.actions.builders.BuilderActionStartProgramming;
 import com.clayfactoria.components.BrushComponent;
@@ -74,6 +75,7 @@ public class ClayFactoria extends JavaPlugin {
     NPCPlugin.get().registerCoreComponentType("DropInventory", BuilderActionDropInventory::new);
     NPCPlugin.get().registerCoreComponentType("ClearJobs", BuilderActionClearJobs::new);
     NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
+    NPCPlugin.get().registerCoreComponentType("SelectHeldItem", BuilderActionSelectHeldItem::new);
     NPCPlugin.get()
         .registerCoreComponentType("StartProgramming", BuilderActionStartProgramming::new);
   }

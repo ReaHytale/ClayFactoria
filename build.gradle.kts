@@ -1,7 +1,7 @@
 plugins {
     idea
     java
-    id("com.azuredoom.hytale-tools") version "1.0.16"
+    id("com.azuredoom.hytale-tools") version "1.0.17"
 }
 
 

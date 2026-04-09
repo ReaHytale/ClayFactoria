@@ -6,7 +6,8 @@
     "DropList": "Drop_Kweebec_Clay",
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
-    "CanDoWork": true
+    "CanDoWork": true,
+    "CanDoHarvest": true
   },
   "Parameters": {
     "NameTranslationKey": {

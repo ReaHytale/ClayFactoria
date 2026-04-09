@@ -1,0 +1,34 @@
+{
+  "Class": "Instruction",
+  "Type": "Component",
+  "Parameters": {
+    "CanDoWork": {
+      "Value": false
+    }
+  },
+  "Content": {
+    "Continue": true,
+    "Instructions": [
+      {
+        "Sensor": {
+          "Type": "And",
+          "Sensors": [
+            {
+              "Type": "Switch",
+              "Switch": { "Compute": "CanDoWork" }
+            },
+            {
+              "Type": "CanDoTask",
+              "Task": "Work"
+            }
+          ]
+        },
+        "Actions": [
+          {
+            "Type": "DoTask"
+          }
+        ]
+      }
+    ]
+  }
+}

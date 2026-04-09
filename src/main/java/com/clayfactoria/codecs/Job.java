@@ -35,12 +35,17 @@ public class Job {
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
           .build();
-  @Getter private Vector3i location;
-  @Getter private Vector3d walkLocation;
-  @Getter private Task task;
-  @Getter private Box bounds;
+  @Getter
+  private Vector3i location;
+  @Getter
+  private Vector3d walkLocation;
+  @Getter
+  private Task task;
+  @Getter
+  private Box bounds;
 
-  private Job() {}
+  private Job() {
+  }
 
   public Job(Vector3i location, Task task, World world) throws IllegalStateException {
     if (task.taskExecutor.usesBounds()) {
@@ -83,7 +88,7 @@ public class Job {
     clone.task = task;
     clone.location = location.clone();
     clone.walkLocation = walkLocation.clone();
-    clone.bounds = bounds.clone();
+    clone.bounds = bounds == null ? null : bounds.clone();
     return clone;
   }
 

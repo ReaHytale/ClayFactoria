@@ -128,6 +128,15 @@
         }
       ]
     },
+    "Harvest": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Harvest.blockyanim",
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
     "IdlePassive": {
       "Animations": [
         {
