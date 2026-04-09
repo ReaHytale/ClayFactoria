@@ -1,9 +1,9 @@
 package com.clayfactoria.components;
 
 import com.clayfactoria.ClayFactoria;
-import com.clayfactoria.codecs.Task;
 import com.clayfactoria.codecs.Job;
 import com.clayfactoria.codecs.PathType;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.systems.TaskBoxSystem;
 import com.clayfactoria.utils.BlockUtils;
@@ -18,6 +18,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
@@ -57,12 +59,29 @@ public class BrushComponent implements Component<EntityStore> {
               (comp) -> comp.entityId)
           .documentation("The entity's internal UUID.")
           .add()
+          .append(
+              new KeyedCodec<>("BoxPoint1", Vector3i.CODEC),
+              (comp, value) -> comp.boxPoint1 = value,
+              (comp) -> comp.boxPoint1)
+          .documentation("The first point of the current box selection, when applicable")
+          .add()
           .build();
 
-  @Getter private List<Job> jobs = new ArrayList<>();
-  @Getter @Setter private PathType pathType = PathType.LOOP;
-  @Getter @Setter @Nonnull private Task task = Task.TAKE;
-  @Getter @Setter private UUID entityId;
+  @Getter
+  private List<Job> jobs = new ArrayList<>();
+  @Getter
+  @Setter
+  private PathType pathType = PathType.LOOP;
+  @Getter
+  @Setter
+  @Nonnull
+  private Task task = Task.TAKE;
+  @Getter
+  @Setter
+  private UUID entityId;
+  @Getter
+  @Setter
+  private Vector3i boxPoint1;
 
   public static ComponentType<EntityStore, BrushComponent> getComponentType() {
     return ClayFactoria.brushComponentType;
@@ -81,6 +100,28 @@ public class BrushComponent implements Component<EntityStore> {
       Vector3d min = box.min.subtract(TaskBoxSystem.BOX_PADDING);
       Vector3d max = box.max.add(TaskBoxSystem.BOX_PADDING);
       taskBoxesComponent.boxes.add(new JobBoxComponent(task.color, new Box(min, max)));
+    }
+  }
+
+  public void addTask(
+      Box box,
+      World world,
+      ComponentAccessor<EntityStore> componentAccessor,
+      Ref<EntityStore> playerRef) {
+    try {
+      this.task.taskExecutor.checkBounds(box);
+    } catch (IllegalArgumentException e) {
+      Player player = componentAccessor.getComponent(playerRef, Player.getComponentType());
+      assert player != null;
+      player.sendMessage(Message.raw(e.getMessage()));
+      return;
+    }
+    this.jobs.add(new Job(box, task, world));
+    this.setBoxPoint1(null);
+    TaskBoxesComponent taskBoxesComponent =
+        componentAccessor.getComponent(playerRef, TaskBoxesComponent.getComponentType());
+    if (taskBoxesComponent != null) {
+      taskBoxesComponent.boxes.add(new JobBoxComponent(task.color, box));
     }
   }
 

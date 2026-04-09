@@ -51,6 +51,11 @@ public final class BlockUtils {
     );
   }
 
+  public static Box makeSurroundingBox(Vector3i blockPos1, Vector3i blockPos2) {
+    // TODO: Implement
+    return new Box(blockPos1.toVector3d(), blockPos2.toVector3d());
+  }
+
   /**
    * Get the base for a multiblock, given the position of one of its blocks in the world.
    *

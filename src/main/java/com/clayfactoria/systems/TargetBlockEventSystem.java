@@ -1,6 +1,7 @@
 package com.clayfactoria.systems;
 
 import com.clayfactoria.components.BrushComponent;
+import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentAccessor;
@@ -10,6 +11,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.Message;
@@ -86,9 +88,21 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     try {
-      brushComponent.addTask(targetBlockLoc, player.getWorld(), store, playerRef);
+      if (brushComponent.getTask().taskExecutor.usesBounds()) {
+        if (brushComponent.getBoxPoint1() != null) {
+          Box box = BlockUtils.makeSurroundingBox(brushComponent.getBoxPoint1(), targetBlockLoc);
+          brushComponent.addTask(box, player.getWorld(), store, playerRef);
+          LOGGER.atInfo().log("Task Added");
+        } else {
+          brushComponent.setBoxPoint1(targetBlockLoc);
+          LOGGER.atInfo().log("Point 1 Set");
+        }
+      } else {
+        brushComponent.addTask(targetBlockLoc, player.getWorld(), store, playerRef);
+      }
     } catch (IllegalStateException e) {
-      player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
+      player.sendMessage(
+          Message.raw("Cannot place the target location here!").color(Color.RED));
       LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
     }
 

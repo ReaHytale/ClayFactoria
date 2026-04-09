@@ -86,7 +86,7 @@ public class Job {
   public Job clone() {
     Job clone = new Job();
     clone.task = task;
-    clone.location = location.clone();
+    clone.location = location == null ? null : location.clone();
     clone.walkLocation = walkLocation.clone();
     clone.bounds = bounds == null ? null : bounds.clone();
     return clone;
