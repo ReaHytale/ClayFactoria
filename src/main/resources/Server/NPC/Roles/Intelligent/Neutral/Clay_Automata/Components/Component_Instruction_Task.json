@@ -21,6 +21,11 @@
       "Description": "Parameter CanDoWork",
       "TypeHint": "String",
       "Value": false
+    },
+    "CanDoHarvest": {
+      "Description": "Parameter CanDoHarvest",
+      "TypeHint": "String",
+      "Value": false
     }
   },
   "Content": {
@@ -48,6 +53,12 @@
         "Reference": "Component_Instruction_Position",
         "Modify": {
           "CanDoPosition": { "Compute": "CanDoPosition" }
+        }
+      },
+      {
+        "Reference": "Component_Instruction_Harvest",
+        "Modify": {
+          "CanDoHarvest": { "Compute": "CanDoHarvest" }
         }
       }
     ]
