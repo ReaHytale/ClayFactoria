@@ -14,14 +14,14 @@ public final class BlockUtils {
 
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-  private BlockUtils() {
-  }
+  private BlockUtils() {}
 
   /**
-   * Returns the correctly rounded base block.<br> For a given location, if the X or Z component is
-   * in the negatives, the rounding should use the ceiling function on the absolute value of the
-   * component, whereas if in the positive range, it should just behave as a <code>int</code> cast.
-   * <br><br>
+   * Returns the correctly rounded base block.<br>
+   * For a given location, if the X or Z component is in the negatives, the rounding should use the
+   * ceiling function on the absolute value of the component, whereas if in the positive range, it
+   * should just behave as a <code>int</code> cast. <br>
+   * <br>
    * <em>Example:</em><br>
    * The coordinate (-425.5, 100, 320.5) should round to (-426, 100, 320), whereas a simple casting
    * to the <code>int</code> primitive would result in (-425, 100, 320), which would be wrong -
@@ -45,27 +45,49 @@ public final class BlockUtils {
    */
   public static Vector3i roundToNearestIntegerLocation(Vector3d location) {
     return new Vector3i(
-        (int) Math.round(location.x),
-        (int) Math.round(location.y),
-        (int) Math.round(location.z)
-    );
+        (int) Math.round(location.x), (int) Math.round(location.y), (int) Math.round(location.z));
   }
 
+  /**
+   * Computes the surrounding box for two integer coordinates.
+   *
+   * @param blockPos1 - The first block position
+   * @param blockPos2 - The second block position
+   * @return The surrounding <code>Box</code>
+   */
   public static Box makeSurroundingBox(Vector3i blockPos1, Vector3i blockPos2) {
-    // TODO: Implement
-    return new Box(blockPos1.toVector3d(), blockPos2.toVector3d());
+    Vector3d center1 = blockPos1.toVector3d().add(0.5, 0.5, 0.5);
+    Vector3d center2 = blockPos2.toVector3d().add(0.5, 0.5, 0.5);
+    double signX1 = Math.signum(center1.x - center2.x);
+    double signX2 = Math.signum(center2.x - center1.x);
+    double signY1 = Math.signum(center1.y - center2.y);
+    double signY2 = Math.signum(center2.y - center1.y);
+    double signZ1 = Math.signum(center1.z - center2.z);
+    double signZ2 = Math.signum(center2.z - center1.z);
+    if (signX1 == 0) {
+      signX1 = -1; signX2 = 1;
+    }
+    if (signY1 == 0) {
+      signY1 = -1; signY2 = 1;
+    }
+    if (signZ1 == 0) {
+      signZ1 = -1; signZ2 = 1;
+    }
+    return new Box(
+        center1.add(signX1 * 0.5, signY1 * 0.5, signZ1 * 0.5),
+        center2.add(signX2 * 0.5, signY2 * 0.5, signZ2 * 0.5));
   }
 
   /**
    * Get the base for a multiblock, given the position of one of its blocks in the world.
    *
    * @param position The position of the block.
-   * @param world    The world of the block.
+   * @param world The world of the block.
    * @return The base block of the multi-block at this position.
    */
   public static Vector3i getBaseBlock(Vector3i position, World world) {
-    BlockPosition blockPosition = world.getBaseBlock(
-        new BlockPosition(position.x, position.y, position.z));
+    BlockPosition blockPosition =
+        world.getBaseBlock(new BlockPosition(position.x, position.y, position.z));
     return new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
   }
 
@@ -82,7 +104,7 @@ public final class BlockUtils {
    * used in turn to retrieve the bounding box(es) of said block.
    *
    * @param location The location of the block
-   * @param world    The world in which the block is located
+   * @param world The world in which the block is located
    * @return The {@link RotatedVariantBoxes} for the block at the given location in the world.
    */
   public static RotatedVariantBoxes getRotatedVariantBoxes(Vector3i location, World world) {
@@ -90,8 +112,8 @@ public final class BlockUtils {
     if (blockType == null) {
       return null;
     }
-    BlockBoundingBoxes blockBoundingBoxes = BlockBoundingBoxes.getAssetMap()
-        .getAsset(blockType.getHitboxTypeIndex());
+    BlockBoundingBoxes blockBoundingBoxes =
+        BlockBoundingBoxes.getAssetMap().getAsset(blockType.getHitboxTypeIndex());
     if (blockBoundingBoxes == null) {
       return null;
     }
