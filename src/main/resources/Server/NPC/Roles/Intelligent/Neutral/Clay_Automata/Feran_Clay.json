@@ -5,11 +5,10 @@
     "Appearance": "Feran_Clay",
     "DropList": "Drop_Feran_Clay",
     "MaxHealth": 20,
-    "NameTranslationKey": {
-      "Compute": "NameTranslationKey"
-    },
+    "NameTranslationKey": { "Compute": "NameTranslationKey" },
     "CanDoTake": true,
-    "CanDoDeposit": true
+    "CanDoDeposit": true,
+    "HotbarItems": [ "Tool_Sickle_Iron" ]
   },
   "Parameters": {
     "NameTranslationKey": {
