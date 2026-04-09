@@ -1,0 +1,55 @@
+{
+  "Type": "Component",
+  "Class": "Instruction",
+  "Parameters": {
+    "CanDoDeposit": {
+      "Description": "Parameter CanDoDeposit",
+      "TypeHint": "String",
+      "Value": false
+    },
+    "CanDoTake": {
+      "Description": "Parameter CanDoTake",
+      "TypeHint": "String",
+      "Value": false
+    },
+    "CanDoPosition": {
+      "Description": "Parameter CanDoPosition",
+      "TypeHint": "String",
+      "Value": true
+    },
+    "CanDoWork": {
+      "Description": "Parameter CanDoWork",
+      "TypeHint": "String",
+      "Value": false
+    }
+  },
+  "Content": {
+    "Continue": true,
+    "Instructions": [
+      {
+        "Reference": "Component_Instruction_Deposit",
+        "Modify": {
+          "CanDoDeposit": { "Compute": "CanDoDeposit" }
+        }
+      },
+      {
+        "Reference": "Component_Instruction_Take",
+        "Modify": {
+          "CanDoTake": { "Compute": "CanDoTake" }
+        }
+      },
+      {
+        "Reference": "Component_Instruction_Work",
+        "Modify": {
+          "CanDoWork": { "Compute": "CanDoWork" }
+        }
+      },
+      {
+        "Reference": "Component_Instruction_Position",
+        "Modify": {
+          "CanDoPosition": { "Compute": "CanDoPosition" }
+        }
+      }
+    ]
+  }
+}

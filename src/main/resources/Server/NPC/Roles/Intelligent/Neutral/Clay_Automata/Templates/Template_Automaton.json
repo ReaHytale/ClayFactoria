@@ -47,24 +47,16 @@
       "Value": false
     }
   },
-  "Appearance": {
-    "Compute": "Appearance"
-  },
-  "DropList": {
-    "Compute": "DropList"
-  },
-  "DisableDamageGroups": [
-    "Self"
-  ],
+  "Appearance": { "Compute": "Appearance" },
+  "DropList": { "Compute": "DropList" },
+  "DisableDamageGroups": [ "Self" ],
   "DefaultNPCAttitude": "Ignore",
   "DefaultPlayerAttitude": "Neutral",
   "KnockbackScale": 0.5,
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": {
-        "Compute": "MaxSpeed"
-      },
+      "MaxWalkSpeed": { "Compute": "MaxSpeed" },
       "Gravity": 10,
       "RunThreshold": 0.3,
       "MaxFallSpeed": 15,
@@ -72,9 +64,7 @@
       "Acceleration": 10
     }
   ],
-  "MaxHealth": {
-    "Compute": "MaxHealth"
-  },
+  "MaxHealth": { "Compute": "MaxHealth" },
   "CombatConfig": {
     "EntityEffect": "Immunity_Environmental"
   },
@@ -83,10 +73,8 @@
       "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
         {
-          "To": [
-            "Idle"
-          ],
-          "From": []
+          "To": [ "Idle" ],
+          "From": [ ]
         }
       ],
       "Actions": [
@@ -111,10 +99,8 @@
     {
       "States": [
         {
-          "From": [],
-          "To": [
-            "Automated"
-          ]
+          "From": [ ],
+          "To": [ "Automated" ]
         }
       ],
       "Actions": [
@@ -154,10 +140,7 @@
           "Actions": [
             {
               "Type": "Timeout",
-              "Delay": [
-                0.5,
-                2
-              ],
+              "Delay": [ 0.5, 2 ],
               "Action": {
                 "Type": "SetLeashPosition",
                 "ToTarget": true
@@ -211,9 +194,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [
-                      "Tool_Brush"
-                    ]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -261,11 +242,7 @@
                 },
                 {
                   "Type": "SpawnParticles",
-                  "Offset": [
-                    0,
-                    1,
-                    0
-                  ],
+                  "Offset": [ 0, 1, 0 ],
                   "ParticleSystem": "Alerted"
                 }
               ]
@@ -278,9 +255,7 @@
                 "Filters": [
                   {
                     "Type": "ItemInHand",
-                    "Items": [
-                      "Tool_Brush"
-                    ]
+                    "Items": [ "Tool_Brush" ]
                   }
                 ]
               },
@@ -299,9 +274,7 @@
                   "Filters": [
                     {
                       "Type": "ItemInHand",
-                      "Items": [
-                        "Tool_Brush"
-                      ]
+                      "Items": [ "Tool_Brush" ]
                     }
                   ]
                 }
@@ -369,173 +342,14 @@
                   },
                   "Instructions": [
                     {
-                      "$Comment": "Play Idle Animation while waiting to run Task",
-                      "Continue": true,
-                      "Sensor": {
-                        "Type": "Any"
-                      },
-                      "Actions": [
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": "Idle",
-                          "Once": true
-                        }
-                      ]
-                    },
-                    {
-                      "$Comment": "Sense nearby containers and run the Task if the Job's Task is equal to 'DEPOSIT'",
-                      "Sensor": {
-                        "Type": "And",
-                        "Sensors": [
-                          {
-                            "Type": "Switch",
-                            "Switch": {
-                              "Compute": "CanDoDeposit"
-                            }
-                          },
-                          {
-                            "Type": "CanDoTask",
-                            "Task": "Deposit"
-                          }
-                        ]
-                      },
-                      "ActionsBlocking": true,
-                      "Actions": [
-                        {
-                          "Type": "SetFlag",
-                          "Name": "HoldingItem",
-                          "SetTo": false
-                        },
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": "Deposit",
-                          "Once": true
-                        },
-                        {
-                          "Type": "Timeout",
-                          "Delay": [
-                            0.4,
-                            0.4
-                          ]
-                        },
-                        {
-                          "Type": "DoTask"
-                        },
-                        {
-                          "Type": "Timeout",
-                          "Delay": [
-                            0.4,
-                            0.4
-                          ]
-                        },
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": ""
-                        }
-                      ]
-                    },
-                    {
-                      "$Comment": "Sense nearby containers and run the Task if the Job's Task is equal to 'TAKE'",
-                      "Sensor": {
-                        "Type": "And",
-                        "Sensors": [
-                          {
-                            "Type": "Switch",
-                            "Switch": {
-                              "Compute": "CanDoTake"
-                            }
-                          },
-                          {
-                            "Type": "CanDoTask",
-                            "Task": "Take"
-                          }
-                        ]
-                      },
-                      "ActionsBlocking": true,
-                      "Actions": [
-                        {
-                          "Type": "SetFlag",
-                          "Name": "HoldingItem",
-                          "SetTo": true
-                        },
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": "Take",
-                          "Once": true
-                        },
-                        {
-                          "Type": "Timeout",
-                          "Delay": [
-                            0.4,
-                            0.4
-                          ]
-                        },
-                        {
-                          "Type": "DoTask"
-                        },
-                        {
-                          "Type": "Timeout",
-                          "Delay": [
-                            0.4,
-                            0.4
-                          ]
-                        },
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": ""
-                        }
-                      ]
-                    },
-                    {
-                      "$Comment": "Mark the Task as done without doing anything if the Job's Task is equal to 'POSITION'",
-                      "Sensor": {
-                        "Type": "And",
-                        "Sensors": [
-                          {
-                            "Type": "Switch",
-                            "Switch": {
-                              "Compute": "CanDoPosition"
-                            }
-                          },
-                          {
-                            "Type": "CanDoTask",
-                            "Task": "Position"
-                          }
-                        ]
-                      },
-                      "Actions": [
-                        {
-                          "Type": "DoTask"
-                        }
-                      ]
-                    },
-                    {
-                      "$Comment": "Sense nearby locations and run the Task if the Job's Task is equal to 'WORK'",
-                      "Sensor": {
-                        "Type": "And",
-                        "Sensors": [
-                          {
-                            "Type": "Switch",
-                            "Switch": {
-                              "Compute": "CanDoWork"
-                            }
-                          },
-                          {
-                            "Type": "CanDoTask",
-                            "Task": "Work"
-                          }
-                        ]
-                      },
-                      "Actions": [
-                        {
-                          "Type": "DoTask"
-                        }
-                      ]
+                      "$Comment": "If there is a task that can be completed at this position, do it.",
+                      "Reference": "Component_Instruction_Task",
+                      "Modify": {
+                        "CanDoWork": { "Compute": "CanDoWork" },
+                        "CanDoTake": { "Compute": "CanDoTake" },
+                        "CanDoDeposit": { "Compute": "CanDoDeposit" },
+                        "CanDoPosition": { "Compute": "CanDoPosition" }
+                      }
                     },
                     {
                       "$Comment": "Switch to default (pathing) state when there is NOT a Task for the current target location",
@@ -550,6 +364,20 @@
                         {
                           "Type": "State",
                           "State": "Automated.Default"
+                        }
+                      ]
+                    },
+                    {
+                      "$Comment": "Play Idle Animation while waiting to run Task",
+                      "Sensor": {
+                        "Type": "Any"
+                      },
+                      "Actions": [
+                        {
+                          "Type": "PlayAnimation",
+                          "Slot": "Status",
+                          "Animation": "Idle",
+                          "Once": true
                         }
                       ]
                     }
@@ -568,15 +396,11 @@
         "$Comment": "Interactable when holding brush",
         "Sensor": {
           "Type": "Player",
-          "Range": {
-            "Compute": "ViewRange"
-          },
+          "Range": { "Compute": "ViewRange" },
           "Filters": [
             {
               "Type": "ItemInHand",
-              "Items": [
-                "Tool_Brush"
-              ]
+              "Items": [ "Tool_Brush" ]
             }
           ]
         },
@@ -728,15 +552,11 @@
           "Type": "Not",
           "Sensor": {
             "Type": "Player",
-            "Range": {
-              "Compute": "ViewRange"
-            },
+            "Range": { "Compute": "ViewRange" },
             "Filters": [
               {
                 "Type": "ItemInHand",
-                "Items": [
-                  "Tool_Brush"
-                ]
+                "Items": [ "Tool_Brush" ]
               }
             ]
           }
@@ -750,9 +570,7 @@
       }
     ]
   },
-  "NameTranslationKey": {
-    "Compute": "NameTranslationKey"
-  },
+  "NameTranslationKey": { "Compute": "NameTranslationKey" },
   "DeathInstruction": {
     "$Comment": "Drop inventory on death",
     "Sensor": {

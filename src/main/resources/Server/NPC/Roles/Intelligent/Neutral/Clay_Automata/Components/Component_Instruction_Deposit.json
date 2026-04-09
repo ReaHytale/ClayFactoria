@@ -1,0 +1,67 @@
+{
+  "Class": "Instruction",
+  "Type": "Component",
+  "Parameters": {
+    "CanDoDeposit": {
+      "Value": false
+    }
+  },
+  "Content": {
+    "Continue": true,
+    "Instructions": [
+      {
+        "Sensor": {
+          "Type": "And",
+          "Sensors": [
+            {
+              "Type": "Switch",
+              "Switch": {
+                "Compute": "CanDoDeposit"
+              }
+            },
+            {
+              "Type": "CanDoTask",
+              "Task": "Deposit"
+            }
+          ]
+        },
+        "ActionsBlocking": true,
+        "Actions": [
+          {
+            "Type": "SetFlag",
+            "Name": "HoldingItem",
+            "SetTo": false
+          },
+          {
+            "Type": "PlayAnimation",
+            "Slot": "Status",
+            "Animation": "Deposit",
+            "Once": true
+          },
+          {
+            "Type": "Timeout",
+            "Delay": [
+              0.4,
+              0.4
+            ]
+          },
+          {
+            "Type": "DoTask"
+          },
+          {
+            "Type": "Timeout",
+            "Delay": [
+              0.4,
+              0.4
+            ]
+          },
+          {
+            "Type": "PlayAnimation",
+            "Slot": "Status",
+            "Animation": ""
+          }
+        ]
+      }
+    ]
+  }
+}
