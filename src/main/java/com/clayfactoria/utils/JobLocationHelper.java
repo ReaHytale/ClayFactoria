@@ -12,9 +12,11 @@ import java.util.List;
 
 public final class JobLocationHelper {
 
-  private JobLocationHelper() {}
+  private JobLocationHelper() {
+  }
 
-  public static Vector3d findValidWalkLocation(World world, Vector3i location, Vector3d from)
+  public static Vector3d findValidWalkLocationForBlock(World world, Vector3i location,
+      Vector3d from)
       throws IllegalStateException {
 
     BlockType blockType = world.getBlockType(location);

@@ -97,7 +97,9 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
         assert taskBoxesComponent != null;
 
         if (brushComponent.getBoxPoint1() != null) {
-          taskBoxesComponent.boxes.removeLast();
+          if (!taskBoxesComponent.boxes.isEmpty()) {
+            taskBoxesComponent.boxes.removeLast();
+          }
 
           Box box = BlockUtils.makeSurroundingBox(brushComponent.getBoxPoint1(), targetBlockLoc);
           brushComponent.addTask(box, player.getWorld(), store, playerRef);

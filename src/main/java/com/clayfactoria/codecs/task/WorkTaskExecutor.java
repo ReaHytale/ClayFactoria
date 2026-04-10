@@ -56,9 +56,7 @@ public class WorkTaskExecutor extends PointTaskExecutor {
     if (processingBenchBlock == null || benchBlock == null) {
       return false;
     }
-    processingBenchBlock.setActive(true, benchBlock, null);
-    jobComponent.setComplete(true);
-    return true;
+    return processingBenchBlock.setActive(true, benchBlock, null);
   }
 
 }

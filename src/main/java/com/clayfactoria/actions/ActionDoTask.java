@@ -29,6 +29,10 @@ public class ActionDoTask extends ActionBaseLogger {
     if (job == null) {
       return false;
     }
-    return job.getTask().taskExecutor.execute(ref);
+    if (job.getTask().taskExecutor.execute(ref)) {
+      jobComponent.setComplete(true);
+      return true;
+    }
+    return false;
   }
 }

@@ -60,12 +60,7 @@ public class TakeTaskExecutor extends PointTaskExecutor {
     Objects.requireNonNull(itemContainer);
 
     ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
-    if (TaskHelper.transferItem(itemContainer, npcInventory)) {
-      jobComponent.setComplete(true);
-      return true;
-    } else {
-      return false;
-    }
+    return TaskHelper.transferItem(itemContainer, npcInventory);
   }
 
 }

@@ -1,7 +1,5 @@
 package com.clayfactoria.codecs;
 
-import static com.clayfactoria.utils.JobLocationHelper.findValidWalkLocation;
-
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.math.shape.Box;
@@ -55,7 +53,7 @@ public class Job {
     this.task = task;
 
     if (!task.locationEqualsWalkLocation) {
-      walkLocation = findValidWalkLocation(world, location, location.toVector3d());
+      walkLocation = task.taskExecutor.findNextWalkLocation(this, world, location.toVector3d());
     } else {
       walkLocation = location.toVector3d().add(new Vector3d(0.5, 1, 0.5));
     }
@@ -71,23 +69,19 @@ public class Job {
     this.task = task;
 
     walkLocation =
-        task.taskExecutor.findNextWalkLocationInBounds(
-            bounds, world, bounds.min.clone().add(bounds.max).scale(0.5));
+        task.taskExecutor.findNextWalkLocation(
+            this, world, bounds.min.clone().add(bounds.max).scale(0.5));
   }
 
   public void updateWalkLocation(World world, Vector3d from) {
-    if (task.taskExecutor.usesBounds()) {
-      walkLocation = task.taskExecutor.findNextWalkLocationInBounds(bounds, world, from);
-    } else {
-      walkLocation = findValidWalkLocation(world, location, from);
-    }
+    walkLocation = task.taskExecutor.findNextWalkLocation(this, world, from);
   }
 
   public Job clone() {
     Job clone = new Job();
     clone.task = task;
     clone.location = location == null ? null : location.clone();
-    clone.walkLocation = walkLocation.clone();
+    clone.walkLocation = walkLocation == null ? null : walkLocation.clone();
     clone.bounds = bounds == null ? null : bounds.clone();
     return clone;
   }

@@ -21,6 +21,18 @@ import java.util.Objects;
 
 public class DepositTaskExecutor extends PointTaskExecutor {
 
+  private static boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob) {
+    Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
+    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
+        Objects.requireNonNull(npcEntity.getWorld()),
+        currentJob.getLocation(),
+        containerSlot);
+    Objects.requireNonNull(itemContainer);
+
+    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
+    return TaskHelper.transferItem(npcInventory, itemContainer);
+  }
+
   @Override
   public boolean canPerformTask(Ref<EntityStore> entityRef) {
     Store<EntityStore> store = entityRef.getStore();
@@ -63,26 +75,9 @@ public class DepositTaskExecutor extends PointTaskExecutor {
 
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
     if (deposit(ContainerSlot.Fuel, npcEntity, currentJob)) {
-      jobComponent.setComplete(true);
-      return true;
-    } else if (deposit(ContainerSlot.Input, npcEntity, currentJob)) {
-      jobComponent.setComplete(true);
       return true;
     } else {
-      return false;
+      return deposit(ContainerSlot.Input, npcEntity, currentJob);
     }
   }
-
-  private static boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob) {
-    Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
-    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
-        Objects.requireNonNull(npcEntity.getWorld()),
-        currentJob.getLocation(),
-        containerSlot);
-    Objects.requireNonNull(itemContainer);
-
-    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
-    return TaskHelper.transferItem(npcInventory, itemContainer);
-  }
-
 }

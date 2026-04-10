@@ -10,7 +10,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -45,24 +44,6 @@ public final class TaskHelper {
     NPCEntity npcEntity = store.getComponent(ref, component);
     Objects.requireNonNull(npcEntity, "NPCEntity was null");
     return npcEntity;
-  }
-
-  @Nullable
-  public static Holder<ChunkStore> findNearbyPOIHolder(NPCEntity npcEntity, Task task) {
-    World world = Objects.requireNonNull(npcEntity.getWorld());
-    Vector3i pos = npcEntity.getOldPosition().toVector3i();
-    List<Vector3i> shuffled = getAdjacentDirections();
-    for (Vector3i dir : shuffled) {
-      BlockType type = world.getBlockType(pos.clone().add(dir));
-      if (type == null) {
-        continue;
-      }
-      Holder<ChunkStore> holder = type.getBlockEntity();
-      if (holder != null) {
-        return holder;
-      }
-    }
-    return null;
   }
 
   @Nullable
