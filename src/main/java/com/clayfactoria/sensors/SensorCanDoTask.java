@@ -45,8 +45,8 @@ public class SensorCanDoTask extends SensorBaseLogger {
     if (currentTask == null || currentTask != task) {
       return false;
     }
-    
-    return currentTask.canDoTask.apply(ref);
+
+    return currentTask.taskExecutor.canPerformTask(ref);
   }
 
   @Override
