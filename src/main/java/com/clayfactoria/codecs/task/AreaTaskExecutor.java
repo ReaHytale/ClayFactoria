@@ -1,7 +1,9 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.utils.BlockUtils;
 import com.clayfactoria.utils.JobLocationHelper;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -13,33 +15,36 @@ import java.util.Set;
 
 public abstract class AreaTaskExecutor implements TaskExecutor {
 
+  protected static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
   private static final double MAX_AREA_BOUNDS_WIDTH_LENGTH = 10;
   private static final double MAX_AREA_BOUNDS_HEIGHT = 5;
-  private static final Vector3i[] directions = new Vector3i[]{
-      Vector3i.POS_X, Vector3i.NEG_X,
-      Vector3i.POS_Y, Vector3i.NEG_Y,
-      Vector3i.POS_Z, Vector3i.NEG_Z
-  };
+  private static final Vector3i[] DIRECTIONS =
+      new Vector3i[] {
+        Vector3i.POS_X, Vector3i.NEG_X,
+        Vector3i.POS_Y, Vector3i.NEG_Y,
+        Vector3i.POS_Z, Vector3i.NEG_Z
+      };
 
   /**
    * Find the closest point inside the box to the given point <code>p</code>
    *
    * @param box The box that the resulting point will be inside.
-   * @param p   The point to search from.
+   * @param p The point to search from.
    * @return The closest point inside the box to <code>p</code>.
    */
   private static Vector3d findClosestPointInBox(Box box, Vector3d p) {
     return new Vector3d(
-        Math.clamp(p.x, Math.min(box.min.x, box.max.x), Math.max(box.min.x, box.max.x)),
-        Math.clamp(p.y, Math.min(box.min.y, box.max.y), Math.max(box.min.y, box.max.y)),
-        Math.clamp(p.z, Math.min(box.min.z, box.max.z), Math.max(box.min.z, box.max.z))
-    );
+        Math.clamp(p.x, box.min.x, box.max.x),
+        Math.clamp(p.y, box.min.y, box.max.y),
+        Math.clamp(p.z, box.min.z, box.max.z));
   }
 
   @Override
   public Vector3d findNextWalkLocation(Job job, World world, Vector3d from) {
     // Might cause issues since the rounded value may not be in the bounds?
-    Vector3i start = findClosestPointInBox(job.getBounds(), from).toVector3i();
+    Vector3i start =
+        BlockUtils.getCorrectlyRoundedLocation(findClosestPointInBox(job.getBounds(), from));
 
     // Flood fill algorithm with queue implementation, but stop as soon as we find a valid block.
     Queue<Vector3i> queue = new ArrayDeque<>();
@@ -47,19 +52,22 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
 
     queue.add(start);
     visited.add(start);
-    // Could use recursion here but this is fine.
     while (!queue.isEmpty()) {
       Vector3i p = queue.poll();
-      for (Vector3i dir : directions) {
-        Vector3i next = p.add(dir);
+      for (Vector3i dir : DIRECTIONS) {
+        Vector3i next = p.clone().add(dir);
+        Vector3d center =
+            next.toVector3d().add(0.5 * (next.x < 0 ? -1 : 1), 0, 0.5 * (next.z < 0 ? -1 : 1));
         if (canDoTaskHere(next, world)) {
-          // Try to find and return the walk location, but if it fails, just continue search.
           try {
-            return JobLocationHelper.findValidWalkLocationForBlock(world, next, from);
+            Vector3d validWalkLocationForBlock =
+                JobLocationHelper.findValidWalkLocationForBlock(world, next, from);
+            job.setLocation(next);
+            return validWalkLocationForBlock;
           } catch (IllegalStateException _) {
           }
         }
-        if (!visited.contains(next)) {
+        if (job.getBounds().containsPosition(center) && !visited.contains(next)) {
           queue.add(next);
           visited.add(next);
         }
@@ -88,5 +96,5 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
     }
   }
 
-  abstract protected boolean canDoTaskHere(Vector3i pos, World world);
+  protected abstract boolean canDoTaskHere(Vector3i pos, World world);
 }

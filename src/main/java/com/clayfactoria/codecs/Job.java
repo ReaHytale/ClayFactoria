@@ -7,6 +7,7 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.World;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString
@@ -34,6 +35,7 @@ public class Job {
           .add()
           .build();
   @Getter
+  @Setter
   private Vector3i location;
   @Getter
   private Vector3d walkLocation;

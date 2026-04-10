@@ -73,7 +73,7 @@ public final class BlockUtils {
     if (signZ1 == 0) {
       signZ1 = -1; signZ2 = 1;
     }
-    return new Box(
+    return BoxUtils.createMinMaxBox(
         center1.add(signX1 * 0.5, signY1 * 0.5, signZ1 * 0.5),
         center2.add(signX2 * 0.5, signY2 * 0.5, signZ2 * 0.5));
   }
