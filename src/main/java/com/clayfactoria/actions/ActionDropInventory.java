@@ -8,6 +8,7 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.entity.ItemUtils;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -43,14 +44,17 @@ public class ActionDropInventory extends ActionBaseLogger {
       double dt, @Nonnull Store<EntityStore> store) {
     NPCEntity npc = TaskHelper.getNPCEntity(ref);
     List<String> hotbarItems = getHotbarItems(npc.getRole());
-
-    InventoryComponent.getCombined(store, ref).forEach((_, item) -> {
+    CombinedItemContainer itemContainer = InventoryComponent.getCombined(store, ref,
+        InventoryComponent.EVERYTHING);
+    itemContainer.forEach((slot, item) -> {
       if (dropHotbarItems
           || hotbarItems != null && !hotbarItems.contains(item.getItemId())
       ) {
         ItemUtils.throwItem(ref, store, item, Vector3d.ZERO, 1.0F);
+        itemContainer.removeItemStackFromSlot(slot);
       }
     });
+
     return true;
   }
 

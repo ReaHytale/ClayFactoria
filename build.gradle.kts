@@ -1,7 +1,7 @@
 plugins {
     idea
     java
-    id("com.azuredoom.hytale-tools") version "1.0.19"
+    id("com.azuredoom.hytale-tools") version "1.0.20"
 }
 
 
@@ -51,7 +51,6 @@ hytaleTools {
     disabledByDefault = property("disabled_by_default").toString().toBoolean()
     includesPack = property("includes_pack").toString().toBoolean()
     patchline = property("patchline").toString()
-    jbrHome = "/home/bqkitcat/.jdks/jbr-25.0.2"
 }
 
 repositories {

@@ -34,7 +34,8 @@
           {
             "Type": "PlayAnimation",
             "Slot": "Status",
-            "Animation": "Harvest"
+            "Animation": "Harvest",
+            "Once": true
           },
           {
             "Type": "Timeout",

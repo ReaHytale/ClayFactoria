@@ -20,17 +20,17 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
   private static final double MAX_AREA_BOUNDS_WIDTH_LENGTH = 10;
   private static final double MAX_AREA_BOUNDS_HEIGHT = 5;
   private static final Vector3i[] DIRECTIONS =
-      new Vector3i[] {
-        Vector3i.POS_X, Vector3i.NEG_X,
-        Vector3i.POS_Y, Vector3i.NEG_Y,
-        Vector3i.POS_Z, Vector3i.NEG_Z
+      new Vector3i[]{
+          Vector3i.POS_X, Vector3i.NEG_X,
+          Vector3i.POS_Y, Vector3i.NEG_Y,
+          Vector3i.POS_Z, Vector3i.NEG_Z
       };
 
   /**
    * Find the closest point inside the box to the given point <code>p</code>
    *
    * @param box The box that the resulting point will be inside.
-   * @param p The point to search from.
+   * @param p   The point to search from.
    * @return The closest point inside the box to <code>p</code>.
    */
   private static Vector3d findClosestPointInBox(Box box, Vector3d p) {
@@ -43,6 +43,9 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
   @Override
   public Vector3d findNextWalkLocation(Job job, World world, Vector3d from) {
     // Might cause issues since the rounded value may not be in the bounds?
+    if (job.getBounds() == null) {
+      return null;
+    }
     Vector3i start =
         BlockUtils.getCorrectlyRoundedLocation(findClosestPointInBox(job.getBounds(), from));
 
@@ -58,6 +61,9 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
         Vector3i next = p.clone().add(dir);
         Vector3d center =
             next.toVector3d().add(0.5 * (next.x < 0 ? -1 : 1), 0, 0.5 * (next.z < 0 ? -1 : 1));
+        if (!job.getBounds().containsPosition(center)) {
+          continue;
+        }
         if (canDoTaskHere(next, world)) {
           try {
             Vector3d validWalkLocationForBlock =
@@ -67,7 +73,7 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
           } catch (IllegalStateException _) {
           }
         }
-        if (job.getBounds().containsPosition(center) && !visited.contains(next)) {
+        if (!visited.contains(next)) {
           queue.add(next);
           visited.add(next);
         }

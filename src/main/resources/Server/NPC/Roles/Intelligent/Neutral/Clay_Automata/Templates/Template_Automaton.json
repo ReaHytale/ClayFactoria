@@ -597,7 +597,7 @@
     ]
   },
   "Debug": "",
-  "DeathAnimationTime": 0,
+  "DeathAnimationTime": 0.1,
   "HotbarItems": { "Compute": "HotbarItems" },
   "InventorySize": 9
 }

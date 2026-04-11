@@ -68,8 +68,6 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
     Job currentJob = jobComponent.getCurrentJob();
     if (currentJob == null) {
-      LOGGER.atInfo().log(
-          "Current Task was null. Clearing Position Provider");
       this.positionProvider.clear();
       return false;
     }
@@ -81,8 +79,6 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
     Vector3d currentTarget = currentJob.getWalkLocation();
     if (currentTarget == null) {
-      LOGGER.atInfo().log(
-          "Current Target was null. Clearing Position Provider");
       this.positionProvider.clear();
       return false;
     }
@@ -125,7 +121,6 @@ public class SensorLeashTarget extends SensorBaseLogger {
 
       if (nextJob == null) {
         this.positionProvider.clear();
-        LOGGER.atInfo().log("nextJob was null. Clearing Position Provider");
         return false;
       }
 
@@ -134,17 +129,10 @@ public class SensorLeashTarget extends SensorBaseLogger {
       Vector3d nextJobLocation = nextJob.getWalkLocation();
       if (nextJobLocation == null) {
         this.positionProvider.clear();
-        LOGGER.atInfo().log(
-            "nextJobLocation was null. Clearing Position Provider");
         return false;
       }
 
       this.positionProvider.setTarget(nextJobLocation);
-      LOGGER.atInfo().log(String.format(
-          "Sensor Leash Target: Setting Next Target from %s to %s",
-          currentTarget,
-          nextJobLocation
-      ));
       return true;
     }
   }
