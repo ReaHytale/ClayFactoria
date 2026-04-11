@@ -20,6 +20,8 @@ import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.Role;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -160,22 +162,29 @@ public final class TaskHelper {
 
   public static boolean transferItem(ItemContainer source, ItemContainer target) {
     for (short slot = 0; slot < source.getCapacity(); slot++) {
-      ItemStack itemStack = source.getItemStack(slot);
-      if (itemStack == null) {
-        continue;
-      }
-      int prevQuantity = itemStack.getQuantity();
-      source.moveItemStackFromSlot(slot, 1, target);
-      // Check whether it actually succeeded to transfer
-      itemStack = source.getItemStack(slot);
-      if (itemStack == null) {
+      boolean result = transferItem(source, target, slot);
+      if (result) {
         return true;
-      } else {
-        return itemStack.getQuantity() == prevQuantity - 1;
       }
     }
     // No item found in storage, return false for failure.
     return false;
+  }
+
+  public static boolean transferItem(ItemContainer source, ItemContainer target, short slot) {
+    ItemStack itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return false;
+    }
+    int prevQuantity = itemStack.getQuantity();
+    source.moveItemStackFromSlot(slot, 1, target);
+    // Check whether it actually succeeded to transfer
+    itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return true;
+    } else {
+      return itemStack.getQuantity() == prevQuantity - 1;
+    }
   }
 
   public static ItemContainer getNPCInventory(NPCEntity npcEntity, Store<EntityStore> store) {
@@ -199,5 +208,20 @@ public final class TaskHelper {
     Hotbar hotbar = store.getComponent(entityRef, Hotbar.getComponentType());
     assert hotbar != null;
     return hotbar.getActiveItem();
+  }
+
+  public static List<String> getHotbarItems(Role role) {
+    try {
+      Field hotbarItemsField = Role.class.getDeclaredField("hotbarItems");
+      hotbarItemsField.setAccessible(true);
+      String[] hotbarItemsArray = (String[]) hotbarItemsField.get(role);
+      if (hotbarItemsArray != null) {
+        return Arrays.asList(hotbarItemsArray);
+      }
+      return null;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      LOGGER.atSevere().log(e.getMessage());
+      return null;
+    }
   }
 }

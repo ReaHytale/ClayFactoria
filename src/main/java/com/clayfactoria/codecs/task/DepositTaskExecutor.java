@@ -12,26 +12,19 @@ import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DepositTaskExecutor extends PointTaskExecutor {
 
-  private static boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob) {
-    Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
-    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
-        Objects.requireNonNull(npcEntity.getWorld()),
-        currentJob.getLocation(),
-        containerSlot);
-    Objects.requireNonNull(itemContainer);
-
-    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
-    return TaskHelper.transferItem(npcInventory, itemContainer);
-  }
+  private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   @Override
   public boolean canPerformTask(Ref<EntityStore> entityRef) {
@@ -73,11 +66,33 @@ public class DepositTaskExecutor extends PointTaskExecutor {
         store.getComponent(entityRef, JobComponent.getComponentType()));
     Job currentJob = Objects.requireNonNull(jobComponent.getCurrentJob());
 
+    List<String> hotbarItems = TaskHelper.getHotbarItems(npcEntity.getRole());
+
     // Attempt to deposit as fuel first (if this is a station with a fuel slot)
-    if (deposit(ContainerSlot.Fuel, npcEntity, currentJob)) {
+    if (deposit(ContainerSlot.Fuel, npcEntity, currentJob, hotbarItems)) {
       return true;
     } else {
-      return deposit(ContainerSlot.Input, npcEntity, currentJob);
+      return deposit(ContainerSlot.Input, npcEntity, currentJob, hotbarItems);
     }
+  }
+
+  private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob,
+      List<String> hotbarItems) {
+    Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
+    ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
+        Objects.requireNonNull(npcEntity.getWorld()),
+        currentJob.getLocation(),
+        containerSlot);
+    Objects.requireNonNull(itemContainer);
+
+    ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
+    AtomicBoolean success = new AtomicBoolean(false);
+    npcInventory.forEach((slot, itemStack) -> {
+      if (!hotbarItems.contains(itemStack.getItemId())
+          && TaskHelper.transferItem(npcInventory, itemContainer, slot)) {
+        success.set(true);
+      }
+    });
+    return success.get();
   }
 }

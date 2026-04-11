@@ -1,5 +1,7 @@
 package com.clayfactoria.actions;
 
+import static com.clayfactoria.utils.TaskHelper.getHotbarItems;
+
 import com.clayfactoria.actions.builders.BuilderActionDropInventory;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
@@ -14,8 +16,6 @@ import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
@@ -56,20 +56,5 @@ public class ActionDropInventory extends ActionBaseLogger {
     });
 
     return true;
-  }
-
-  private List<String> getHotbarItems(Role role) {
-    try {
-      Field hotbarItemsField = Role.class.getDeclaredField("hotbarItems");
-      hotbarItemsField.setAccessible(true);
-      String[] hotbarItemsArray = (String[]) hotbarItemsField.get(role);
-      if (hotbarItemsArray != null) {
-        return Arrays.asList(hotbarItemsArray);
-      }
-      return null;
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      LOGGER.atSevere().log(e.getMessage());
-      return null;
-    }
   }
 }
