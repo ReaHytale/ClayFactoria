@@ -106,27 +106,6 @@
           "Type": "ClearJobs"
         }
       ]
-    },
-    {
-      "States": [
-        {
-          "From": [ ],
-          "To": [ "Alerted" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Alerted"
-        },
-        {
-          "Type": "SpawnParticles",
-          "ParticleSystem": "Alerted",
-          "Offset": [ 0, 1, 0 ]
-        }
-      ],
-      "$Comment": "Play alerted animations when switching to Alerted state"
     }
   ],
   "Instructions": [
@@ -186,12 +165,128 @@
     {
       "Instructions": [
         {
+          "$Comment": "\"Look at me Hector.\"",
+          "Continue": true,
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Or",
+                "Sensors": [
+                  {
+                    "Type": "State",
+                    "State": "Idle.Alerted"
+                  },
+                  {
+                    "Type": "State",
+                    "State": "Programming"
+                  }
+                ]
+              },
+              {
+                "Type": "Player",
+                "Range": 10,
+                "Filters": [
+                  {
+                    "Type": "ItemInHand",
+                    "Items": [ "Tool_Brush" ]
+                  }
+                ]
+              }
+            ]
+          },
+          "BodyMotion": {
+            "Type": "MaintainDistance",
+            "DesiredDistanceRange": { "Compute": "makeRange(randomInRange(1,3))" },
+            "TargetDistanceFactor": { "Compute": "randomInRange(0.1,1)" },
+            "MoveThreshold": { "Compute": "randomInRange(0.1,1)" },
+            "MoveTowardsSlowdownThreshold": { "Compute": "randomInRange(1,3)" },
+            "StrafingDurationRange": { "Compute": "makeRange(randomInRange(0,0.5))" },
+            "StrafingFrequencyRange": { "Compute": "makeRange(randomInRange(2,5))" }
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": { "Compute": "random()" }
+          }
+        },
+        {
           "$Comment": "Await player instruction",
           "Sensor": {
             "Type": "State",
             "State": "Idle"
           },
           "Instructions": [
+            {
+              "$Comment": "Player nearby with brush in hand",
+              "Sensor": {
+                "$Comment": "Play Alerted Particle Effect. Look at player. Await Interaction. Timeout after 15, seconds",
+                "Type": "State",
+                "State": ".Alerted"
+              },
+              "Instructions": [
+                {
+                  "$Comment": "Change back to idle once there is no longer a player in range",
+                  "Sensor": {
+                    "Type": "Not",
+                    "Sensor": {
+                      "$Comment": "Return to idle when item in hand is not brush",
+                      "Type": "Player",
+                      "Range": 10,
+                      "Filters": [
+                        {
+                          "Type": "ItemInHand",
+                          "Items": [ "Tool_Brush" ]
+                        }
+                      ]
+                    }
+                  },
+                  "Actions": [
+                    {
+                      "Type": "State",
+                      "State": "Idle",
+                      "ClearState": true
+                    }
+                  ]
+                },
+                {
+                  "Sensor": {
+                    "Type": "Any",
+                    "Once": false
+                  },
+                  "Actions": [
+                    {
+                      "Type": "Timeout",
+                      "Delay": [ 0, 0.5 ],
+                      "Action": {
+                        "Type": "PlayAnimation",
+                        "Slot": "Status",
+                        "Animation": "Alerted",
+                        "Once": false
+                      }
+                    },
+                    {
+                      "Type": "SpawnParticles",
+                      "Offset": [ 0, 1, 0 ],
+                      "ParticleSystem": "Alerted",
+                      "Once": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Continue": true,
+              "Sensor": {
+                "Type": "Any"
+              },
+              "Actions": [
+                {
+                  "Type": "PlayAnimation",
+                  "Slot": "Status",
+                  "Animation": "Idle"
+                }
+              ]
+            },
             {
               "Sensor": {
                 "Type": "HasAnyJobs"
@@ -217,68 +312,7 @@
               "Actions": [
                 {
                   "Type": "State",
-                  "State": "Alerted"
-                }
-              ]
-            },
-            {
-              "Sensor": {
-                "Type": "Any"
-              },
-              "Actions": [
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Idle"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "$Comment": "Player nearby with brush in hand",
-          "Sensor": {
-            "$Comment": "Play Alerted Particle Effect. Look at player. Await Interaction. Timeout after 15, seconds",
-            "Type": "State",
-            "State": "Alerted"
-          },
-          "Instructions": [
-            {
-              "Continue": true,
-              "Sensor": {
-                "Type": "Player",
-                "Range": 10,
-                "Filters": [
-                  {
-                    "Type": "ItemInHand",
-                    "Items": [ "Tool_Brush" ]
-                  }
-                ]
-              },
-              "HeadMotion": {
-                "Type": "Watch"
-              }
-            },
-            {
-              "$Comment": "Change back to idle once there is no longer a player in range",
-              "Sensor": {
-                "Type": "Not",
-                "Sensor": {
-                  "$Comment": "Return to idle when item in hand is not brush",
-                  "Type": "Player",
-                  "Range": 10,
-                  "Filters": [
-                    {
-                      "Type": "ItemInHand",
-                      "Items": [ "Tool_Brush" ]
-                    }
-                  ]
-                }
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Idle"
+                  "State": ".Alerted"
                 }
               ]
             }
@@ -406,34 +440,11 @@
           {
             "Instructions": [
               {
-                "$Comment": "Alert",
+                "$Comment": "Show \"Command\" as interaction hint while alerted",
                 "Continue": true,
                 "Sensor": {
                   "Type": "State",
                   "State": "Idle"
-                },
-                "Actions": [
-                  {
-                    "Type": "State",
-                    "State": "Alerted"
-                  }
-                ]
-              },
-              {
-                "$Comment": "Show \"Command\" as interaction hint while idle or alerted",
-                "Continue": true,
-                "Sensor": {
-                  "Type": "Or",
-                  "Sensors": [
-                    {
-                      "Type": "State",
-                      "State": "Idle"
-                    },
-                    {
-                      "Type": "State",
-                      "State": "Alerted"
-                    }
-                  ]
                 },
                 "Actions": [
                   {
@@ -514,17 +525,8 @@
                       {
                         "$Comment": "Start programming",
                         "Sensor": {
-                          "Type": "Or",
-                          "Sensors": [
-                            {
-                              "Type": "State",
-                              "State": "Idle"
-                            },
-                            {
-                              "Type": "State",
-                              "State": "Alerted"
-                            }
-                          ]
+                          "Type": "State",
+                          "State": "Idle"
                         },
                         "Actions": [
                           {
