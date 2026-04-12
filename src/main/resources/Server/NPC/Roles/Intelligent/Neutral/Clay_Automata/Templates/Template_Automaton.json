@@ -125,7 +125,8 @@
           "ParticleSystem": "Alerted",
           "Offset": [ 0, 1, 0 ]
         }
-      ]
+      ],
+      "$Comment": "Play alerted animations when switching to Alerted state"
     }
   ],
   "Instructions": [
@@ -375,20 +376,6 @@
                         {
                           "Type": "State",
                           "State": "Automated.Default"
-                        }
-                      ]
-                    },
-                    {
-                      "$Comment": "Play Idle Animation while waiting to run Task",
-                      "Sensor": {
-                        "Type": "Any"
-                      },
-                      "Actions": [
-                        {
-                          "Type": "PlayAnimation",
-                          "Slot": "Status",
-                          "Animation": "Idle",
-                          "Once": true
                         }
                       ]
                     }
