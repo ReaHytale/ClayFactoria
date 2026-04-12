@@ -106,6 +106,26 @@
           "Type": "ClearJobs"
         }
       ]
+    },
+    {
+      "States": [
+        {
+          "From": [ ],
+          "To": [ "Alerted" ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "PlayAnimation",
+          "Slot": "Status",
+          "Animation": "Alerted"
+        },
+        {
+          "Type": "SpawnParticles",
+          "ParticleSystem": "Alerted",
+          "Offset": [ 0, 1, 0 ]
+        }
+      ]
     }
   ],
   "Instructions": [
@@ -223,26 +243,6 @@
           },
           "Instructions": [
             {
-              "$Comment": "Animations",
-              "Continue": true,
-              "Sensor": {
-                "Type": "Any",
-                "Once": true
-              },
-              "Actions": [
-                {
-                  "Type": "PlayAnimation",
-                  "Slot": "Status",
-                  "Animation": "Alerted"
-                },
-                {
-                  "Type": "SpawnParticles",
-                  "Offset": [ 0, 1, 0 ],
-                  "ParticleSystem": "Alerted"
-                }
-              ]
-            },
-            {
               "Continue": true,
               "Sensor": {
                 "Type": "Player",
@@ -292,6 +292,21 @@
           "Instructions": [
             {
               "Instructions": [
+                {
+                  "$Comment": "Return to Idle if there are no jobs",
+                  "Sensor": {
+                    "Type": "Not",
+                    "Sensor": {
+                      "Type": "HasAnyJobs"
+                    }
+                  },
+                  "Actions": [
+                    {
+                      "Type": "State",
+                      "State": "Idle"
+                    }
+                  ]
+                },
                 {
                   "$Comment": "Pathing state - Path to a single point or line path",
                   "Sensor": {

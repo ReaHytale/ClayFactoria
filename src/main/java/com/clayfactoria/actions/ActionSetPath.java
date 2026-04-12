@@ -4,7 +4,6 @@ import com.clayfactoria.actions.builders.BuilderActionSetPath;
 import com.clayfactoria.codecs.Job;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.JobComponent;
-import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -65,7 +64,6 @@ public class ActionSetPath extends ActionBaseLogger {
       player.sendMessage(
           Message.raw("You must set at least one target task with the Brush")
               .color(Color.YELLOW));
-      TaskHelper.idleAutomaton(ref, store);
       brushComponent.setEntityId(null);
       return false;
     }
