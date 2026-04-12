@@ -12,12 +12,16 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ActionBaseLogger extends ActionBase {
+
   private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
   public ActionBaseLogger(@NotNull BuilderActionBase builderActionBase) {
     super(builderActionBase);
   }
 
+  /**
+   * Deprecated, override <code>executeNullChecked</code> instead
+   */
   public boolean execute(
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Role role,

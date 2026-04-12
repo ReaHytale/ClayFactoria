@@ -2,7 +2,6 @@ package com.clayfactoria.ui;
 
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
-import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.ui.RadialMenu.RadialMenuEventData;
 import com.clayfactoria.ui.RadialMenu.RadialMenuEventData.IsReset;
 import com.hypixel.hytale.codec.Codec;
@@ -122,21 +121,11 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       @Nonnull Store<EntityStore> store,
       @Nonnull RadialMenuEventData data) {
 
-    if (brushComponent.getBoxPoint1() != null) {
-      TaskBoxesComponent taskBoxesComponent =
-          store.getComponent(ref, TaskBoxesComponent.getComponentType());
-      if (taskBoxesComponent != null) {
-        if (!taskBoxesComponent.boxes.isEmpty()) {
-          taskBoxesComponent.boxes.removeLast();
-        }
-      }
-    }
-    brushComponent.setBoxPoint1(null);
-
     if (data.task != null) {
       LOGGER.atInfo().log("Set Brush command to: " + data.task);
       brushComponent.setTask(data.task);
     } else if (data.reset == IsReset.Yes) {
+      brushComponent.setBoxPoint1(null, ref);
       LOGGER.atInfo().log("Resetting tasks");
       brushComponent.resetTasks(store, ref);
     }

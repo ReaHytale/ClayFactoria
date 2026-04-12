@@ -19,20 +19,24 @@ public class ActionDoTask extends ActionBaseLogger {
   }
 
   @Override
-  public boolean execute(@Nonnull Ref<EntityStore> ref, @Nonnull Role role, InfoProvider sensorInfo,
+  public boolean executeNullChecked(@Nonnull Ref<EntityStore> ref, @Nonnull Role role,
+      InfoProvider sensorInfo,
       double dt, @Nonnull Store<EntityStore> store) {
     JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
     if (jobComponent == null) {
       return false;
     }
+
     Job job = jobComponent.getCurrentJob();
     if (job == null) {
       return false;
     }
+
     if (job.getTask().taskExecutor.execute(ref)) {
       jobComponent.setComplete(true);
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 }

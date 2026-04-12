@@ -90,28 +90,20 @@ public class TargetBlockEventSystem extends EntityEventSystem<EntityStore, Damag
     Vector3i targetBlockLoc = damageBlockEvent.getTargetBlock();
 
     try {
-      if (brushComponent.getTask().taskExecutor.usesBounds()) {
+      if (brushComponent.getTask().usesBounds) {
 
         TaskBoxesComponent taskBoxesComponent =
             store.getComponent(playerRef, TaskBoxesComponent.getComponentType());
         assert taskBoxesComponent != null;
 
         if (brushComponent.getBoxPoint1() != null) {
-          if (!taskBoxesComponent.boxes.isEmpty()) {
-            taskBoxesComponent.boxes.removeLast();
-          }
-
           Box box = BlockUtils.makeSurroundingBox(brushComponent.getBoxPoint1(), targetBlockLoc);
           brushComponent.addTask(box, player.getWorld(), store, playerRef);
-          LOGGER.atInfo().log("Task Added");
         } else {
-          brushComponent.setBoxPoint1(targetBlockLoc);
-
+          brushComponent.setBoxPoint1(targetBlockLoc, playerRef);
           taskBoxesComponent.boxes.add(
               new JobBoxComponent(
                   brushComponent.getTask().color, BlockUtils.getBlockBox(targetBlockLoc, world)));
-
-          LOGGER.atInfo().log("Point 1 Set");
         }
       } else {
         brushComponent.addTask(targetBlockLoc, player.getWorld(), store, playerRef);

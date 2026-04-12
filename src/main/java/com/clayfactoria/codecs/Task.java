@@ -18,6 +18,7 @@ public enum Task implements Supplier<String> {
       new Vector3f(0.59F, 0.29F, 0.89F), // Purple
       "ImageAssets/Deposit.png",
       false,
+      false,
       new DepositTaskExecutor()),
   TAKE(
       "Take",
@@ -25,12 +26,14 @@ public enum Task implements Supplier<String> {
       new Vector3f(0.92F, 0.27F, 0.84F), // Pink
       "ImageAssets/Take.png",
       false,
+      false,
       new TakeTaskExecutor()),
   POSITION(
       "Position",
       "Do nothing (After moving to a position)",
       new Vector3f(0.93F, 0.22F, 0.35F), // Red
       "ImageAssets/Position.png",
+      false,
       true,
       new PositionTaskExecutor()),
   WORK(
@@ -39,12 +42,14 @@ public enum Task implements Supplier<String> {
       new Vector3f(0.33F, 0.45F, 0.9F), // Blue
       "ImageAssets/Work.png",
       false,
+      false,
       new WorkTaskExecutor()),
   HARVEST(
       "Harvest",
       "Harvest any crop in the given area",
       new Vector3f(0.92F, 0.86F, 0.2F), // Yellow
       "ImageAssets/Harvest.png",
+      true,
       false,
       new HarvestTaskExecutor());
 
@@ -54,6 +59,7 @@ public enum Task implements Supplier<String> {
   public final Vector3f color;
   public final String iconAssetPath;
   public final boolean locationEqualsWalkLocation;
+  public final boolean usesBounds;
   public final TaskExecutor taskExecutor;
 
   Task(
@@ -61,12 +67,14 @@ public enum Task implements Supplier<String> {
       String description,
       Vector3f color,
       String iconAssetPath,
+      boolean usesBounds,
       boolean locationEqualsWalkLocation,
       TaskExecutor taskExecutor) {
     this.name = name;
     this.description = description;
     this.color = color;
     this.iconAssetPath = iconAssetPath;
+    this.usesBounds = usesBounds;
     this.locationEqualsWalkLocation = locationEqualsWalkLocation;
     this.taskExecutor = taskExecutor;
   }

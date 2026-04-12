@@ -9,11 +9,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 public abstract class PointTaskExecutor implements TaskExecutor {
 
   @Override
-  public boolean usesBounds() {
-    return false;
-  }
-
-  @Override
   public void checkBounds(Box bounds) throws IllegalArgumentException {
     throw new UnsupportedOperationException("Bounds are not supported by Point task executor!");
   }

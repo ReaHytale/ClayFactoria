@@ -65,7 +65,6 @@ public class ActionSetPath extends ActionBaseLogger {
       player.sendMessage(
           Message.raw("You must set at least one target task with the Brush")
               .color(Color.YELLOW));
-      // FIXME: The idling gets immediately overwritten by the JSON, so it actually ends up in the automation state incorrectly.
       TaskHelper.idleAutomaton(ref, store);
       brushComponent.setEntityId(null);
       return false;

@@ -13,8 +13,6 @@ public interface TaskExecutor {
 
   boolean execute(Ref<EntityStore> entityRef);
 
-  boolean usesBounds();
-
   void checkBounds(Box bounds) throws IllegalArgumentException;
 
   Vector3d findNextWalkLocation(Job job, World world, Vector3d from);

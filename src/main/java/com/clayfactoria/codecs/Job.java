@@ -55,7 +55,7 @@ public class Job {
   }
 
   public Job(Vector3i location, Task task, World world) throws IllegalStateException {
-    if (task.taskExecutor.usesBounds()) {
+    if (task.usesBounds) {
       throw new IllegalArgumentException("This job's task expects an area to work with!");
     }
     this.location = location;
@@ -69,7 +69,7 @@ public class Job {
   }
 
   public Job(Box bounds, Task task, World world) throws IllegalStateException {
-    if (!task.taskExecutor.usesBounds()) {
+    if (!task.usesBounds) {
       throw new IllegalArgumentException("This job's task expects a location to work with!");
     }
     task.taskExecutor.checkBounds(bounds);

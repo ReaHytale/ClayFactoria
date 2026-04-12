@@ -83,11 +83,6 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
   }
 
   @Override
-  public boolean usesBounds() {
-    return true;
-  }
-
-  @Override
   public void checkBounds(Box bounds) throws IllegalArgumentException {
     if (Math.abs(bounds.min.x - bounds.max.x) > MAX_AREA_BOUNDS_WIDTH_LENGTH
         || Math.abs(bounds.min.z - bounds.max.z) > MAX_AREA_BOUNDS_WIDTH_LENGTH) {

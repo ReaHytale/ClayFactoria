@@ -2,7 +2,6 @@ package com.clayfactoria.components;
 
 import com.clayfactoria.ClayFactoria;
 import com.clayfactoria.codecs.Job;
-import com.clayfactoria.codecs.PathType;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobBoxComponent.TaskBoxesComponent;
 import com.clayfactoria.systems.TaskBoxSystem;
@@ -42,12 +41,6 @@ public class BrushComponent implements Component<EntityStore> {
           .documentation("The tasks for pathing and actions for each location")
           .add()
           .append(
-              new KeyedCodec<>("PathType", PathType.CODEC),
-              (comp, value) -> comp.pathType = value,
-              (comp) -> comp.pathType)
-          .documentation("Path type (LOOP or ONCE)")
-          .add()
-          .append(
               new KeyedCodec<>("TaskType", Task.CODEC),
               (comp, value) -> comp.task = value,
               (comp) -> comp.task)
@@ -71,20 +64,27 @@ public class BrushComponent implements Component<EntityStore> {
   private List<Job> jobs = new ArrayList<>();
   @Getter
   @Setter
-  private PathType pathType = PathType.LOOP;
-  @Getter
-  @Setter
   @Nonnull
   private Task task = Task.TAKE;
   @Getter
   @Setter
   private UUID entityId;
   @Getter
-  @Setter
   private Vector3i boxPoint1;
 
   public static ComponentType<EntityStore, BrushComponent> getComponentType() {
     return ClayFactoria.brushComponentType;
+  }
+
+  public void setBoxPoint1(Vector3i boxPoint1, Ref<EntityStore> playerRef) {
+    this.boxPoint1 = boxPoint1;
+    if (boxPoint1 == null) {
+      TaskBoxesComponent taskBoxesComponent =
+          playerRef.getStore().getComponent(playerRef, TaskBoxesComponent.getComponentType());
+      if (taskBoxesComponent != null && !taskBoxesComponent.boxes.isEmpty()) {
+        taskBoxesComponent.boxes.removeLast();
+      }
+    }
   }
 
   public void addTask(
@@ -117,28 +117,16 @@ public class BrushComponent implements Component<EntityStore> {
       return;
     }
     this.jobs.add(new Job(box, task, world));
-    this.setBoxPoint1(null);
+    this.setBoxPoint1(null, playerRef);
     TaskBoxesComponent taskBoxesComponent =
         componentAccessor.getComponent(playerRef, TaskBoxesComponent.getComponentType());
-    if (taskBoxesComponent != null) {
-      taskBoxesComponent.boxes.add(new JobBoxComponent(task.color, box));
-    }
-  }
-
-  public PathType togglePathType() {
-    if (pathType == PathType.ONCE) {
-      pathType = PathType.LOOP;
-    } else {
-      pathType = PathType.ONCE;
-    }
-
-    return pathType;
+    assert taskBoxesComponent != null;
+    taskBoxesComponent.boxes.add(new JobBoxComponent(task.color, box));
   }
 
   public Component<EntityStore> clone() {
     BrushComponent brushComponent = new BrushComponent();
     brushComponent.jobs = this.jobs;
-    brushComponent.pathType = this.pathType;
     brushComponent.task = this.task;
     return brushComponent;
   }
