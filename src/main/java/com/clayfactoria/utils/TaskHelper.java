@@ -176,21 +176,30 @@ public final class TaskHelper {
     if (itemStack == null) {
       return false;
     }
+    return transferItem(source, target, slot, itemStack.getQuantity());
+  }
+
+  public static boolean transferItem(ItemContainer source, ItemContainer target, short slot,
+      int quantity) {
+    ItemStack itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return false;
+    }
     int prevQuantity = itemStack.getQuantity();
-    source.moveItemStackFromSlot(slot, 1, target);
+    source.moveItemStackFromSlot(slot, quantity, target);
     // Check whether it actually succeeded to transfer
     itemStack = source.getItemStack(slot);
     if (itemStack == null) {
       return true;
     } else {
-      return itemStack.getQuantity() == prevQuantity - 1;
+      return itemStack.getQuantity() == prevQuantity - quantity;
     }
   }
 
   public static ItemContainer getNPCInventory(NPCEntity npcEntity, Store<EntityStore> store) {
     assert npcEntity.getReference() != null;
     return InventoryComponent.getCombined(store, npcEntity.getReference(),
-        InventoryComponent.Hotbar.getComponentType());
+        InventoryComponent.EVERYTHING);
   }
 
   public static void idleAutomaton(Ref<EntityStore> npcRef, Store<EntityStore> store) {

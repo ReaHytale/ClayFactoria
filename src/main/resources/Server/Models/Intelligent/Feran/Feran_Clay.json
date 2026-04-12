@@ -62,7 +62,7 @@
       "Animations": [
         {
           "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Walk.blockyanim",
-          "Speed": 1.0,
+          "Speed": 1.7,
           "FootstepIntervals": [
             25,
             75

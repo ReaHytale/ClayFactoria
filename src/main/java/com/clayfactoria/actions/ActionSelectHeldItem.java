@@ -44,8 +44,9 @@ public class ActionSelectHeldItem extends ActionBaseLogger {
         continue;
       }
       if (itemStack.getItemId().equals(item)) {
+        hotbar.setActiveSlot((byte) 0);
         combinedItemContainer.swapItems(
-            slot, hotbar.getInventory(), hotbar.getActiveSlot(), (short) 1);
+            slot, hotbar.getInventory(), (short) 0, (short) 1);
         return true;
       }
     }

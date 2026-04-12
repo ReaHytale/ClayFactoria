@@ -86,13 +86,12 @@ public class DepositTaskExecutor extends PointTaskExecutor {
     Objects.requireNonNull(itemContainer);
 
     ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
-    AtomicBoolean success = new AtomicBoolean(false);
+    AtomicBoolean fail = new AtomicBoolean(false);
     npcInventory.forEach((slot, itemStack) -> {
-      if (!hotbarItems.contains(itemStack.getItemId())
-          && TaskHelper.transferItem(npcInventory, itemContainer, slot)) {
-        success.set(true);
+      if (!hotbarItems.contains(itemStack.getItemId())) {
+        fail.set(!TaskHelper.transferItem(npcInventory, itemContainer, slot));
       }
     });
-    return success.get();
+    return !fail.get();
   }
 }

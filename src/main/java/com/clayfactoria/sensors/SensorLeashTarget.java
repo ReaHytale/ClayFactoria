@@ -20,6 +20,8 @@ import org.jspecify.annotations.NonNull;
 
 /**
  * Senses whether the NPC should continue to path or should move to action state.
+ * <p>
+ * Returns true when the NPC should keep pathing, and false when it has reached the destination.
  * <br><br>
  * TODO: make comment more descriptive; is left here because name "SensorLeashTarget"
  *       is not too clear
@@ -38,9 +40,7 @@ public class SensorLeashTarget extends SensorBaseLogger {
     super(builderSensorLeash);
   }
 
-  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref,
-      @NonNull Store<EntityStore> store,
-      Job currentJob) {
+  private static void recomputeWalkLocation(@NonNull Ref<EntityStore> ref, Job currentJob) {
     if (currentJob.getTask().locationEqualsWalkLocation) {
       return;
     }
@@ -69,32 +69,37 @@ public class SensorLeashTarget extends SensorBaseLogger {
     Job currentJob = jobComponent.getCurrentJob();
     if (currentJob == null) {
       this.positionProvider.clear();
-      return false;
+      return true;
     }
 
     if (recomputeFirstWalkDistance) {
-      recomputeWalkLocation(ref, store, currentJob);
+      recomputeWalkLocation(ref, currentJob);
       recomputeFirstWalkDistance = false;
     }
 
     Vector3d currentTarget = currentJob.getWalkLocation();
-    if (currentTarget == null) {
+    if (currentTarget == null && hasNotChangedLocationInSomeTime()) {
+      recomputeWalkLocation(ref, currentJob);
+      return true;
+    } else if (currentTarget == null) {
       this.positionProvider.clear();
-      return false;
+      return true;
     }
 
     double distanceSquared = transformComponent.getPosition().distanceSquaredTo(currentTarget);
 
+    // Automaton has stopped moving
     if (Math.abs(distanceSquared - lastDistanceSquared) <= EQUAL_DISTANCE_EPSILON) {
-      if (hasUpdatedWalkLocation(ref, store, currentJob)) {
-        return false;
+      if (hasUpdatedWalkLocation(ref, currentJob)) {
+        return true;
       }
     } else {
       lastDistanceSquared = distanceSquared;
       lastDistanceUpdateTime = System.currentTimeMillis();
     }
 
-    if (distanceSquared > EQUAL_DISTANCE_EPSILON) { // walking to destination
+    // Walking to destination
+    if (distanceSquared > EQUAL_DISTANCE_EPSILON) {
       Ref<EntityStore> target = this.positionProvider.getTarget();
       if (target == null) {
         this.positionProvider.setTarget(currentTarget);
@@ -112,36 +117,33 @@ public class SensorLeashTarget extends SensorBaseLogger {
         this.positionProvider.setTarget(currentTarget);
         return true;
       }
-    } else {  // reached destination
+    } else {
+      // Reached destination and job is incomplete
       if (!jobComponent.isComplete()) {
         return false;
       }
 
+      // Reached destination and job is already complete, so move to next job
       Job nextJob = jobComponent.nextJob();
-
       if (nextJob == null) {
         this.positionProvider.clear();
         return false;
       }
-
-      recomputeWalkLocation(ref, store, nextJob);
-
+      recomputeWalkLocation(ref, nextJob);
       Vector3d nextJobLocation = nextJob.getWalkLocation();
       if (nextJobLocation == null) {
         this.positionProvider.clear();
         return false;
       }
-
       this.positionProvider.setTarget(nextJobLocation);
       return true;
     }
   }
 
   private boolean hasUpdatedWalkLocation(@NonNull Ref<EntityStore> ref,
-      @NonNull Store<EntityStore> store,
       Job currentJob) {
     if (hasNotChangedLocationInSomeTime()) {
-      recomputeWalkLocation(ref, store, currentJob);
+      recomputeWalkLocation(ref, currentJob);
       lastDistanceUpdateTime = System.currentTimeMillis();
       return true;  // yes, the npc "has updated its walk location"
     } else {

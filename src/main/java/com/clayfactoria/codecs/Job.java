@@ -33,6 +33,13 @@ public class Job {
               (comp) -> comp.walkLocation)
           .documentation("The Vector3d location for where the automaton should walk to")
           .add()
+          .append(
+              new KeyedCodec<>("Bounds", Box.CODEC),
+              (comp, bounds) -> comp.bounds = bounds,
+              (comp) -> comp.bounds)
+          .documentation(
+              "The area in which the job should be completed, if applicable for this task")
+          .add()
           .build();
   @Getter
   @Setter
