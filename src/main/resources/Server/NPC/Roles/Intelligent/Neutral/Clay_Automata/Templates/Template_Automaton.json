@@ -80,7 +80,7 @@
   },
   "StateTransitions": [
     {
-      "$Comment": "Always clear target and reset instructions when going back to idle.",
+      "$Comment": "Always clear trget and reset instructions when going back to idle.",
       "States": [
         {
           "To": [ "Idle" ],
@@ -106,22 +106,6 @@
           "Type": "ClearJobs"
         }
       ]
-    },
-    {
-      "States": [
-        {
-          "From": [ ],
-          "To": [ "Automated" ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "PlayAnimation",
-          "Slot": "Status",
-          "Animation": "Walk"
-        }
-      ],
-      "$Comment": "Play walking animation when pathing"
     }
   ],
   "Instructions": [
