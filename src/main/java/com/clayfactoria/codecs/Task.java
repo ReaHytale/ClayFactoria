@@ -38,7 +38,7 @@ public enum Task implements Supplier<String> {
       new PositionTaskExecutor()),
   WORK(
       "Work",
-      "Work at an adjacent workstation",
+      "Work at a workstation",
       new Vector3f(0.33F, 0.45F, 0.9F), // Blue
       "ImageAssets/Work.png",
       false,

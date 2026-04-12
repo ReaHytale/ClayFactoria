@@ -197,12 +197,14 @@
           },
           "BodyMotion": {
             "Type": "MaintainDistance",
-            "DesiredDistanceRange": { "Compute": "makeRange(randomInRange(1,3))" },
+            "DesiredDistanceRange": { "Compute": "makeRange(randomInRange(0.5,2.5))" },
             "TargetDistanceFactor": { "Compute": "randomInRange(0.1,1)" },
             "MoveThreshold": { "Compute": "randomInRange(0.1,1)" },
             "MoveTowardsSlowdownThreshold": { "Compute": "randomInRange(1,3)" },
-            "StrafingDurationRange": { "Compute": "makeRange(randomInRange(0,0.5))" },
-            "StrafingFrequencyRange": { "Compute": "makeRange(randomInRange(2,5))" }
+            "StrafingDurationRange": { "Compute": "makeRange(randomInRange(0.5,1.5))" },
+            "StrafingFrequencyRange": { "Compute": "makeRange(randomInRange(3,7))" },
+            "RelativeForwardsSpeed": 1,
+            "RelativeBackwardsSpeed": 0.5
           },
           "HeadMotion": {
             "Type": "Watch",
@@ -450,6 +452,12 @@
                   {
                     "Type": "SetInteractable",
                     "Hint": "server.interactionHints.begin_command"
+                  },
+                  {
+                    "Type": "State",
+                    "State": "Idle.Alerted",
+                    "Once": true,
+                    "ClearState": false
                   }
                 ]
               },
