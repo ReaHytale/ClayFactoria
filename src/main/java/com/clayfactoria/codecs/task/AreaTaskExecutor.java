@@ -35,10 +35,26 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
      * @return The closest point inside the box to <code>p</code>.
      */
     private static Vector3d findClosestPointInBox(Box box, Vector3d p) {
-        return new Vector3d(
+        Vector3d clamped = new Vector3d(
                 Math.clamp(p.x, box.min.x, box.max.x),
                 Math.clamp(p.y, box.min.y, box.max.y),
                 Math.clamp(p.z, box.min.z, box.max.z));
+        if (clamped.x <= box.min.x) {
+            clamped.x += 0.5;
+        } else if (clamped.x >= box.max.x) {
+            clamped.x -= 0.5;
+        }
+        if (clamped.y <= box.min.y) {
+            clamped.y += 0.5;
+        } else if (clamped.y >= box.max.y) {
+            clamped.y -= 0.5;
+        }
+        if (clamped.z <= box.min.z) {
+            clamped.z += 0.5;
+        } else if (clamped.z >= box.max.z) {
+            clamped.z -= 0.5;
+        }
+        return clamped;
     }
 
     @Override
@@ -50,6 +66,7 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
         Vector3i start =
                 BlockUtils.getCorrectlyRoundedLocation(findClosestPointInBox(job.getBounds(), from));
 
+        // Check first point before searching out
         if (canDoTaskHere(start, world)) {
             try {
                 Vector3d validWalkLocationForBlock =
