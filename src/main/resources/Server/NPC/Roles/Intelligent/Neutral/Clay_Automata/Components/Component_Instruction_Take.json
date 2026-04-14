@@ -15,9 +15,7 @@
           "Sensors": [
             {
               "Type": "Switch",
-              "Switch": {
-                "Compute": "CanDoTake"
-              }
+              "Switch": { "Compute": "CanDoTake" }
             },
             {
               "Type": "CanDoTask",
@@ -28,11 +26,6 @@
         "ActionsBlocking": true,
         "Actions": [
           {
-            "Type": "SetFlag",
-            "Name": "HoldingItem",
-            "SetTo": true
-          },
-          {
             "Type": "PlayAnimation",
             "Slot": "Status",
             "Animation": "Take",
@@ -40,25 +33,15 @@
           },
           {
             "Type": "Timeout",
-            "Delay": [
-              0.4,
-              0.4
-            ]
+            "Delay": [ 0.4, 0.4 ]
+          },
+          {
+            "Type": "SetFlag",
+            "Name": "HoldingItem",
+            "SetTo": true
           },
           {
             "Type": "DoTask"
-          },
-          {
-            "Type": "Timeout",
-            "Delay": [
-              0.4,
-              0.4
-            ]
-          },
-          {
-            "Type": "PlayAnimation",
-            "Slot": "Status",
-            "Animation": ""
           }
         ]
       }

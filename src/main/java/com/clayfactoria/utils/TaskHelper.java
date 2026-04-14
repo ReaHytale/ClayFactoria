@@ -179,6 +179,17 @@ public final class TaskHelper {
     return transferItem(source, target, slot, itemStack.getQuantity());
   }
 
+  public static boolean transferItem(ItemContainer source, ItemContainer target, int quantity) {
+    for (short slot = 0; slot < source.getCapacity(); slot++) {
+      boolean result = transferItem(source, target, slot, quantity);
+      if (result) {
+        return true;
+      }
+    }
+    // No item found in storage, return false for failure.
+    return false;
+  }
+
   public static boolean transferItem(ItemContainer source, ItemContainer target, short slot,
       int quantity) {
     ItemStack itemStack = source.getItemStack(slot);
