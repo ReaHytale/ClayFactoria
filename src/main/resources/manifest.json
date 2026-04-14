@@ -1,7 +1,7 @@
 {
     "Group": "ClayFactoria",
     "Name": "clayfactoria",
-    "Version": "0.2.1",
+    "Version": "1.0.0-pre1",
     "Description": "Create clay automatons using the power of Gaia's life essence!",
     "Authors": [
         {
