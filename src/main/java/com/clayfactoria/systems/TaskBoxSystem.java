@@ -2,18 +2,23 @@ package com.clayfactoria.systems;
 
 import com.clayfactoria.components.JobBoxComponent;
 import com.clayfactoria.components.JobBoxComponent.JobBoxesComponent;
+import com.clayfactoria.utils.BlockUtils;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.debug.DebugUtils;
+import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -23,12 +28,15 @@ import static com.clayfactoria.ClayFactoria.debugBoxesComponentType;
 
 public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
 
+    private static final float REPETITION_SPEED = 0.1F;
+    private static final double PLAYER_EYE_HEIGHT_OFFSET = 1.62;
+
     public static final Vector3d BOX_PADDING = new Vector3d(0.05F, 0.05F, 0.05F);
     @Nonnull
     private static final ComponentType<EntityStore, Player> PLAYER_COMPONENT_TYPE = Player.getComponentType();
 
     public TaskBoxSystem() {
-        super(0.5F);
+        super(REPETITION_SPEED);
     }
 
     private static void drawBox(JobBoxComponent boxComponent, World world) {
@@ -69,7 +77,8 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
 
     private static void drawLine(Vector3d start, Vector3d end,
                                  World world, Vector3f color) {
-        DebugUtils.addLine(world, start, end, color, 0.03D, 0.6F, DebugUtils.FLAG_NO_WIREFRAME);
+        DebugUtils.addLine(world, start, end, color, 0.03D, REPETITION_SPEED + 0.1F,
+            DebugUtils.FLAG_NO_WIREFRAME);
     }
 
     private static void drawArrow(Vector3d start, Vector3d end,
@@ -77,9 +86,10 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
         Vector3d direction = end.clone().subtract(start).normalize();
         double half = start.distanceTo(end) / 2;
         Vector3d position = start.clone().add(direction.clone().scale(half));
-        DebugUtils.addLine(world, start, end, color, 0.03D, 0.6F, DebugUtils.FLAG_NO_WIREFRAME);
+        DebugUtils.addLine(world, start, end, color, 0.03D, REPETITION_SPEED + 0.1F,
+            DebugUtils.FLAG_NO_WIREFRAME);
         DebugUtils.addArrow(world, position, direction, color, 1F,
-            0.6F,
+            REPETITION_SPEED + 0.1F,
             DebugUtils.FLAG_NO_WIREFRAME);
     }
 
@@ -111,8 +121,7 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
         if (jobBoxesComponent == null
             || jobBoxesComponent.boxes.isEmpty()
             || player == null
-            || wandIsNotEquipped(commandBuffer, player.getReference())
-        ) {
+            || wandIsNotEquipped(commandBuffer, player.getReference())) {
             return;
         }
         World world = commandBuffer.getExternalData().getWorld();
@@ -120,15 +129,33 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
         List<JobBoxComponent> boxes = jobBoxesComponent.boxes;
         JobBoxComponent prev = boxes.getFirst();
         drawBox(prev, world);
+        resizeBoxIfUncommitted(index, archetypeChunk, prev, player);
         for (int i = 1; i < boxes.size(); i++) {
             JobBoxComponent box = boxes.get(i);
             drawBox(box, world);
+
+            resizeBoxIfUncommitted(index, archetypeChunk, box, player);
 
             Vector3d boxMid = box.getBox().min.clone().add(box.getBox().max).scale(0.5);
             Vector3d prevBoxMid = prev.getBox().min.clone().add(prev.getBox().max).scale(0.5);
             drawArrow(prevBoxMid, boxMid, world, box.getColour());
 
             prev = box;
+        }
+    }
+
+    private static void resizeBoxIfUncommitted(int index, @NonNull ArchetypeChunk<EntityStore> archetypeChunk, JobBoxComponent box, Player player) {
+        if (!box.isCommitted()) {
+            HeadRotation headRotation = archetypeChunk.getComponent(index, HeadRotation.getComponentType());
+            TransformComponent transform = archetypeChunk.getComponent(index, TransformComponent.getComponentType());
+            assert headRotation != null;
+            assert transform != null;
+            Vector3i newTarget = BlockUtils.rayTraceBlock(player.getWorld(),
+                transform.getPosition().clone().add(new Vector3d(0, PLAYER_EYE_HEIGHT_OFFSET, 0)),
+                headRotation.getDirection().clone(), 0.25f, 6);
+            if (newTarget != null) {
+                box.setBox(BlockUtils.makeSurroundingBox(box.getCommitStartLocation().toVector3i(), newTarget));
+            }
         }
     }
 
