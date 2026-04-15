@@ -36,9 +36,6 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
         .build();
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final Item ITEM_FOR_SOUND = Objects.requireNonNull(
-        Item.getAssetMap().getAsset("Ingredient_Life_Essence")
-    );
 
     @Override
     protected void firstRun(
@@ -86,14 +83,18 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
                     brushComponent.setBoxPoint1(targetBlockLoc, ref);
                     jobBoxesComponent.boxes.add(
                         new JobBoxComponent(
-                            brushComponent.getTask().color, BlockUtils.getBlockBox(targetBlockLoc, world)));
+                            brushComponent.getTask().color, BlockUtils.getBlockBox(targetBlockLoc, world),
+                            false, targetBlockLoc.toVector3d()));
                 }
-            } else brushComponent.addTask(targetBlockLoc, player.getWorld(), store, ref);
+            } else {
+                brushComponent.addTask(targetBlockLoc, player.getWorld(), store, ref);
+            }
         } catch (IllegalStateException e) {
             player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
             LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
         }
 
-        SoundUtil.playItemSoundEvent(ref, store, ITEM_FOR_SOUND, ItemSoundEvent.Drop);
+        SoundUtil.playItemSoundEvent(ref, store,
+            Objects.requireNonNull(Item.getAssetMap().getAsset("Ingredient_Life_Essence")), ItemSoundEvent.Drop);
     }
 }

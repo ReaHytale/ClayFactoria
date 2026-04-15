@@ -3,7 +3,6 @@ package com.clayfactoria.codecs.task;
 import com.clayfactoria.codecs.Job;
 import com.clayfactoria.utils.BlockUtils;
 import com.clayfactoria.utils.JobLocationHelper;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -15,8 +14,6 @@ import java.util.Queue;
 import java.util.Set;
 
 public abstract class AreaTaskExecutor implements TaskExecutor {
-
-    protected static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private static final double MAX_AREA_BOUNDS_WIDTH_LENGTH = 10;
     private static final double MAX_AREA_BOUNDS_HEIGHT = 5;
@@ -63,8 +60,14 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
         if (job.getBounds() == null) {
             return null;
         }
+
+        Box bounds = job.getBounds().clone();
+        if (shouldSearchLocationsAboveBoundingBox()) {
+            bounds.max.add(0, 1, 0);
+        }
+
         Vector3i start =
-                BlockUtils.getCorrectlyRoundedLocation(findClosestPointInBox(job.getBounds(), from));
+                BlockUtils.getCorrectlyRoundedLocation(findClosestPointInBox(bounds, from));
 
         // Check first point before searching out
         if (canDoTaskHere(start, world)) {
@@ -89,7 +92,7 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
                 Vector3i next = p.clone().add(dir);
                 Vector3d center =
                         next.toVector3d().add(0.5, 0.5, 0.5);
-                if (!job.getBounds().containsPosition(center)) {
+                if (!bounds.containsPosition(center)) {
                     continue;
                 }
                 if (canDoTaskHere(next, world)) {
@@ -126,4 +129,6 @@ public abstract class AreaTaskExecutor implements TaskExecutor {
     }
 
     protected abstract boolean canDoTaskHere(Vector3i pos, World world);
+
+    protected abstract boolean shouldSearchLocationsAboveBoundingBox();
 }

@@ -133,4 +133,21 @@ public final class BlockUtils {
     }
     return new Box(p1, p2);
   }
+
+  public static Vector3i rayTraceBlock(World world, Vector3d from, Vector3d direction,
+                                       float precision, float maxDistance) {
+    Vector3d fromClone = from.clone();
+    Vector3d directionClone = direction.clone();
+    directionClone.normalize();
+    directionClone.scale(precision);
+    for (float t = 0; t < maxDistance; t += precision) {
+      fromClone.add(directionClone);
+      BlockType blockType = world.getBlockType(fromClone.toVector3i());
+      if (blockType == null || blockType.getId().equals("Empty")) {
+        continue;
+      }
+      return fromClone.toVector3i();
+    }
+    return null;
+  }
 }

@@ -95,7 +95,6 @@ public class HarvestTaskExecutor extends AreaTaskExecutor {
     String dropListId = harvestingDropType.getDropListId();
 
     for (ItemStack itemStack : BlockHarvestUtils.getDrops(blockType, 1, itemId, dropListId)) {
-      LOGGER.atInfo().log(itemStack.toString());
       CombinedItemContainer hotbarFirstCombinedItemContainer = InventoryComponent.getCombined(store,
           ref, InventoryComponent.HOTBAR_FIRST);
       SimpleItemContainer.addOrDropItemStack(store, ref, hotbarFirstCombinedItemContainer,
@@ -124,5 +123,10 @@ public class HarvestTaskExecutor extends AreaTaskExecutor {
       return false;
     }
     return type.getId().endsWith("_StageFinal");
+  }
+
+  @Override
+  protected boolean shouldSearchLocationsAboveBoundingBox() {
+    return true;
   }
 }
