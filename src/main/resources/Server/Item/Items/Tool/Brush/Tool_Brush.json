@@ -42,6 +42,13 @@
     ]
   },
   "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "UseBrushOfLife"
+        }
+      ]
+    },
     "Secondary": {
       "Interactions": [
         {
@@ -49,77 +56,6 @@
         }
       ]
     }
-  },
-  "Tool": {
-      "Specs": [
-        {
-          "Power": 0.01,
-          "GatherType": "SoftBlocks"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "Soils"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "Woods"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "Rocks"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "Benches"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "VolcanicRocks"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreCopper"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreIron"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreSilver"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreGold"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreThorium"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreCobalt"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreAdamantite"
-        },
-        {
-          "Power": 0.01,
-          "GatherType": "OreMithril"
-        }
-    ],
-    "DurabilityLossBlockTypes": [
-      {
-        "BlockSets": [
-          "Stone",
-          "Rock",
-          "Ores",
-          "Soil"
-        ],
-        "DurabilityLossOnHit": 0
-      }
-    ]
   },
   "IconProperties": {
     "Scale": 0.9,
