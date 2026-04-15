@@ -104,6 +104,11 @@
         },
         {
           "Type": "ClearJobs"
+        },
+        {
+          "Type": "SetFlag",
+          "Name": "HoldingItem",
+          "SetTo": false
         }
       ]
     }
@@ -198,13 +203,11 @@
           "BodyMotion": {
             "Type": "MaintainDistance",
             "DesiredDistanceRange": { "Compute": "makeRange(randomInRange(0.5,2.5))" },
-            "TargetDistanceFactor": { "Compute": "randomInRange(0.1,1)" },
             "MoveThreshold": { "Compute": "randomInRange(0.1,1)" },
             "MoveTowardsSlowdownThreshold": { "Compute": "randomInRange(1,3)" },
-            "StrafingDurationRange": { "Compute": "makeRange(randomInRange(0.5,1.5))" },
-            "StrafingFrequencyRange": { "Compute": "makeRange(randomInRange(3,7))" },
+            "RelativeBackwardsSpeed": 0.5,
             "RelativeForwardsSpeed": 1,
-            "RelativeBackwardsSpeed": 0.5
+            "TargetDistanceFactor": { "Compute": "randomInRange(0.1,1)" }
           },
           "HeadMotion": {
             "Type": "Watch",
