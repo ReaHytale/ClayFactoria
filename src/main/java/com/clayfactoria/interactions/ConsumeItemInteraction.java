@@ -48,10 +48,14 @@ public class ConsumeItemInteraction extends SimpleInstantInteraction {
       Player player = store.getComponent(ref, Player.getComponentType());
       assert player != null;
       if (player.getGameMode().equals(GameMode.Adventure)) {
-        hotbar.getInventory().setItemStackForSlot(
-            context.getHeldItemSlot(),
-            new ItemStack(item.getId(), itemInHand.getQuantity() - 1)
-        );
+        if (itemInHand.getQuantity() > 1) {
+          hotbar.getInventory().setItemStackForSlot(
+              context.getHeldItemSlot(),
+              new ItemStack(item.getId(), itemInHand.getQuantity() - 1)
+          );
+        } else {
+          hotbar.getInventory().removeItemStackFromSlot(context.getHeldItemSlot());
+        }
       }
     }
   }

@@ -10,8 +10,8 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.block.components.ItemContainerBlock;
@@ -20,6 +20,8 @@ import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.Role;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,30 +39,13 @@ public final class TaskHelper {
 
   @Nonnull
   public static NPCEntity getNPCEntity(
-      @Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store) {
+      @Nonnull Ref<EntityStore> ref) {
+    Store<EntityStore> store = ref.getStore();
     ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
     Objects.requireNonNull(component, "NPCEntity Component Type was null");
     NPCEntity npcEntity = store.getComponent(ref, component);
     Objects.requireNonNull(npcEntity, "NPCEntity was null");
     return npcEntity;
-  }
-
-  @Nullable
-  public static Holder<ChunkStore> findNearbyPOIHolder(NPCEntity npcEntity, Task task) {
-    World world = Objects.requireNonNull(npcEntity.getWorld());
-    Vector3i pos = npcEntity.getOldPosition().toVector3i();
-    List<Vector3i> shuffled = getAdjacentDirections();
-    for (Vector3i dir : shuffled) {
-      BlockType type = world.getBlockType(pos.clone().add(dir));
-      if (type == null) {
-        continue;
-      }
-      Holder<ChunkStore> holder = type.getBlockEntity();
-      if (holder != null) {
-        return holder;
-      }
-    }
-    return null;
   }
 
   @Nullable
@@ -177,28 +162,55 @@ public final class TaskHelper {
 
   public static boolean transferItem(ItemContainer source, ItemContainer target) {
     for (short slot = 0; slot < source.getCapacity(); slot++) {
-      ItemStack itemStack = source.getItemStack(slot);
-      if (itemStack == null) {
-        continue;
-      }
-      int prevQuantity = itemStack.getQuantity();
-      source.moveItemStackFromSlot(slot, 1, target);
-      // Check whether it actually succeeded to transfer
-      itemStack = source.getItemStack(slot);
-      if (itemStack == null) {
+      boolean result = transferItem(source, target, slot);
+      if (result) {
         return true;
-      } else {
-        return itemStack.getQuantity() == prevQuantity - 1;
       }
     }
     // No item found in storage, return false for failure.
     return false;
   }
 
+  public static boolean transferItem(ItemContainer source, ItemContainer target, short slot) {
+    ItemStack itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return false;
+    }
+    return transferItem(source, target, slot, itemStack.getQuantity());
+  }
+
+  public static boolean transferItem(ItemContainer source, ItemContainer target, int quantity) {
+    for (short slot = 0; slot < source.getCapacity(); slot++) {
+      boolean result = transferItem(source, target, slot, quantity);
+      if (result) {
+        return true;
+      }
+    }
+    // No item found in storage, return false for failure.
+    return false;
+  }
+
+  public static boolean transferItem(ItemContainer source, ItemContainer target, short slot,
+      int quantity) {
+    ItemStack itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return false;
+    }
+    int prevQuantity = itemStack.getQuantity();
+    source.moveItemStackFromSlot(slot, quantity, target);
+    // Check whether it actually succeeded to transfer
+    itemStack = source.getItemStack(slot);
+    if (itemStack == null) {
+      return true;
+    } else {
+      return itemStack.getQuantity() == prevQuantity - quantity;
+    }
+  }
+
   public static ItemContainer getNPCInventory(NPCEntity npcEntity, Store<EntityStore> store) {
     assert npcEntity.getReference() != null;
     return InventoryComponent.getCombined(store, npcEntity.getReference(),
-        InventoryComponent.Hotbar.getComponentType());
+        InventoryComponent.EVERYTHING);
   }
 
   public static void idleAutomaton(Ref<EntityStore> npcRef, Store<EntityStore> store) {
@@ -210,5 +222,26 @@ public final class TaskHelper {
     Objects.requireNonNull(npcEntity.getRole())
         .getStateSupport()
         .setState(npcRef, "Idle", null, store);
+  }
+
+  public static ItemStack getHeldItemstack(Store<EntityStore> store, Ref<EntityStore> entityRef) {
+    Hotbar hotbar = store.getComponent(entityRef, Hotbar.getComponentType());
+    assert hotbar != null;
+    return hotbar.getActiveItem();
+  }
+
+  public static List<String> getHotbarItems(Role role) {
+    try {
+      Field hotbarItemsField = Role.class.getDeclaredField("hotbarItems");
+      hotbarItemsField.setAccessible(true);
+      String[] hotbarItemsArray = (String[]) hotbarItemsField.get(role);
+      if (hotbarItemsArray != null) {
+        return Arrays.asList(hotbarItemsArray);
+      }
+      return null;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      LOGGER.atSevere().log(e.getMessage());
+      return null;
+    }
   }
 }

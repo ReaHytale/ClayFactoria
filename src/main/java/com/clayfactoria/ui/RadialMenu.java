@@ -120,10 +120,12 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
       @Nonnull Ref<EntityStore> ref,
       @Nonnull Store<EntityStore> store,
       @Nonnull RadialMenuEventData data) {
+
     if (data.task != null) {
       LOGGER.atInfo().log("Set Brush command to: " + data.task);
       brushComponent.setTask(data.task);
     } else if (data.reset == IsReset.Yes) {
+      brushComponent.setBoxPoint1(null, ref);
       LOGGER.atInfo().log("Resetting tasks");
       brushComponent.resetTasks(store, ref);
     }

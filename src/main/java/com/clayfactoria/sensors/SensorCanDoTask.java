@@ -1,22 +1,14 @@
 package com.clayfactoria.sensors;
 
-import com.clayfactoria.codecs.Task;
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
-import com.clayfactoria.utils.ContainerSlot;
-import com.clayfactoria.utils.TaskHelper;
-import com.hypixel.hytale.component.Component;
-import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.asset.builder.BuilderSupport;
-import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.sensorinfo.InfoProvider;
 import java.util.Objects;
@@ -54,7 +46,7 @@ public class SensorCanDoTask extends SensorBaseLogger {
       return false;
     }
 
-    return currentTask.canDoTask.apply(ref);
+    return currentTask.taskExecutor.canPerformTask(ref);
   }
 
   @Override

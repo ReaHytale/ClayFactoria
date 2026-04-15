@@ -1,0 +1,211 @@
+{
+  "Parent": "Player",
+  "Model": "NPC/Intelligent/Feran_Clay/Models/Model.blockymodel",
+  "Texture": "NPC/Intelligent/Feran_Clay/Models/Texture.png",
+  "EyeHeight": 0.8,
+  "CrouchOffset": 0,
+  "HitBox": {
+    "Max": {
+      "X": 0.3,
+      "Y": 1,
+      "Z": 0.3
+    },
+    "Min": {
+      "X": -0.3,
+      "Y": 0,
+      "Z": -0.3
+    }
+  },
+  "MinScale": 0.75,
+  "MaxScale": 0.75,
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Intelligent/Feran_Clay/Models/Attachments/Eyes.blockymodel",
+      "Texture": "NPC/Intelligent/Feran_Clay/Models/Attachments/Eyes.png"
+    },
+    {
+      "Model": "NPC/Intelligent/Feran_Clay/Models/Attachments/Eyebrows.blockymodel",
+      "Texture": "NPC/Intelligent/Feran_Clay/Models/Attachments/Eyebrows.png"
+    }
+  ],
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 15,
+        "Min": -15
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 15,
+        "Min": -15
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Idle.blockyanim",
+          "Looping": true,
+          "Speed": 0.5
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1.7,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 1.5,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Walk.blockyanim",
+          "Speed": 2,
+          "FootstepIntervals": [
+            25,
+            75
+          ]
+        }
+      ]
+    },
+    "Take": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Take.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "Deposit": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Deposit.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "Hold": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Hold.blockyanim",
+          "Looping": true,
+          "Speed": 1
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Alerted.blockyanim",
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
+    "Harvest": {
+      "Animations": [
+        {
+          "Animation": "NPC/Intelligent/Feran_Clay/Animations/Default/Harvest.blockyanim",
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
+    "IdlePassive": {
+      "Animations": [
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Around2.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Left.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Look_Right.blockyanim",
+          "BlendingDuration": 0.4
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Blink_Double.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye2_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye3_Blink2.blockyanim",
+          "Weight": 2
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Left_Blink.blockyanim"
+        },
+        {
+          "Animation": "Characters/Animations/Flavor/Eye_Look_Right_Blink.blockyanim"
+        }
+      ],
+      "NextAnimationDelay": {
+        "Max": 1,
+        "Min": 0
+      }
+    }
+  }
+}

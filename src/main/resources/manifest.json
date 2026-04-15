@@ -1,20 +1,26 @@
 {
-  "Group": "${plugin_group}",
-  "Name": "${plugin_name}",
-  "Version": "${plugin_version}",
-  "Description": "${plugin_description}",
-  "Authors": [
-    {
-      "Name": "${plugin_author}"
+    "Group": "ClayFactoria",
+    "Name": "clayfactoria",
+    "Version": "1.0.0-pre1",
+    "Description": "Create clay automatons using the power of Gaia's life essence!",
+    "Authors": [
+        {
+            "Name": "The Clay Factoria Team"
+        }
+    ],
+    "Website": "https://www.curseforge.com/hytale/mods/clay-factoria",
+    "ServerVersion": "2026.03.26-89796e57b",
+    "Dependencies": {
+        "Hytale:AssetModule": "*",
+        "Hytale:NPC": "*"
+    },
+    "OptionalDependencies": {
+        
+    },
+    "DisabledByDefault": false,
+    "IncludesAssetPack": true,
+    "Main": "com.clayfactoria.ClayFactoria",
+    "UpdateChecker": {
+        "CurseForge": ""
     }
-  ],
-  "Website": "${plugin_website}",
-  "ServerVersion": "${server_version}",
-  "Dependencies": {
-    "Hytale:NPC": "*"
-  },
-  "OptionalDependencies": {},
-  "DisabledByDefault": false,
-  "IncludesAssetPack": true,
-  "Main": "${plugin_main_entrypoint}"
 }

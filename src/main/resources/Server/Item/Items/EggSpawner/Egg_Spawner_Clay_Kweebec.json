@@ -50,17 +50,17 @@
   },
   "Model": "Items/Egg_Spawner/Egg_Spawner_Clay_Kweebec.blockymodel",
   "Texture": "Items/Egg_Spawner/Egg_Spawner_Clay_Kweebec_Texture.png",
-  "Icon": "Icons/ItemsGenerated/Kweebec_Clay.png",
+  "Icon": "Icons/ItemsGenerated/Egg_Spawner_Clay_Kweebec.png",
   "IconProperties": {
+    "Scale": 0.7,
     "Rotation": [
       22.5,
       45,
       22.5
     ],
-    "Scale": 0.7,
     "Translation": [
       0,
-      -20.4
+      -17
     ]
   },
   "Tags": {}
