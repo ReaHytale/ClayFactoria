@@ -1,13 +1,11 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
-import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
 import com.hypixel.hytale.component.Component;
-import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -23,17 +21,9 @@ import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
 public class WorkTaskExecutor extends PointTaskExecutor {
 
     @Override
-    public boolean canPerformTask(Ref<EntityStore> entityRef) {
-        Store<EntityStore> store = entityRef.getStore();
-
-        ComponentType<EntityStore, NPCEntity> component = NPCEntity.getComponentType();
-        Objects.requireNonNull(component, "NPC Entity Component Type was null");
-
-        NPCEntity npcEntity = store.getComponent(entityRef, component);
-        Objects.requireNonNull(npcEntity, "NPC Entity was null");
-
-        Component<ChunkStore> nearbyPOI = TaskHelper.findNearbyPOI(npcEntity, Task.WORK);
-        return nearbyPOI != null;
+    public boolean canPerformTask(Ref<EntityStore> ref) {
+        Component<ChunkStore> blockEntity = TaskHelper.getBlockEntity(ref);
+        return blockEntity != null;
     }
 
     @Override

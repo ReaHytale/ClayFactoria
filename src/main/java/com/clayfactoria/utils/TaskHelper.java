@@ -1,18 +1,12 @@
 package com.clayfactoria.utils;
 
-import com.clayfactoria.codecs.Task;
+import com.clayfactoria.codecs.Job;
+import com.clayfactoria.components.JobComponent;
 import com.hypixel.hytale.builtin.crafting.component.ProcessingBenchBlock;
-import com.hypixel.hytale.component.Component;
-import com.hypixel.hytale.component.ComponentType;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
-import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
-import com.hypixel.hytale.protocol.Direction;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -25,14 +19,14 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.Role;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public final class TaskHelper {
 
@@ -53,38 +47,44 @@ public final class TaskHelper {
     }
 
     @Nullable
-    public static Component<ChunkStore> findNearbyPOI(NPCEntity npcEntity, Task task) {
+    public static Component<ChunkStore> getBlockEntity(Ref<EntityStore> ref) {
+        Store<EntityStore> store = ref.getStore();
+        NPCEntity npcEntity = store.getComponent(ref, Objects.requireNonNull(NPCEntity.getComponentType()));
+        Objects.requireNonNull(npcEntity);
+        JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+        assert jobComponent != null;
         World world = Objects.requireNonNull(npcEntity.getWorld());
-        Vector3i pos = npcEntity.getOldPosition().toVector3i();
-        List<Vector3i> shuffled = getAdjacentDirections();
-        for (Vector3i dir : shuffled) {
-            Vector3i baseBlock = BlockUtils.getBaseBlock(new Vector3i(pos.add(dir)), world);
-            Holder<ChunkStore> holder = world.getBlockComponentHolder(baseBlock.x, baseBlock.y,
-                baseBlock.z);
-            if (holder == null) {
-                continue;
-            }
-            ItemContainerBlock itemContainerBlock = holder.getComponent(
-                ItemContainerBlock.getComponentType());
-            ProcessingBenchBlock processingBenchBlock = holder.getComponent(
-                ProcessingBenchBlock.getComponentType());
-
-            switch (task) {
-                case POSITION:
-                    return null;
-                case TAKE, DEPOSIT: // Find a container
-                    if (itemContainerBlock != null) {
-                        return itemContainerBlock;
-                    }
-                    if (processingBenchBlock != null) {
-                        return processingBenchBlock;
-                    }
-                case WORK: // Find a processing bench
-                    if (processingBenchBlock != null) {
-                        return processingBenchBlock;
-                    }
-            }
+        Job job = jobComponent.getCurrentJob();
+        if (job == null) {
+            return null;
         }
+        Vector3i pos = job.getLocation();
+        Vector3i baseBlock = BlockUtils.getBaseBlock(pos, world);
+        Holder<ChunkStore> holder = world.getBlockComponentHolder(baseBlock.x, baseBlock.y,
+            baseBlock.z);
+        if (holder == null) return null;
+
+        ItemContainerBlock itemContainerBlock = holder.getComponent(
+            ItemContainerBlock.getComponentType());
+        ProcessingBenchBlock processingBenchBlock = holder.getComponent(
+            ProcessingBenchBlock.getComponentType());
+
+        switch (job.getTask()) {
+            case POSITION:
+                return null;
+            case TAKE, DEPOSIT: // Find a container
+                if (itemContainerBlock != null) {
+                    return itemContainerBlock;
+                }
+                if (processingBenchBlock != null) {
+                    return processingBenchBlock;
+                }
+            case WORK: // Find a processing bench
+                if (processingBenchBlock != null) {
+                    return processingBenchBlock;
+                }
+        }
+
         return null;
     }
 

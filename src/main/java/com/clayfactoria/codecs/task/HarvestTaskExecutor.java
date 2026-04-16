@@ -20,113 +20,114 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nonnull;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HarvestTaskExecutor extends AreaTaskExecutor {
 
-  @Override
-  public boolean canPerformTask(Ref<EntityStore> entityRef) {
-    Store<EntityStore> store = entityRef.getStore();
-    JobComponent jobComponent = store.getComponent(entityRef, JobComponent.getComponentType());
-    assert jobComponent != null;
-    Job job = jobComponent.getCurrentJob();
-    assert job != null;
-    NPCEntity npc = TaskHelper.getNPCEntity(entityRef);
-    World world = npc.getWorld();
-    assert world != null;
+    @Override
+    public boolean canPerformTask(Ref<EntityStore> ref) {
+        Store<EntityStore> store = ref.getStore();
+        JobComponent jobComponent = store.getComponent(ref, JobComponent.getComponentType());
+        assert jobComponent != null;
+        Job job = jobComponent.getCurrentJob();
+        assert job != null;
+        NPCEntity npc = TaskHelper.getNPCEntity(ref);
+        World world = npc.getWorld();
+        assert world != null;
 
-    // Check if we can still do the task at this position
-    if (!canDoTaskHere(job.getLocation(), world)) {
-      return false;
+        // Check if we can still do the task at this position
+        if (!canDoTaskHere(job.getLocation(), world)) {
+            return false;
+        }
+
+        // Check that it doesn't have any other items than the sickle in its inventory.
+        CombinedItemContainer inventory = InventoryComponent.getCombined(store, ref,
+            InventoryComponent.EVERYTHING);
+        AtomicBoolean otherItemsFound = new AtomicBoolean(false);
+        inventory.forEach((_, itemStack) -> {
+            if (itemStack != null && !itemStack.getItemId().contains("Sickle")) {
+                otherItemsFound.set(true);
+            }
+        });
+
+        return !otherItemsFound.get();
     }
 
-    // Check that it doesn't have any other items than the sickle in its inventory.
-    CombinedItemContainer inventory = InventoryComponent.getCombined(store, entityRef,
-        InventoryComponent.EVERYTHING);
-    AtomicBoolean otherItemsFound = new AtomicBoolean(false);
-    inventory.forEach((_, itemStack) -> {
-      if (itemStack != null && !itemStack.getItemId().contains("Sickle")) {
-        otherItemsFound.set(true);
-      }
-    });
+    @Override
+    public boolean execute(Ref<EntityStore> entityRef) {
+        NPCEntity entity = TaskHelper.getNPCEntity(entityRef);
+        JobComponent job =
+            entityRef.getStore().getComponent(entityRef, JobComponent.getComponentType());
+        World world = entity.getWorld();
+        assert job != null;
+        assert job.getCurrentJob() != null;
+        assert world != null;
 
-    return !otherItemsFound.get();
-  }
+        Vector3i location = job.getCurrentJob().getLocation();
+        BlockType type = world.getBlockType(location.x, location.y, location.z);
+        assert type != null;
 
-  @Override
-  public boolean execute(Ref<EntityStore> entityRef) {
-    NPCEntity entity = TaskHelper.getNPCEntity(entityRef);
-    JobComponent job =
-        entityRef.getStore().getComponent(entityRef, JobComponent.getComponentType());
-    World world = entity.getWorld();
-    assert job != null;
-    assert job.getCurrentJob() != null;
-    assert world != null;
+        FarmingUtil.harvest(
+            world,
+            entityRef.getStore(),
+            entityRef,
+            type,
+            world.getBlockRotationIndex(location.x, location.y, location.z),
+            location);
 
-    Vector3i location = job.getCurrentJob().getLocation();
-    BlockType type = world.getBlockType(location.x, location.y, location.z);
-    assert type != null;
-
-    FarmingUtil.harvest(
-        world,
-        entityRef.getStore(),
-        entityRef,
-        type,
-        world.getBlockRotationIndex(location.x, location.y, location.z),
-        location);
-
-    InventoryComponent.Hotbar hotbar = entityRef.getStore()
-        .getComponent(entityRef, InventoryComponent.Hotbar.getComponentType());
-    assert hotbar != null;
-    hotbar.setActiveSlot((byte) (hotbar.getActiveSlot() + 1));
+        InventoryComponent.Hotbar hotbar = entityRef.getStore()
+            .getComponent(entityRef, InventoryComponent.Hotbar.getComponentType());
+        assert hotbar != null;
+        hotbar.setActiveSlot((byte) (hotbar.getActiveSlot() + 1));
 //    giveDrops(entityRef, type);
-    return true;
-  }
+        return true;
+    }
 
-  private void giveDrops(
-      @Nonnull Ref<EntityStore> ref,
-      @Nonnull BlockType blockType
-  ) {
-    Store<EntityStore> store = ref.getStore();
-    assert blockType.getGathering() != null;
-    HarvestingDropType harvestingDropType = blockType.getGathering().getHarvest();
-    String itemId = harvestingDropType.getItemId();
-    String dropListId = harvestingDropType.getDropListId();
+    private void giveDrops(
+        @Nonnull Ref<EntityStore> ref,
+        @Nonnull BlockType blockType
+    ) {
+        Store<EntityStore> store = ref.getStore();
+        assert blockType.getGathering() != null;
+        HarvestingDropType harvestingDropType = blockType.getGathering().getHarvest();
+        String itemId = harvestingDropType.getItemId();
+        String dropListId = harvestingDropType.getDropListId();
 
-    for (ItemStack itemStack : BlockHarvestUtils.getDrops(blockType, 1, itemId, dropListId)) {
-      CombinedItemContainer hotbarFirstCombinedItemContainer = InventoryComponent.getCombined(store,
-          ref, InventoryComponent.HOTBAR_FIRST);
-      SimpleItemContainer.addOrDropItemStack(store, ref, hotbarFirstCombinedItemContainer,
-          itemStack);
+        for (ItemStack itemStack : BlockHarvestUtils.getDrops(blockType, 1, itemId, dropListId)) {
+            CombinedItemContainer hotbarFirstCombinedItemContainer = InventoryComponent.getCombined(store,
+                ref, InventoryComponent.HOTBAR_FIRST);
+            SimpleItemContainer.addOrDropItemStack(store, ref, hotbarFirstCombinedItemContainer,
+                itemStack);
+        }
     }
-  }
 
-  @Override
-  protected boolean canDoTaskHere(Vector3i pos, World world) {
-    if (pos == null) {
-      return false;
+    @Override
+    protected boolean canDoTaskHere(Vector3i pos, World world) {
+        if (pos == null) {
+            return false;
+        }
+        Holder<ChunkStore> blockHolder = world.getBlockComponentHolder(pos.x, pos.y - 1, pos.z);
+        if (blockHolder == null) {
+            return false;
+        }
+        TilledSoilBlock tilledSoilBlock = blockHolder.getComponent(TilledSoilBlock.getComponentType());
+        if (tilledSoilBlock == null) {
+            return false;
+        }
+        if (!tilledSoilBlock.isPlanted()) {
+            return false;
+        }
+        BlockType type = world.getBlockType(pos.x, pos.y, pos.z);
+        if (type == null) {
+            return false;
+        }
+        return type.getId().endsWith("_StageFinal");
     }
-    Holder<ChunkStore> blockHolder = world.getBlockComponentHolder(pos.x, pos.y - 1, pos.z);
-    if (blockHolder == null) {
-      return false;
-    }
-    TilledSoilBlock tilledSoilBlock = blockHolder.getComponent(TilledSoilBlock.getComponentType());
-    if (tilledSoilBlock == null) {
-      return false;
-    }
-    if (!tilledSoilBlock.isPlanted()) {
-      return false;
-    }
-    BlockType type = world.getBlockType(pos.x, pos.y, pos.z);
-    if (type == null) {
-      return false;
-    }
-    return type.getId().endsWith("_StageFinal");
-  }
 
-  @Override
-  protected boolean shouldSearchLocationsAboveBoundingBox() {
-    return true;
-  }
+    @Override
+    protected boolean shouldSearchLocationsAboveBoundingBox() {
+        return true;
+    }
 }
