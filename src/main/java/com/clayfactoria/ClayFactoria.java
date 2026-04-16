@@ -9,6 +9,7 @@ import com.clayfactoria.interactions.OpenWandMenu;
 import com.clayfactoria.interactions.UseBrushOfLife;
 import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
 import com.clayfactoria.sensors.builders.BuilderSensorHasAnyJobs;
+import com.clayfactoria.sensors.builders.BuilderSensorJobPosition;
 import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
 import com.clayfactoria.systems.BrushLegendSystem;
 import com.clayfactoria.systems.TaskBoxSystem;
@@ -67,6 +68,7 @@ public class ClayFactoria extends JavaPlugin {
         NPCPlugin.get().registerCoreComponentType("LeashTarget", BuilderSensorLeashTarget::new);
         NPCPlugin.get().registerCoreComponentType("CanDoTask", BuilderSensorCanDoTask::new);
         NPCPlugin.get().registerCoreComponentType("HasAnyJobs", BuilderSensorHasAnyJobs::new);
+        NPCPlugin.get().registerCoreComponentType("JobPosition", BuilderSensorJobPosition::new);
 
         NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderActionPutItemInHand::new);
         NPCPlugin.get().registerCoreComponentType("DoTask", BuilderActionDoTask::new);

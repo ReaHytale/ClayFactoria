@@ -71,7 +71,8 @@
       "RunThreshold": 0.3,
       "MaxFallSpeed": 15,
       "MaxRotationSpeed": 360,
-      "Acceleration": 10
+      "Acceleration": 10,
+      "MaxWalkTurnAngle": 180
     }
   ],
   "MaxHealth": { "Compute": "MaxHealth" },
@@ -391,6 +392,15 @@
                     "State": ".Task"
                   },
                   "Instructions": [
+                    {
+                      "Continue": true,
+                      "Sensor": {
+                        "Type": "JobPosition"
+                      },
+                      "HeadMotion": {
+                        "Type": "Watch"
+                      }
+                    },
                     {
                       "$Comment": "If there is a task that can be completed at this position, do it.",
                       "Reference": "Component_Instruction_Task",
