@@ -1,5 +1,6 @@
 package com.clayfactoria.interactions;
 
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.BrushComponent;
 import com.clayfactoria.components.JobBoxComponent;
 import com.clayfactoria.utils.BlockUtils;
@@ -25,6 +26,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.util.Objects;
+
+import static com.clayfactoria.utils.JobLocationHelper.isValidWalkLocation;
 
 public class UseBrushOfLife extends SimpleInstantInteraction {
     public static final BuilderCodec<UseBrushOfLife> CODEC = BuilderCodec.builder(
@@ -54,6 +57,7 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
         BrushComponent brushComponent = Objects.requireNonNull(
             store.getComponent(ref, BrushComponent.getComponentType())
         );
+        Task task = brushComponent.getTask();
 
         // If no selected entity, let the user know...
         if (brushComponent.getEntityId() == null
@@ -65,12 +69,9 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
             return;
         }
 
-        BlockPosition targetBlockPos = interactionContext.getTargetBlock();
-        if (targetBlockPos == null) return;
-        Vector3i targetBlockLoc = new Vector3i(targetBlockPos.x, targetBlockPos.y, targetBlockPos.z);
-
         try {
-            if (brushComponent.getTask().usesBounds) {
+            Vector3i targetBlockLoc = getTargetBlockLoc(interactionContext, world, task);
+            if (task.usesBounds) {
                 JobBoxComponent.JobBoxesComponent jobBoxesComponent = store.getComponent(
                     ref, JobBoxComponent.JobBoxesComponent.getComponentType()
                 );
@@ -83,7 +84,7 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
                     brushComponent.setBoxPoint1(targetBlockLoc, ref);
                     jobBoxesComponent.boxes.add(
                         new JobBoxComponent(
-                            brushComponent.getTask().color, BlockUtils.getBlockBox(targetBlockLoc, world),
+                            task.color, BlockUtils.getBlockBox(targetBlockLoc, world),
                             false, targetBlockLoc.toVector3d()));
                 }
             } else {
@@ -92,9 +93,29 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
         } catch (IllegalStateException e) {
             player.sendMessage(Message.raw("Cannot place the target location here!").color(Color.RED));
             LOGGER.atInfo().log("Error when adding a task: " + e.getMessage());
+            SoundUtil.playItemSoundEvent(ref, store,
+                Objects.requireNonNull(Item.getAssetMap().getAsset("Tool_Brush")), ItemSoundEvent.Drop);
+            return;
         }
 
         SoundUtil.playItemSoundEvent(ref, store,
             Objects.requireNonNull(Item.getAssetMap().getAsset("Ingredient_Life_Essence")), ItemSoundEvent.Drop);
+    }
+
+    private Vector3i getTargetBlockLoc(@NonNull InteractionContext interactionContext, @NonNull World world, Task task) {
+        BlockPosition targetBlockPos = interactionContext.getTargetBlock();
+        if (targetBlockPos == null) return null;
+        Vector3i targetBlockLoc = new Vector3i(targetBlockPos.x, targetBlockPos.y, targetBlockPos.z);
+
+        // If the task location is the walk location, check the block below.
+        // If that's still not valid, there's no valid walk location here and we return null.
+        if (task.locationEqualsWalkLocation && !isValidWalkLocation(world, targetBlockLoc)) {
+            targetBlockLoc.add(0, -1, 0);
+            if (!isValidWalkLocation(world, targetBlockLoc)) {
+                throw new IllegalStateException("No valid block for locationEqualsWalkLocation task.");
+            }
+        }
+
+        return targetBlockLoc;
     }
 }
