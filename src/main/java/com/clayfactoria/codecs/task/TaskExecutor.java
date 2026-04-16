@@ -9,11 +9,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public interface TaskExecutor {
 
-  boolean canPerformTask(Ref<EntityStore> entityRef);
+    boolean canPerformTask(Ref<EntityStore> ref);
 
-  boolean execute(Ref<EntityStore> entityRef);
+    boolean execute(Ref<EntityStore> entityRef);
 
-  void checkBounds(Box bounds) throws IllegalArgumentException;
+    void checkBounds(Box bounds) throws IllegalArgumentException;
 
-  Vector3d findNextWalkLocation(Job job, World world, Vector3d from);
+    Vector3d findNextWalkLocation(Job job, World world, Vector3d from);
 }
