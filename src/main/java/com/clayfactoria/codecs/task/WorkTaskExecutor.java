@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.crafting.component.BenchBlock;
@@ -48,6 +49,11 @@ public class WorkTaskExecutor extends PointTaskExecutor {
             return false;
         }
         return processingBenchBlock.setActive(true, benchBlock, null);
+    }
+
+    @Override
+    public Task relevantNextTask() {
+        return Task.WORK;
     }
 
 }

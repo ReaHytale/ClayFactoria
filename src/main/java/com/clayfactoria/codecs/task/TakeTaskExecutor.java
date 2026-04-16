@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
@@ -53,6 +54,11 @@ public class TakeTaskExecutor extends PointTaskExecutor {
 
         ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
         return TaskHelper.transferItem(itemContainer, npcInventory, 1);
+    }
+
+    @Override
+    public Task relevantNextTask() {
+        return Task.DEPOSIT;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
@@ -16,4 +17,6 @@ public interface TaskExecutor {
     void checkBounds(Box bounds) throws IllegalArgumentException;
 
     Vector3d findNextWalkLocation(Job job, World world, Vector3d from);
+
+    Task relevantNextTask();
 }

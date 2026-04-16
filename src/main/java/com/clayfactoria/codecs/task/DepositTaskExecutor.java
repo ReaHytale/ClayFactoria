@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
@@ -55,6 +56,11 @@ public class DepositTaskExecutor extends PointTaskExecutor {
         } else {
             return deposit(ContainerSlot.Input, npcEntity, currentJob, hotbarItems);
         }
+    }
+
+    @Override
+    public Task relevantNextTask() {
+        return Task.TAKE;
     }
 
     private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob,

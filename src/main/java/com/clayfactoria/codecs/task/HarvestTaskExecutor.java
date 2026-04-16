@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.adventure.farming.FarmingUtil;
@@ -85,7 +86,12 @@ public class HarvestTaskExecutor extends AreaTaskExecutor {
         return true;
     }
 
-    private void giveDrops(
+  @Override
+  public Task relevantNextTask() {
+    return Task.DEPOSIT;
+  }
+
+  private void giveDrops(
         @Nonnull Ref<EntityStore> ref,
         @Nonnull BlockType blockType
     ) {

@@ -102,6 +102,7 @@ public class BrushComponent implements Component<EntityStore> {
             Vector3d max = box.max.add(TaskBoxSystem.BOX_PADDING);
             jobBoxesComponent.boxes.add(new JobBoxComponent(task.color, new Box(min, max)));
         }
+        task = task.taskExecutor.relevantNextTask();
     }
 
     public void addTask(
@@ -123,6 +124,7 @@ public class BrushComponent implements Component<EntityStore> {
             componentAccessor.getComponent(playerRef, JobBoxesComponent.getComponentType());
         assert jobBoxesComponent != null;
         jobBoxesComponent.boxes.add(new JobBoxComponent(task.color, box));
+        task = task.taskExecutor.relevantNextTask();
     }
 
     public Component<EntityStore> clone() {
