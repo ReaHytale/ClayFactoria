@@ -26,7 +26,7 @@
       "orientation": [
         {
           "time": 19,
-          "delta": {"x": 0, "y": 0, "z": 0, "w": 1},
+          "delta": {"x": 0, "y": 0, "z": 0.02181, "w": 0.99976},
           "interpolationType": "smooth"
         },
         {
@@ -44,7 +44,7 @@
       "orientation": [
         {
           "time": 19,
-          "delta": {"x": -0.02181, "y": 0, "z": 0, "w": 0.99976},
+          "delta": {"x": -0.0218, "y": -0.00048, "z": -0.02181, "w": 0.99952},
           "interpolationType": "smooth"
         },
         {
