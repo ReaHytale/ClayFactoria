@@ -1,10 +1,12 @@
 package com.clayfactoria.codecs.task;
 
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PositionTaskExecutor extends PointTaskExecutor {
@@ -21,6 +23,11 @@ public class PositionTaskExecutor extends PointTaskExecutor {
             store.getComponent(entityRef, JobComponent.getComponentType()));
         jobComponent.setComplete(true);
         return true;
+    }
+
+    @Override
+    public Task relevantNextTask(List<Task> availableOptions) {
+        return Task.POSITION;
     }
 
 }

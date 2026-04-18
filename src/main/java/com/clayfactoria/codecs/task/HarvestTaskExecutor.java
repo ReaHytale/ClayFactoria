@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.TaskHelper;
 import com.hypixel.hytale.builtin.adventure.farming.FarmingUtil;
@@ -22,6 +23,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HarvestTaskExecutor extends AreaTaskExecutor {
@@ -85,7 +87,16 @@ public class HarvestTaskExecutor extends AreaTaskExecutor {
         return true;
     }
 
-    private void giveDrops(
+  @Override
+  public Task relevantNextTask(List<Task> availableOptions) {
+      if (availableOptions.contains(Task.DEPOSIT)) {
+          return Task.DEPOSIT;
+      } else {
+          return Task.HARVEST;
+      }
+  }
+
+  private void giveDrops(
         @Nonnull Ref<EntityStore> ref,
         @Nonnull BlockType blockType
     ) {

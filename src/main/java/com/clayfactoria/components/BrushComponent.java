@@ -1,6 +1,7 @@
 package com.clayfactoria.components;
 
 import com.clayfactoria.ClayFactoria;
+import com.clayfactoria.codecs.Automaton;
 import com.clayfactoria.codecs.Job;
 import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobBoxComponent.JobBoxesComponent;
@@ -21,6 +22,8 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -102,6 +105,20 @@ public class BrushComponent implements Component<EntityStore> {
             Vector3d max = box.max.add(TaskBoxSystem.BOX_PADDING);
             jobBoxesComponent.boxes.add(new JobBoxComponent(task.color, new Box(min, max)));
         }
+        switchToNextRelevantTask(world);
+    }
+
+    private void switchToNextRelevantTask(World world) {
+        Ref<EntityStore> entityRef = world.getEntityRef(getEntityId());
+        assert entityRef != null;
+        assert NPCEntity.getComponentType() != null;
+        NPCEntity entity = entityRef.getStore().getComponent(entityRef, NPCEntity.getComponentType());
+        assert entity != null;
+        Role role = entity.getRole();
+        assert role != null;
+        Automaton automaton = Automaton.getFromRole(entity.getRole());
+        assert automaton != null;
+        task = task.taskExecutor.relevantNextTask(automaton.tasks);
     }
 
     public void addTask(
@@ -123,6 +140,7 @@ public class BrushComponent implements Component<EntityStore> {
             componentAccessor.getComponent(playerRef, JobBoxesComponent.getComponentType());
         assert jobBoxesComponent != null;
         jobBoxesComponent.boxes.add(new JobBoxComponent(task.color, box));
+        switchToNextRelevantTask(world);
     }
 
     public Component<EntityStore> clone() {

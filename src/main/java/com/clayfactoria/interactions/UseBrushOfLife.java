@@ -69,8 +69,13 @@ public class UseBrushOfLife extends SimpleInstantInteraction {
             return;
         }
 
+
         try {
             Vector3i targetBlockLoc = getTargetBlockLoc(interactionContext, world, task);
+            if (targetBlockLoc == null) {
+                return;
+            }
+
             if (task.usesBounds) {
                 JobBoxComponent.JobBoxesComponent jobBoxesComponent = store.getComponent(
                     ref, JobBoxComponent.JobBoxesComponent.getComponentType()

@@ -1,6 +1,7 @@
 package com.clayfactoria.codecs.task;
 
 import com.clayfactoria.codecs.Job;
+import com.clayfactoria.codecs.Task;
 import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.utils.ContainerSlot;
 import com.clayfactoria.utils.TaskHelper;
@@ -13,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.clayfactoria.utils.TaskHelper.getHeldItemstack;
@@ -53,6 +55,15 @@ public class TakeTaskExecutor extends PointTaskExecutor {
 
         ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
         return TaskHelper.transferItem(itemContainer, npcInventory, 1);
+    }
+
+    @Override
+    public Task relevantNextTask(List<Task> availableOptions) {
+        if (availableOptions.contains(Task.DEPOSIT)) {
+            return Task.DEPOSIT;
+        } else {
+            return Task.WORK;
+        }
     }
 
 }
