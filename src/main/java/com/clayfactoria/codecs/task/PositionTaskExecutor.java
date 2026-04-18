@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PositionTaskExecutor extends PointTaskExecutor {
@@ -25,7 +26,7 @@ public class PositionTaskExecutor extends PointTaskExecutor {
     }
 
     @Override
-    public Task relevantNextTask() {
+    public Task relevantNextTask(List<Task> availableOptions) {
         return Task.POSITION;
     }
 

@@ -59,13 +59,21 @@ public class DepositTaskExecutor extends PointTaskExecutor {
     }
 
     @Override
-    public Task relevantNextTask() {
-        return Task.TAKE;
+    public Task relevantNextTask(List<Task> availableOptions) {
+        if (availableOptions.contains(Task.TAKE)) {
+            return Task.TAKE;
+        } else if (availableOptions.contains(Task.WORK)) {
+            return Task.WORK;
+        } else if (availableOptions.contains(Task.HARVEST)) {
+            return Task.HARVEST;
+        }
+        return Task.DEPOSIT;
     }
 
     private boolean deposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob,
                             List<String> hotbarItems) {
         Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
+        assert currentJob.getLocation() != null;
         ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
             Objects.requireNonNull(npcEntity.getWorld()),
             currentJob.getLocation(),
@@ -85,6 +93,7 @@ public class DepositTaskExecutor extends PointTaskExecutor {
     private boolean canDeposit(ContainerSlot containerSlot, NPCEntity npcEntity, Job currentJob,
                                List<String> hotbarItems) {
         Store<EntityStore> store = Objects.requireNonNull(npcEntity.getReference()).getStore();
+        assert currentJob.getLocation() != null;
         ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
             Objects.requireNonNull(npcEntity.getWorld()),
             currentJob.getLocation(),

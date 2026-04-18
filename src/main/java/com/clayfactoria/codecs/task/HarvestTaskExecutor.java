@@ -23,6 +23,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HarvestTaskExecutor extends AreaTaskExecutor {
@@ -87,8 +88,12 @@ public class HarvestTaskExecutor extends AreaTaskExecutor {
     }
 
   @Override
-  public Task relevantNextTask() {
-    return Task.DEPOSIT;
+  public Task relevantNextTask(List<Task> availableOptions) {
+      if (availableOptions.contains(Task.DEPOSIT)) {
+          return Task.DEPOSIT;
+      } else {
+          return Task.HARVEST;
+      }
   }
 
   private void giveDrops(

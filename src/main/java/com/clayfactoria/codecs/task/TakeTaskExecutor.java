@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.clayfactoria.utils.TaskHelper.getHeldItemstack;
@@ -57,8 +58,12 @@ public class TakeTaskExecutor extends PointTaskExecutor {
     }
 
     @Override
-    public Task relevantNextTask() {
-        return Task.DEPOSIT;
+    public Task relevantNextTask(List<Task> availableOptions) {
+        if (availableOptions.contains(Task.DEPOSIT)) {
+            return Task.DEPOSIT;
+        } else {
+            return Task.WORK;
+        }
     }
 
 }

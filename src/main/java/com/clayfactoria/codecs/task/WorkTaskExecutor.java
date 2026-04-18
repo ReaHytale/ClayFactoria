@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.clayfactoria.utils.TaskHelper.getNPCEntity;
@@ -52,7 +53,7 @@ public class WorkTaskExecutor extends PointTaskExecutor {
     }
 
     @Override
-    public Task relevantNextTask() {
+    public Task relevantNextTask(List<Task> availableOptions) {
         return Task.WORK;
     }
 

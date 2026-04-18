@@ -8,6 +8,8 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import java.util.List;
+
 public interface TaskExecutor {
 
     boolean canPerformTask(Ref<EntityStore> ref);
@@ -18,5 +20,5 @@ public interface TaskExecutor {
 
     Vector3d findNextWalkLocation(Job job, World world, Vector3d from);
 
-    Task relevantNextTask();
+    Task relevantNextTask(List<Task> availableOptions);
 }
