@@ -27,11 +27,11 @@ val lombokVersion = "1.18.40"
 dependencies {
     compileOnly("org.jetbrains:annotations:26.1.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
+    implementation("curse.maven:hyui-1431415:7820303")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-
     testCompileOnly("org.projectlombok:lombok:$lombokVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
 }
@@ -55,6 +55,7 @@ hytaleTools {
 
 repositories {
     mavenCentral()
+    maven { setUrl("https://cursemaven.com") }
 }
 
 val serverRunDir = file("$projectDir/run")

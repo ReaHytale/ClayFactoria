@@ -36,7 +36,7 @@ $C.@PageOverlay {
 
     Label #CommandMenuTitle {
       Anchor: (Top: 18, Width: 620, Height: 42, Left: 150);
-      Text: "Select Action";
+      Text: "Select Task";
       Style: (
         FontSize: 38,
         RenderBold: true,
@@ -48,7 +48,7 @@ $C.@PageOverlay {
 
     Label #CommandMenuSubtitle {
       Anchor: (Top: 62, Width: 620, Height: 26, Left: 150);
-      Text: "Click an task to set your brush mode.";
+      Text: "Select a task to set your brush mode.";
       Style: (
         FontSize: 16,
         TextColor: #dbe4e7,
@@ -76,11 +76,26 @@ $C.@PageOverlay {
       );
     }
 
-    $C.@TextButton #ResetButton {
-      Anchor: (Top: 660, Left: 380, Width: 160, Height: 64);
-      Text: "Clear Path";
-      TooltipText: "Reset the job list";
-    }
+    Group {
+    Anchor: (Top: 660, Left: 340, Width: 208, Height: 64);
+        $C.@TextButton #ResetButton {
+          Anchor: (Top: 0, Left: 64, Width: 160, Height: 64);
+          Text: "Clear Path";
+          TooltipText: "Reset the job list";
+        }
 
+        Group #UndoButtonGroup {
+        Anchor: (Top: 8, Left: 0, Width: 48, Height: 48);
+            $C.@Button #UndoButton {
+                Anchor: (Top: 0, Left: 0, Width: 48, Height: 48);
+                TooltipText: "Undo";
+            }
+            Group {
+                Anchor: (Top: 8, Left: 8, Width: 32, Height: 32);
+                Background: (TexturePath: "ImageAssets/Undo.png");
+                HitTestVisible: false;
+            }
+        }
+    }
   }
 }

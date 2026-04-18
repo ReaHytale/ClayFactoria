@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="38"
+   height="38"
+   viewBox="0 0 10.054167 10.054167"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="Undo.svg"
+   inkscape:export-filename="Undo@2x.png"
+   inkscape:export-xdpi="161.6842"
+   inkscape:export-ydpi="161.6842"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="25.761543"
+     inkscape:cx="13.722004"
+     inkscape:cy="15.915196"
+     inkscape:window-width="2428"
+     inkscape:window-height="1417"
+     inkscape:window-x="2044"
+     inkscape:window-y="87"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="RoundedArrow"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Rounded arrow"
+       markerWidth="0.40000001"
+       markerHeight="0.40000001"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="m -0.21114562,-4.1055728 6.42229122,3.21114561 a 1,1 90 0 1 0,1.78885438 L -0.21114562,4.1055728 A 1.236068,1.236068 31.717474 0 1 -2,3 v -6 a 1.236068,1.236068 148.28253 0 1 1.78885438,-1.1055728 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path8" />
+    </marker>
+  </defs>
+  <path
+     id="path3"
+     style="display:inline;fill:none;stroke:#d7d7d7;stroke-width:1.84175;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.4;marker-start:url(#RoundedArrow);paint-order:fill markers stroke"
+     d="M 2.1893048,2.5476863 C 2.8626622,1.5593618 3.8913547,0.92087265 5.1251501,0.92087207 7.3192388,0.92087091 9.0978986,2.759285 9.0978986,5.0270813 c 0,2.2677958 -1.7786598,4.106207 -3.9727485,4.106207 -1.2495199,0 -2.3643036,-0.5962381 -3.0925711,-1.5284699"
+     sodipodi:nodetypes="csssc"
+     inkscape:label="Undo" />
+</svg>
