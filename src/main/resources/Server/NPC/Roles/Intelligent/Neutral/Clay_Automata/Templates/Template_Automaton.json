@@ -81,7 +81,7 @@
   },
   "StateTransitions": [
     {
-      "$Comment": "Always clear trget and reset instructions when going back to idle.",
+      "$Comment": "Always clear target and reset instructions when going back to idle.",
       "States": [
         {
           "To": [ "Idle" ],
