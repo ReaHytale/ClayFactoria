@@ -133,12 +133,26 @@ public class BrushComponent implements Component<EntityStore> {
     }
 
     public void resetTasks(
-        ComponentAccessor<EntityStore> componentAccessor, Ref<EntityStore> playerRef) {
+        ComponentAccessor<EntityStore> componentAccessor, Ref<EntityStore> ref) {
         this.jobs = new ArrayList<>();
+        setBoxPoint1(null, ref);
         JobBoxesComponent jobBoxesComponent =
-            componentAccessor.getComponent(playerRef, JobBoxesComponent.getComponentType());
+            componentAccessor.getComponent(ref, JobBoxesComponent.getComponentType());
         if (jobBoxesComponent != null) {
             jobBoxesComponent.boxes.clear();
+        }
+    }
+
+    public void undo(ComponentAccessor<EntityStore> componentAccessor, Ref<EntityStore> ref) {
+        if (boxPoint1 != null) {
+            setBoxPoint1(null, ref);
+        } else if (!jobs.isEmpty()) {
+            jobs.removeLast();
+            JobBoxesComponent jobBoxesComponent = componentAccessor.getComponent(
+                ref, JobBoxesComponent.getComponentType());
+            if (jobBoxesComponent != null && !jobBoxesComponent.boxes.isEmpty()) {
+                jobBoxesComponent.boxes.removeLast();
+            }
         }
     }
 }
