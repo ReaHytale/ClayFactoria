@@ -7,7 +7,8 @@
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
     "CanDoWork": true,
-    "CanDoHarvest": true
+    "CanDoHarvest": true,
+    "CanSetFilterItem": true
   },
   "Parameters": {
     "NameTranslationKey": {

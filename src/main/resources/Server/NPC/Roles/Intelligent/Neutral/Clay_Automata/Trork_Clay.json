@@ -7,7 +7,8 @@
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
     "CanDoTake": true,
-    "CanDoDeposit": true
+    "CanDoDeposit": true,
+    "CanSetFilterItem": true
   },
   "Parameters": {
     "NameTranslationKey": {

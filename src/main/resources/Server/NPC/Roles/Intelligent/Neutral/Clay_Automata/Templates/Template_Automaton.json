@@ -55,6 +55,11 @@
       "Description": "Hotbar Items (e.g. primary weapon, secondary weapon, etc)",
       "TypeHint": "String",
       "Value": [ ]
+    },
+    "CanSetFilterItem": {
+      "Description": "Whether you can set a filter item on this automaton.",
+      "TypeHint": "String",
+      "Value": false
     }
   },
   "Appearance": { "Compute": "Appearance" },
@@ -568,6 +573,48 @@
         ]
       },
       {
+        "$Comment": "Allow setting filter items when applicable",
+        "Sensor": {
+          "Type": "Switch",
+          "Switch": { "Compute": "CanSetFilterItem" }
+        },
+        "Instructions": [
+          {
+            "$Comment": "Tooltip: \"Set Filter Item\"",
+            "Sensor": {
+              "Type": "Player",
+              "Range": 10,
+              "Filters": [
+                {
+                  "Type": "ItemInHand",
+                  "Items": [ "EMPTY ITEM HERE?" ]
+                }
+              ]
+            },
+            "Actions": [
+              {
+                "Type": "SetInteractable",
+                "Enabled": true,
+                "Hint": "server.interactionHints.set_filter"
+              }
+            ]
+          },
+          {
+            "$Comment": "Tooltip: \"Clear Filter Item\"",
+            "Sensor": {
+              "Type": "Any"
+            },
+            "Actions": [
+              {
+                "Type": "SetInteractable",
+                "Enabled": true,
+                "Hint": "server.interactionHints.clear_filter"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "$Comment": "Not interactable when not holding brush",
         "Sensor": {
           "Type": "Not",
@@ -588,7 +635,8 @@
             "Interactable": false
           }
         ]
-      }
+      },
+      { }
     ]
   },
   "NameTranslationKey": { "Compute": "NameTranslationKey" },
