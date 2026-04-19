@@ -7,10 +7,7 @@ import com.clayfactoria.components.JobComponent;
 import com.clayfactoria.interactions.ConsumeItemInteraction;
 import com.clayfactoria.interactions.OpenWandMenu;
 import com.clayfactoria.interactions.UseBrushOfLife;
-import com.clayfactoria.sensors.builders.BuilderSensorCanDoTask;
-import com.clayfactoria.sensors.builders.BuilderSensorHasAnyJobs;
-import com.clayfactoria.sensors.builders.BuilderSensorJobPosition;
-import com.clayfactoria.sensors.builders.BuilderSensorLeashTarget;
+import com.clayfactoria.sensors.builders.*;
 import com.clayfactoria.systems.BrushLegendSystem;
 import com.clayfactoria.systems.TaskBoxSystem;
 import com.hypixel.hytale.component.ComponentType;
@@ -69,6 +66,7 @@ public class ClayFactoria extends JavaPlugin {
         NPCPlugin.get().registerCoreComponentType("CanDoTask", BuilderSensorCanDoTask::new);
         NPCPlugin.get().registerCoreComponentType("HasAnyJobs", BuilderSensorHasAnyJobs::new);
         NPCPlugin.get().registerCoreComponentType("JobPosition", BuilderSensorJobPosition::new);
+        NPCPlugin.get().registerCoreComponentType("FilterItem", BuilderSensorFilterItem::new);
 
         NPCPlugin.get().registerCoreComponentType("PutItemInHand", BuilderActionPutItemInHand::new);
         NPCPlugin.get().registerCoreComponentType("DoTask", BuilderActionDoTask::new);
@@ -77,6 +75,7 @@ public class ClayFactoria extends JavaPlugin {
         NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
         NPCPlugin.get().registerCoreComponentType("SelectHeldItem", BuilderActionSelectHeldItem::new);
         NPCPlugin.get().registerCoreComponentType("StartProgramming", BuilderActionStartProgramming::new);
+        NPCPlugin.get().registerCoreComponentType("SetFilterItem", BuilderActionSetFilterItem::new);
     }
 
     @Override

@@ -8,7 +8,8 @@
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
     "AlertedSoundEvent": { "Compute": "AlertedSoundEvent" },
     "CanDoWork": true,
-    "CanDoHarvest": true
+    "CanDoHarvest": true,
+    "CanSetFilterItem": true
   },
   "Parameters": {
     "NameTranslationKey": {

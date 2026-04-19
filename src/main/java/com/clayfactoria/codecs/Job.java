@@ -43,7 +43,6 @@ public class Job {
             .add()
             .build();
 
-
     @Nullable
     @Getter
     @Setter
