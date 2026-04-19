@@ -34,4 +34,16 @@ public final class BoxUtils {
     return new Box(min, max);
   }
 
+  /**
+   * Checks if two boxes are equivalent, meaning they enclose the exact same area.<br>
+   * Note that this is not equality, the min and max corners may be swapped and this still returns true.
+   * @param box1 The first box
+   * @param box2 The second box
+   * @return True if the boxes are equivalent, false otherwise
+   */
+  public static boolean equivalent(Box box1, Box box2) {
+    return (box1.min.equals(box2.min) || box1.min.equals(box2.max)) &&
+        (box1.max.equals(box2.min) || box1.max.equals(box2.max));
+  }
+
 }

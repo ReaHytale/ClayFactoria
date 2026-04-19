@@ -6,6 +6,7 @@
     "DropList": "Drop_Kweebec_Clay",
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
+    "AlertedSoundEvent": { "Compute": "AlertedSoundEvent" },
     "CanDoWork": true,
     "CanDoHarvest": true
   },
@@ -13,6 +14,10 @@
     "NameTranslationKey": {
       "Value": "server.npcRoles.Kweebec_Clay.name",
       "Description": "Translation key for NPC name display"
+    },
+    "AlertedSoundEvent": {
+      "Value": "SFX_Clay_Kweebec_Alerted",
+      "Description": "Sound event when alerted"
     }
   }
 }

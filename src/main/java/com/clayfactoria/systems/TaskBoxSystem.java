@@ -3,19 +3,25 @@ package com.clayfactoria.systems;
 import com.clayfactoria.components.JobBoxComponent;
 import com.clayfactoria.components.JobBoxComponent.JobBoxesComponent;
 import com.clayfactoria.utils.BlockUtils;
+import com.clayfactoria.utils.BoxUtils;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
+import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.SoundCategory;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.debug.DebugUtils;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NonNull;
@@ -144,8 +150,8 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
         }
     }
 
-    private static void resizeBoxIfUncommitted(int index, @NonNull ArchetypeChunk<EntityStore> archetypeChunk, JobBoxComponent box, Player player) {
-        if (!box.isCommitted()) {
+    private static void resizeBoxIfUncommitted(int index, @NonNull ArchetypeChunk<EntityStore> archetypeChunk, JobBoxComponent jobBox, Player player) {
+        if (!jobBox.isCommitted()) {
             HeadRotation headRotation = archetypeChunk.getComponent(index, HeadRotation.getComponentType());
             TransformComponent transform = archetypeChunk.getComponent(index, TransformComponent.getComponentType());
             assert headRotation != null;
@@ -154,7 +160,16 @@ public class TaskBoxSystem extends DelayedEntitySystem<EntityStore> {
                 transform.getPosition().clone().add(new Vector3d(0, PLAYER_EYE_HEIGHT_OFFSET, 0)),
                 headRotation.getDirection().clone(), 0.25f, 6);
             if (newTarget != null) {
-                box.setBox(BlockUtils.makeSurroundingBox(box.getCommitStartLocation().toVector3i(), newTarget));
+                Box newBox = BlockUtils.makeSurroundingBox(jobBox.getCommitStartLocation().toVector3i(), newTarget);
+                if (!BoxUtils.equivalent(newBox, jobBox.getBox())) {
+                    jobBox.setBox(newBox);
+                    assert player.getReference() != null;
+                    PlayerRef playerRef = player.getReference().getStore().getComponent(player.getReference(), PlayerRef.getComponentType());
+                    assert playerRef != null;
+                    SoundUtil.playSoundEvent2dToPlayer(
+                        playerRef,
+                        SoundEvent.getAssetMap().getIndex("SFX_Creative_Play_Selection_Scale"), SoundCategory.UI);
+                }
             }
         }
     }

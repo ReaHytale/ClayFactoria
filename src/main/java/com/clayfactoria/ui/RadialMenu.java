@@ -11,18 +11,25 @@ import com.hypixel.hytale.codec.codecs.EnumCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.ItemSoundEvent;
+import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -127,9 +134,19 @@ public final class RadialMenu extends InteractiveCustomUIPage<RadialMenuEventDat
             LOGGER.atInfo().log("Set Brush command to: " + data.task);
             brushComponent.setTask(data.task);
         } else if (data.radialAuxPressed != null) {
+            PlayerRef playerRef = ref.getStore().getComponent(ref, PlayerRef.getComponentType());
+            assert playerRef != null;
             switch (data.radialAuxPressed) {
-                case Reset -> brushComponent.resetTasks(store, ref);
-                case Undo -> brushComponent.undo(store, ref);
+                case Reset -> {
+                    SoundUtil.playSoundEvent2dToPlayer(playerRef,
+                        SoundEvent.getAssetMap().getIndex("SFX_Creative_Play_Selection_Drag"), SoundCategory.UI);
+                    brushComponent.resetTasks(store, ref);
+                }
+                case Undo -> {
+                    SoundUtil.playSoundEvent2dToPlayer(playerRef,
+                        SoundEvent.getAssetMap().getIndex("SFX_Creative_Play_Add_Mask"), SoundCategory.UI);
+                    brushComponent.undo(store, ref);
+                }
             }
         }
         close();

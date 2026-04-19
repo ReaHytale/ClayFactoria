@@ -6,6 +6,7 @@
     "DropList": "Drop_Feran_Clay",
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
+    "AlertedSoundEvent": { "Compute": "AlertedSoundEvent" },
     "CanDoDeposit": true,
     "HotbarItems": [ "Tool_Sickle_Iron" ],
     "CanDoHarvest": true
@@ -14,6 +15,10 @@
     "NameTranslationKey": {
       "Value": "server.npcRoles.Feran_Clay.name",
       "Description": "Translation key for NPC name display"
+    },
+    "AlertedSoundEvent": {
+      "Value": "SFX_Clay_Feran_Alerted",
+      "Description": "Sound event when alerted"
     }
   }
 }

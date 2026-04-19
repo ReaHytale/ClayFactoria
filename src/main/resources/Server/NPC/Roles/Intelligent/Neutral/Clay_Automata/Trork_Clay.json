@@ -6,6 +6,7 @@
     "DropList": "Drop_Trork_Clay",
     "MaxHealth": 20,
     "NameTranslationKey": { "Compute": "NameTranslationKey" },
+    "AlertedSoundEvent": { "Compute": "AlertedSoundEvent" },
     "CanDoTake": true,
     "CanDoDeposit": true
   },
@@ -13,6 +14,10 @@
     "NameTranslationKey": {
       "Value": "server.npcRoles.Trork_Clay.name",
       "Description": "Translation key for NPC name display"
+    },
+    "AlertedSoundEvent": {
+      "Value": "SFX_Clay_Trork_Alerted",
+      "Description": "Sound event when alerted"
     }
   }
 }

@@ -26,6 +26,10 @@
       "Value": "server.npcRoles.Template.name",
       "Description": "Translation key for NPC name display"
     },
+    "AlertedSoundEvent": {
+      "Value": "SFX_Clay_Feran_Alerted",
+      "Description": "Sound event when alerted"
+    },
     "CanDoTake": {
       "Description": "Whether this automaton can perform the TAKE Task",
       "TypeHint": "Boolean",
@@ -274,6 +278,11 @@
                       "Type": "SpawnParticles",
                       "Offset": [ 0, 1, 0 ],
                       "ParticleSystem": "Alerted",
+                      "Once": true
+                    },
+                    {
+                      "Type": "PlaySound",
+                      "SoundEventId": { "Compute": "AlertedSoundEvent" },
                       "Once": true
                     }
                   ]
