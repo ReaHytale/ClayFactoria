@@ -107,7 +107,7 @@ public class JobComponent implements Component<EntityStore> {
             jobComponent.currentJob = jobComponent.jobs.get(jobComponent.currentTargetIndex);
         }
         jobComponent.isComplete = this.isComplete;
-        this.filterItem = jobComponent.filterItem;
+        jobComponent.filterItem = this.filterItem;
         return jobComponent;
     }
 }
