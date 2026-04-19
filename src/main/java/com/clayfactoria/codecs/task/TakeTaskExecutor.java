@@ -46,6 +46,7 @@ public class TakeTaskExecutor extends PointTaskExecutor {
         Store<EntityStore> store = entityRef.getStore();
         JobComponent jobComponent = Objects.requireNonNull(
             store.getComponent(entityRef, JobComponent.getComponentType()));
+
         Job currentJob = Objects.requireNonNull(jobComponent.getCurrentJob());
 
         ItemContainer itemContainer = TaskHelper.getItemContainerAtPos(
@@ -54,7 +55,7 @@ public class TakeTaskExecutor extends PointTaskExecutor {
         Objects.requireNonNull(itemContainer);
 
         ItemContainer npcInventory = TaskHelper.getNPCInventory(npcEntity, store);
-        return TaskHelper.transferItem(itemContainer, npcInventory, 1);
+        return TaskHelper.transferItem(itemContainer, npcInventory, 1, jobComponent.getItemId());
     }
 
     @Override

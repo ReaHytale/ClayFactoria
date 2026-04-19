@@ -9,6 +9,7 @@ import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +74,9 @@ public class JobComponent implements Component<EntityStore> {
   @Getter
   @Setter
   private boolean isComplete = false;
+  @Getter
+  @Setter
+  private String itemId;
 
   public static ComponentType<EntityStore, JobComponent> getComponentType() {
     return ClayFactoria.ownerComponentType;
@@ -97,6 +101,7 @@ public class JobComponent implements Component<EntityStore> {
       jobComponent.currentJob = jobComponent.jobs.get(jobComponent.currentTargetIndex);
     }
     jobComponent.isComplete = this.isComplete;
+    this.itemId = jobComponent.itemId;
     return jobComponent;
   }
 }

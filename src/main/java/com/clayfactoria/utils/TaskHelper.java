@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent.Hotbar;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -183,8 +184,13 @@ public final class TaskHelper {
         return transferItem(source, target, slot, itemStack.getQuantity());
     }
 
-    public static boolean transferItem(ItemContainer source, ItemContainer target, int quantity) {
+    public static boolean transferItem(ItemContainer source, ItemContainer target, int quantity, String filterItemId) {
         for (short slot = 0; slot < source.getCapacity(); slot++) {
+            if (filterItemId != null) {
+                if (source.getItemStack(slot) == null || !source.getItemStack(slot).getItemId().equals(filterItemId)) {
+                    continue;
+                }
+            }
             boolean result = transferItem(source, target, slot, quantity);
             if (result) {
                 return true;
