@@ -573,12 +573,36 @@
         ]
       },
       {
-        "$Comment": "Allow setting filter items when applicable",
+        "$Comment": "Allow setting filter items",
         "Sensor": {
           "Type": "Switch",
           "Switch": { "Compute": "CanSetFilterItem" }
         },
         "Instructions": [
+          {
+            "$Comment": "Set Filter Item on interaction",
+            "Sensor": {
+              "Type": "And",
+              "Sensors": [
+                {
+                  "Type": "Player",
+                  "Range": 10
+                },
+                {
+                  "Type": "HasInteracted"
+                }
+              ]
+            },
+            "Actions": [
+              {
+                "Type": "SetFilterItem"
+              },
+              {
+                "Type": "Log",
+                "Message": "Test"
+              }
+            ]
+          },
           {
             "$Comment": "Tooltip: \"Set Filter Item\"",
             "Sensor": {
@@ -587,7 +611,7 @@
               "Filters": [
                 {
                   "Type": "ItemInHand",
-                  "Items": [ "EMPTY ITEM HERE?" ]
+                  "Items": [ "*" ]
                 }
               ]
             },

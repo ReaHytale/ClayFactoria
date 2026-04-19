@@ -77,6 +77,7 @@ public class ClayFactoria extends JavaPlugin {
         NPCPlugin.get().registerCoreComponentType("SetPath", BuilderActionSetPath::new);
         NPCPlugin.get().registerCoreComponentType("SelectHeldItem", BuilderActionSelectHeldItem::new);
         NPCPlugin.get().registerCoreComponentType("StartProgramming", BuilderActionStartProgramming::new);
+        NPCPlugin.get().registerCoreComponentType("SetFilterItem", BuilderActionSetFilterItem::new);
     }
 
     @Override
