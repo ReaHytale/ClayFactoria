@@ -691,8 +691,7 @@
             "Interactable": false
           }
         ]
-      },
-      { }
+      }
     ]
   },
   "NameTranslationKey": { "Compute": "NameTranslationKey" },
