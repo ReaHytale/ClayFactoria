@@ -1,4 +1,4 @@
-# Clay Factoria
+![](./logo-low-res.png)
 
 Create clay automatons using the power of Gaia's life essence!
 
