@@ -37,6 +37,7 @@ public class TakeTaskExecutor extends PointTaskExecutor {
         Objects.requireNonNull(container, "Unexpected null ItemContainer");
 
         // There must be items available to be taken, and there must be space in hands
+        //FIXME: should check if the filter item is present anywhere in the container
         return heldItemStack == null && !container.isEmpty();
     }
 
