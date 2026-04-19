@@ -596,43 +596,75 @@
             "Actions": [
               {
                 "Type": "SetFilterItem"
-              },
-              {
-                "Type": "Log",
-                "Message": "Test"
               }
             ]
           },
           {
             "$Comment": "Tooltip: \"Set Filter Item\"",
             "Sensor": {
-              "Type": "Player",
-              "Range": 10,
-              "Filters": [
+              "Type": "And",
+              "Sensors": [
                 {
-                  "Type": "ItemInHand",
-                  "Items": [ "*" ]
+                  "Type": "Player",
+                  "Range": 10,
+                  "Filters": [
+                    {
+                      "Type": "ItemInHand",
+                      "Items": [ "*" ]
+                    }
+                  ]
                 }
               ]
             },
-            "Actions": [
+            "Instructions": [
               {
-                "Type": "SetInteractable",
-                "Enabled": true,
-                "Hint": "server.interactionHints.set_filter"
+                "$Comment": "Can set Filter Item",
+                "Sensor": {
+                  "Type": "FilterItem"
+                },
+                "Actions": [
+                  {
+                    "Type": "SetInteractable",
+                    "Enabled": true,
+                    "Hint": "server.interactionHints.set_filter"
+                  }
+                ]
+              },
+              {
+                "$Comment": "Filter item already set and holding a different item, must clear first with an empty hand.",
+                "Sensor": {
+                  "Type": "Any"
+                },
+                "Actions": [
+                  {
+                    "Type": "SetInteractable",
+                    "Interactable": false
+                  }
+                ]
               }
             ]
           },
           {
             "$Comment": "Tooltip: \"Clear Filter Item\"",
             "Sensor": {
-              "Type": "Any"
+              "Type": "Not",
+              "Sensor": {
+                "Type": "FilterItem"
+              }
             },
             "Actions": [
               {
                 "Type": "SetInteractable",
                 "Enabled": true,
                 "Hint": "server.interactionHints.clear_filter"
+              }
+            ]
+          },
+          {
+            "Actions": [
+              {
+                "Type": "SetInteractable",
+                "Interactable": false
               }
             ]
           }
